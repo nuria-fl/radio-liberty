@@ -1,10 +1,12 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 
-class GameScene extends Phaser.Scene {
+class RoadScene extends Phaser.Scene {
+  survivor: any
+
   constructor() {
     super({
-      key: SCENES.GAME
+      key: SCENES.ROAD
     })
   }
 
@@ -29,11 +31,18 @@ class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // this.buggy = new Buggy({
+    //   scene: this,
+    //   key: IMAGES.SURVIVOR.KEY,
+    //   x: 40,
+    //   y: 600
+    // })
+
     this.survivor = new Survivor({
       scene: this,
       key: IMAGES.SURVIVOR.KEY,
       x: 40,
-      y: 0
+      y: 600
     })
 
     this.input.on('pointerdown', pointer => {
@@ -47,4 +56,4 @@ class GameScene extends Phaser.Scene {
   }
 }
 
-export default GameScene
+export default RoadScene

@@ -1,8 +1,13 @@
 export const SCENES = {
-    LOAD: 'LOAD',
-    MENU: 'MENU',
-    GAME: 'GAME'
-  }
+  LOAD: 'LOAD',
+  MENU: 'MENU',
+  GAME: 'GAME',
+  ROAD: 'ROAD'
+}
+
+export const CUTSCENES = {
+  ROAD: 'ROADCS'
+}
 
 export const IMAGES = {
   SURVIVOR: {

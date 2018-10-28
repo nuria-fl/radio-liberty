@@ -1,4 +1,9 @@
 export default class Survivor extends Phaser.GameObjects.Sprite {
+  target = null
+  alive = true
+  acceleration = 600
+  body: Phaser.Physics.Arcade.Body
+
   constructor(config) {
     super(config.scene, config.x, config.y, config.key)
     config.scene.physics.world.enable(this)
@@ -8,8 +13,6 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
     this.body.setSize(80, 100)
     this.body.setCollideWorldBounds(true)
     this.body.stopVelocityOnCollide = true
-    this.alive = true
-    this.acceleration = 600
   }
 
   setDestination(target) {
@@ -36,7 +39,7 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
   }
 
   die() {
-    this.body.setAcceleration(0)
+    this.body.setAcceleration(0, 0)
     this.body.setVelocity(0, -300)
     this.alive = false
   }
