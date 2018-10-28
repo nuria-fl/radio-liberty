@@ -1,5 +1,5 @@
-import { CUTSCENES, SCENES, IMAGES } from '../constants'
-import RoadCutScene from '../cutscenes/Road'
+import { SCENES, IMAGES } from '../constants'
+import RoadScene from './RoadScene'
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -11,8 +11,8 @@ class GameScene extends Phaser.Scene {
   preload() {}
 
   create() {
-    this.scene.add(CUTSCENES.ROAD, RoadCutScene, false)
-    this.scene.launch(CUTSCENES.ROAD)
+    this.scene.add(SCENES.ROAD, RoadScene, false)
+    this.scene.launch(SCENES.ROAD)
   }
 }
 

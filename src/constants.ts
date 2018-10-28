@@ -5,10 +5,6 @@ export const SCENES = {
   ROAD: 'ROAD'
 }
 
-export const CUTSCENES = {
-  ROAD: 'ROADCS'
-}
-
 export const IMAGES = {
   SURVIVOR: {
     KEY: 'SURVIVOR',
