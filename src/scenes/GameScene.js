@@ -1,23 +1,37 @@
-import Survivor from '../characters/Survivor'
+import { SCENES, IMAGES } from '../constants'
+import Survivor from '../sprites/Survivor'
 
 class GameScene extends Phaser.Scene {
   constructor() {
     super({
-      key: 'GameScene'
+      key: SCENES.GAME
     })
   }
 
   preload() {
-    this.load.spritesheet('survivor', 'assets/images/survivor.png', {
-      frameWidth: 80,
-      frameHeight: 100
-    })
+    this.load.spritesheet(
+      IMAGES.BUGGY.KEY,
+      `assets/images/${IMAGES.BUGGY.FILE}`,
+      {
+        frameWidth: 389,
+        frameHeight: 208
+      }
+    )
+
+    this.load.spritesheet(
+      IMAGES.SURVIVOR.KEY,
+      `assets/images/${IMAGES.SURVIVOR.FILE}`,
+      {
+        frameWidth: 80,
+        frameHeight: 100
+      }
+    )
   }
 
   create() {
     this.survivor = new Survivor({
       scene: this,
-      key: 'survivor',
+      key: IMAGES.SURVIVOR.KEY,
       x: 40,
       y: 0
     })
