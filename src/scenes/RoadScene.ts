@@ -1,10 +1,13 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
+import { Physics } from 'phaser'
 
 class RoadScene extends Phaser.Scene {
   survivor: Survivor
   buggy: Buggy
+  floor: Physics.Arcade.Image
+  platforms
   playingCutscene = true
 
   constructor() {
@@ -18,8 +21,9 @@ class RoadScene extends Phaser.Scene {
       scene: this,
       key: IMAGES.BUGGY.KEY,
       x: 1000,
-      y: 600
+      y: 300
     })
+    this.physics.add.collider(this.floor, this.buggy)
 
     this.buggy.play('buggy-driving')
 
@@ -43,8 +47,9 @@ class RoadScene extends Phaser.Scene {
       scene: this,
       key: IMAGES.SURVIVOR.KEY,
       x: 100,
-      y: 600
+      y: 200
     })
+    this.physics.add.collider(this.floor, this.survivor)
 
     this.input.on('pointerdown', pointer => {
       if (this.playingCutscene === false) {
@@ -55,6 +60,12 @@ class RoadScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image(
+      IMAGES.ROADSIGN.KEY,
+      `assets/images/${IMAGES.ROADSIGN.FILE}`
+    )
+    this.load.image(IMAGES.ROAD.KEY, `assets/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.FLOOR.KEY, `assets/images/${IMAGES.FLOOR.FILE}`)
     this.load.spritesheet(
       IMAGES.BUGGY.KEY,
       `assets/images/${IMAGES.BUGGY.FILE}`,
@@ -68,13 +79,21 @@ class RoadScene extends Phaser.Scene {
       IMAGES.SURVIVOR.KEY,
       `assets/images/${IMAGES.SURVIVOR.FILE}`,
       {
-        frameWidth: 80,
-        frameHeight: 100
+        frameWidth: 58,
+        frameHeight: 137
       }
     )
   }
 
   create() {
+    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
+
+    this.floor = this.physics.add
+      .staticImage(0, 412, IMAGES.FLOOR.KEY)
+      .setOrigin(0, 0)
+      .refreshBody()
+
     this.initCutscene()
   }
 

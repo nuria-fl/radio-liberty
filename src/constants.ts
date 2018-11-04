@@ -6,6 +6,14 @@ export const SCENES = {
 }
 
 export const IMAGES = {
+  PLACEHOLDER: {
+    KEY: 'PLACEHOLDER',
+    FILE: 'placeholder.png'
+  },
+  FLOOR: {
+    KEY: 'FLOOR',
+    FILE: 'floor.png'
+  },
   SURVIVOR: {
     KEY: 'SURVIVOR',
     FILE: 'survivor.png'
@@ -13,5 +21,13 @@ export const IMAGES = {
   BUGGY: {
     KEY: 'BUGGY',
     FILE: 'buggy.png'
-  }
+  },
+  ROADSIGN: {
+    KEY: 'ROADSIGN',
+    FILE: 'road-sign.png'
+  },
+  ROAD: {
+    KEY: 'ROAD',
+    FILE: 'road.png'
+  },
 }
