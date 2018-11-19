@@ -1,6 +1,7 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
+import createSpeechBubble from '../utils/createSpeechBubble'
 import { Physics } from 'phaser'
 
 class RoadScene extends Phaser.Scene {
@@ -8,6 +9,7 @@ class RoadScene extends Phaser.Scene {
   buggy: Buggy
   floor: Physics.Arcade.Image
   roadsign: Physics.Arcade.Image
+  engine: any
   playingCutscene = true
 
   look = {
@@ -52,6 +54,7 @@ class RoadScene extends Phaser.Scene {
       repeat: 0,
       onComplete: () => {
         this.buggy.play('buggy-parked')
+        this.initEngine()
         this.initSurvivor()
         this.playingCutscene = false
       }
@@ -70,6 +73,7 @@ class RoadScene extends Phaser.Scene {
       this.sys.events.emit(this.look.sign.key)
     })
 
+    // this should be with the buggy engine instead
     this.physics.add.overlap(this.survivor, this.buggy, () => {
       this.sys.events.emit(this.look.buggy.key)
     })
@@ -82,13 +86,37 @@ class RoadScene extends Phaser.Scene {
     })
   }
 
+  initEngine() {
+    // should create an invisible shape on top of the engine area of the buggy
+  }
+
   lookAtSign() {
-    console.log('It reads something like… P A … S')
+    this.survivor.stop()
+
+    createSpeechBubble(
+      {
+        width: 300,
+        height: 80,
+        quote: 'It reads something like… P A … S'
+      },
+      this.survivor.body,
+      this
+    )
+
     this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
   }
 
   lookAtBuggy() {
-    console.log('Hmm…')
+    this.survivor.stop()
+    createSpeechBubble(
+      {
+        width: 100,
+        height: 80,
+        quote: 'Hmm…'
+      },
+      this.survivor.body,
+      this
+    )
     this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
   }
 
