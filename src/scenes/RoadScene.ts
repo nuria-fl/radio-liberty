@@ -53,10 +53,23 @@ class RoadScene extends Phaser.Scene {
       yoyo: false,
       repeat: 0,
       onComplete: () => {
-        this.buggy.play('buggy-parked')
-        this.initEngine()
-        this.initSurvivor()
-        this.playingCutscene = false
+        createSpeechBubble(
+          {
+            width: 100,
+            height: 80,
+            quote: 'What the…?'
+          },
+          this.buggy.body,
+          this
+        )
+
+        // TODO: Avoid timeout
+        setTimeout(() => {
+          this.buggy.play('buggy-parked')
+          this.initEngine()
+          this.initSurvivor()
+          this.playingCutscene = false
+        }, 3000)
       }
     })
   }
@@ -108,15 +121,37 @@ class RoadScene extends Phaser.Scene {
 
   lookAtBuggy() {
     this.survivor.stop()
+    // createSpeechBubble(
+    //   {
+    //     width: 100,
+    //     height: 80,
+    //     quote: 'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.'
+    //   },
+    //   this.survivor.body,
+    //   this
+    // )
+
+    // createSpeechBubble(
+    //   {
+    //     width: 100,
+    //     height: 80,
+    //     quote: 'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.'
+    //   },
+    //   this.survivor.body,
+    //   this
+    // )
+
     createSpeechBubble(
       {
-        width: 100,
-        height: 80,
-        quote: 'Hmm…'
+        width: 300,
+        height: 160,
+        quote:
+          "There is some sort of building down the road. Looks like a good shelter, I'll can push the buggy to there, doesn't look too far"
       },
       this.survivor.body,
       this
     )
+
     this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
   }
 

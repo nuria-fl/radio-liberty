@@ -48,9 +48,11 @@ const createSpeechBubble = (
     bubble.y + height / 2 - contentBounds.height / 2
   )
 
+  // TODO: Avoid timeout
   setTimeout(() => {
     bubble.destroy()
     content.destroy()
+    // TODO: send some message when bubble is destroyed?
   }, 3000)
 }
 
