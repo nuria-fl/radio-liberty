@@ -1,5 +1,5 @@
-import 'phaser';
-import LoadScene from './scenes/LoadScene';
+import 'phaser'
+import LoadScene from './scenes/LoadScene'
 
 const config = {
   type: Phaser.WEBGL,
@@ -15,9 +15,7 @@ const config = {
       debug: false
     }
   },
-  scene: [
-    LoadScene
-  ]
-};
+  scene: [LoadScene]
+}
 
-const game = new Phaser.Game(config);
+const game = new Phaser.Game(config)

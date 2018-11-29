@@ -2,6 +2,7 @@ import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
 import createSpeechBubble from '../utils/createSpeechBubble'
+import BuildingScene from './BuildingScene'
 import { Physics } from 'phaser'
 
 class RoadScene extends Phaser.Scene {
@@ -153,6 +154,32 @@ class RoadScene extends Phaser.Scene {
     )
 
     this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+
+    // TODO: Avoid timeout
+    setTimeout(() => {
+      // TODO: Animate leaving area
+      this.tweens.add({
+        targets: this.buggy,
+        x: -200,
+        ease: 'Power1',
+        duration: 3000,
+        yoyo: false,
+        repeat: 0,
+        onComplete: () => {
+          this.scene.add(SCENES.BUILDING, BuildingScene, false)
+          this.scene.start(SCENES.BUILDING)
+        }
+      })
+
+      this.tweens.add({
+        targets: this.survivor,
+        x: -200,
+        ease: 'Power1',
+        duration: 3000,
+        yoyo: false,
+        repeat: 0
+      })
+    }, 3000)
   }
 
   preload() {

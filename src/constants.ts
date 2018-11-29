@@ -2,7 +2,8 @@ export const SCENES = {
   LOAD: 'LOAD',
   MENU: 'MENU',
   GAME: 'GAME',
-  ROAD: 'ROAD'
+  ROAD: 'ROAD',
+  BUILDING: 'BUILDING'
 }
 
 export const IMAGES = {
@@ -29,5 +30,5 @@ export const IMAGES = {
   ROAD: {
     KEY: 'ROAD',
     FILE: 'road.png'
-  },
+  }
 }
