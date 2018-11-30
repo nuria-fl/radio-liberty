@@ -62,15 +62,12 @@ class RoadScene extends Phaser.Scene {
           },
           this.buggy.body,
           this
-        )
-
-        // TODO: Avoid timeout
-        setTimeout(() => {
+        ).then(() => {
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
           this.playingCutscene = false
-        }, 3000)
+        })
       }
     })
   }
@@ -122,64 +119,66 @@ class RoadScene extends Phaser.Scene {
 
   lookAtBuggy() {
     this.survivor.stop()
-    // createSpeechBubble(
-    //   {
-    //     width: 100,
-    //     height: 80,
-    //     quote: 'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.'
-    //   },
-    //   this.survivor.body,
-    //   this
-    // )
+    this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
 
-    // createSpeechBubble(
-    //   {
-    //     width: 100,
-    //     height: 80,
-    //     quote: 'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.'
-    //   },
-    //   this.survivor.body,
-    //   this
-    // )
-
+    // turn this into stream or something
     createSpeechBubble(
       {
         width: 300,
         height: 160,
         quote:
-          "There is some sort of building down the road. Looks like a good shelter, I'll can push the buggy to there, doesn't look too far"
+          "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
       },
       this.survivor.body,
       this
     )
+      .then(() =>
+        createSpeechBubble(
+          {
+            width: 300,
+            height: 160,
+            quote:
+              "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
+          },
+          this.survivor.body,
+          this
+        )
+      )
+      .then(() =>
+        createSpeechBubble(
+          {
+            width: 300,
+            height: 160,
+            quote:
+              "There is some sort of building down the road. Looks like a good shelter, I'll can push the buggy to there, doesn't look too far"
+          },
+          this.survivor.body,
+          this
+        )
+      )
+      .then(() => {
+        this.tweens.add({
+          targets: this.buggy,
+          x: -200,
+          ease: 'Power1',
+          duration: 3000,
+          yoyo: false,
+          repeat: 0,
+          onComplete: () => {
+            this.scene.add(SCENES.BUILDING, BuildingScene, false)
+            this.scene.start(SCENES.BUILDING)
+          }
+        })
 
-    this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
-
-    // TODO: Avoid timeout
-    setTimeout(() => {
-      // TODO: Animate leaving area
-      this.tweens.add({
-        targets: this.buggy,
-        x: -200,
-        ease: 'Power1',
-        duration: 3000,
-        yoyo: false,
-        repeat: 0,
-        onComplete: () => {
-          this.scene.add(SCENES.BUILDING, BuildingScene, false)
-          this.scene.start(SCENES.BUILDING)
-        }
+        this.tweens.add({
+          targets: this.survivor,
+          x: -200,
+          ease: 'Power1',
+          duration: 3000,
+          yoyo: false,
+          repeat: 0
+        })
       })
-
-      this.tweens.add({
-        targets: this.survivor,
-        x: -200,
-        ease: 'Power1',
-        duration: 3000,
-        yoyo: false,
-        repeat: 0
-      })
-    }, 3000)
   }
 
   preload() {

@@ -34,7 +34,9 @@ class BuildingScene extends Phaser.Scene {
       },
       this.survivor.body,
       this
-    )
+    ).then(() => {
+      this.playingCutscene = false
+    })
   }
 
   initSurvivor() {
