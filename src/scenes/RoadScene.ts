@@ -77,7 +77,16 @@ class RoadScene extends Phaser.Scene {
       scene: this,
       key: IMAGES.SURVIVOR.KEY,
       x: 100,
-      y: 366
+      y: 346
+    })
+    this.anims.create({
+      key: 'walk',
+      frames: this.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 0,
+        end: 3
+      }),
+      frameRate: 10,
+      repeat: -1
     })
     this.physics.add.collider(this.floor, this.survivor)
     this.physics.add.overlap(this.survivor, this.roadsign, () => {
@@ -205,8 +214,8 @@ class RoadScene extends Phaser.Scene {
       IMAGES.SURVIVOR.KEY,
       `assets/images/${IMAGES.SURVIVOR.FILE}`,
       {
-        frameWidth: 37,
-        frameHeight: 88
+        frameWidth: 40,
+        frameHeight: 120
       }
     )
   }
