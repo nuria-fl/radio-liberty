@@ -1,4 +1,4 @@
-import { SCENES, IMAGES } from '../constants'
+import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
 import createSpeechBubble from '../utils/createSpeechBubble'
@@ -85,7 +85,7 @@ class RoadScene extends Phaser.Scene {
         start: 0,
         end: 3
       }),
-      frameRate: 10,
+      frameRate: 7,
       repeat: -1
     })
     this.physics.add.collider(this.floor, this.survivor)
@@ -201,6 +201,7 @@ class RoadScene extends Phaser.Scene {
       IMAGES.ROADSIGN.KEY,
       `assets/images/${IMAGES.ROADSIGN.FILE}`
     )
+    this.load.audio(AUDIO.WALK.KEY, `assets/sound/${AUDIO.WALK.FILE}`)
     this.load.spritesheet(
       IMAGES.BUGGY.KEY,
       `assets/images/${IMAGES.BUGGY.FILE}`,

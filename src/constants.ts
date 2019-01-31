@@ -32,3 +32,10 @@ export const IMAGES = {
     FILE: 'road.png'
   }
 }
+
+export const AUDIO = {
+  WALK: {
+    KEY: 'WALK',
+    FILE: 'walk.mp3'
+  }
+}
