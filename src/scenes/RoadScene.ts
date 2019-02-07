@@ -206,8 +206,8 @@ class RoadScene extends Phaser.Scene {
       IMAGES.BUGGY.KEY,
       `assets/images/${IMAGES.BUGGY.FILE}`,
       {
-        frameWidth: 194,
-        frameHeight: 104
+        frameWidth: 208,
+        frameHeight: 108
       }
     )
 
