@@ -220,7 +220,7 @@ class RoadScene extends Phaser.Scene {
       .refreshBody()
 
     this.roadsign = this.physics.add
-      .staticImage(660, 340, IMAGES.ROADSIGN.KEY)
+      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
       .refreshBody()
       .setInteractive()
 
