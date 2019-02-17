@@ -4,19 +4,20 @@ class DialogService {
   scene: Phaser.Scene
   timedEvent
   text
-  borderAlpha
-  borderColor
-  borderThickness
-  windowAlpha
-  windowColor
-  windowHeight
-  padding
-  dialogSpeed
+  config = {
+    borderAlpha: 1,
+    borderColor: 0x101010,
+    borderThickness: 3,
+    windowAlpha: 0.8,
+    windowColor: 0x303030,
+    windowHeight: 100,
+    padding: 15,
+    dialogSpeed: 4
+  }
   eventCounter
   visible
   dialog
   graphics
-  closeBtn
   animating = false
 
   constructor(scene) {
@@ -25,27 +26,13 @@ class DialogService {
 
   // Initialize the dialog modal
   init(opts: any = {}) {
-    if (!opts) opts = {}
     // set properties from opts object or use defaults
-    this.borderThickness = opts.borderThickness || 3
-    this.borderColor = opts.borderColor || 0x101010
-    this.borderAlpha = opts.borderAlpha || 1
-    this.windowAlpha = opts.windowAlpha || 0.8
-    this.windowColor = opts.windowColor || 0x303030
-    this.windowHeight = opts.windowHeight || 100
-    this.padding = opts.padding || 15
-    this.dialogSpeed = opts.dialogSpeed || 4
+    Object.assign(this.config, opts)
 
     // used for animating the text
     this.eventCounter = 0
     // if the dialog window is shown
     this.visible = true
-    // the current text in the window
-    this.text
-    // the text that will be displayed in the window
-    this.dialog
-    this.graphics
-    this.closeBtn
 
     // Create the dialog window
     this.createWindow()
@@ -63,10 +50,10 @@ class DialogService {
 
   // Calculates where to place the dialog window based on the game size
   private calculateWindowDimensions(width, height) {
-    var x = this.padding
-    var y = height - this.windowHeight - this.padding
-    var rectWidth = width - this.padding * 2
-    var rectHeight = this.windowHeight
+    var x = this.config.padding
+    var y = height - this.config.windowHeight - this.config.padding
+    var rectWidth = width - this.config.padding * 2
+    var rectHeight = this.config.windowHeight
     return {
       x,
       y,
@@ -76,16 +63,16 @@ class DialogService {
   }
   // Creates the inner dialog window (where the text is displayed)
   private createInnerWindow(x, y, rectWidth, rectHeight) {
-    this.graphics.fillStyle(this.windowColor, this.windowAlpha)
+    this.graphics.fillStyle(this.config.windowColor, this.config.windowAlpha)
     this.graphics.fillRect(x + 1, y + 1, rectWidth - 1, rectHeight - 1)
   }
 
   // Creates the border rectangle of the dialog window
   private createOuterWindow(x, y, rectWidth, rectHeight) {
     this.graphics.lineStyle(
-      this.borderThickness,
-      this.borderColor,
-      this.borderAlpha
+      this.config.borderThickness,
+      this.config.borderColor,
+      this.config.borderAlpha
     )
     this.graphics.strokeRect(x, y, rectWidth, rectHeight)
   }
@@ -114,7 +101,6 @@ class DialogService {
     this.visible = !this.visible
     if (this.text) this.text.visible = this.visible
     if (this.graphics) this.graphics.visible = this.visible
-    if (this.closeBtn) this.closeBtn.visible = this.visible
   }
 
   // Sets the text for the dialog window
@@ -128,7 +114,7 @@ class DialogService {
 
     this.animating = true
     this.timedEvent = this.scene.time.addEvent({
-      delay: 150 - this.dialogSpeed * 30,
+      delay: 150 - this.config.dialogSpeed * 30,
       callback: this.animateText,
       callbackScope: this,
       loop: true
@@ -149,15 +135,16 @@ class DialogService {
     // Reset the dialog
     if (this.text) this.text.destroy()
 
-    var x = this.padding + 10
-    var y = this.getGameHeight() - this.windowHeight - this.padding + 10
+    var x = this.config.padding + 10
+    var y =
+      this.getGameHeight() - this.config.windowHeight - this.config.padding + 10
 
     this.text = this.scene.make.text({
       x,
       y,
       text,
       style: {
-        wordWrap: { width: this.getGameWidth() - this.padding * 2 - 25 }
+        wordWrap: { width: this.getGameWidth() - this.config.padding * 2 - 25 }
       }
     })
   }
