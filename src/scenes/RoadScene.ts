@@ -1,9 +1,9 @@
+import { Physics } from 'phaser'
+import DialogService from '../utils/dialog'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
-import createSpeechBubble from '../utils/createSpeechBubble'
 import BuildingScene from './BuildingScene'
-import { Physics } from 'phaser'
 
 class RoadScene extends Phaser.Scene {
   survivor: Survivor
@@ -12,6 +12,7 @@ class RoadScene extends Phaser.Scene {
   roadsign: Physics.Arcade.Image
   engine: any
   playingCutscene = true
+  dialog: DialogService
 
   look = {
     sign: {
@@ -28,6 +29,26 @@ class RoadScene extends Phaser.Scene {
     super({
       key: SCENES.ROAD
     })
+  }
+
+  createDialogBox(text, cb = null) {
+    this.playingCutscene = true
+    this.dialog.init()
+    this.dialog.setText(text)
+    const addListener = () => {
+      this.input.once('pointerup', () => {
+        if (!this.dialog.animating) {
+          this.dialog.toggleWindow()
+          this.playingCutscene = false
+          if (cb) {
+            cb()
+          }
+        } else {
+          addListener()
+        }
+      })
+    }
+    addListener()
   }
 
   initCutscene() {
@@ -54,20 +75,12 @@ class RoadScene extends Phaser.Scene {
       yoyo: false,
       repeat: 0,
       onComplete: () => {
-        createSpeechBubble(
-          {
-            width: 100,
-            height: 80,
-            quote: 'What the…?'
-          },
-          this.buggy.body,
-          this
-        ).then(() => {
+        const finishCutscene = () => {
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
-          this.playingCutscene = false
-        })
+        }
+        this.createDialogBox('What the…?', finishCutscene)
       }
     })
   }
@@ -111,83 +124,64 @@ class RoadScene extends Phaser.Scene {
   }
 
   lookAtSign() {
-    this.survivor.stop()
+    if (!this.playingCutscene) {
+      this.survivor.stop()
 
-    createSpeechBubble(
-      {
-        width: 300,
-        height: 80,
-        quote: 'It reads something like… P A … S'
-      },
-      this.survivor.body,
-      this
-    )
+      this.createDialogBox('It reads something like… P A … S')
 
-    this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
+      this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
+    }
   }
 
   lookAtBuggy() {
-    this.survivor.stop()
-    this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+    const speech = [
+      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+    ]
 
-    // turn this into stream or something
-    createSpeechBubble(
-      {
-        width: 300,
-        height: 160,
-        quote:
-          "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
-      },
-      this.survivor.body,
-      this
-    )
-      .then(() =>
-        createSpeechBubble(
-          {
-            width: 300,
-            height: 160,
-            quote:
-              "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
-          },
-          this.survivor.body,
-          this
-        )
-      )
-      .then(() =>
-        createSpeechBubble(
-          {
-            width: 300,
-            height: 160,
-            quote:
-              "There is some sort of building down the road. Looks like a good shelter, I'll can push the buggy to there, doesn't look too far"
-          },
-          this.survivor.body,
-          this
-        )
-      )
-      .then(() => {
-        this.tweens.add({
-          targets: this.buggy,
-          x: -200,
-          ease: 'Power1',
-          duration: 3000,
-          yoyo: false,
-          repeat: 0,
-          onComplete: () => {
-            this.scene.add(SCENES.BUILDING, BuildingScene, false)
-            this.scene.start(SCENES.BUILDING)
-          }
-        })
+    const startFinishCutscene = () => {
+      this.createDialogBox(speech[0], dialog2)
+    }
 
-        this.tweens.add({
-          targets: this.survivor,
-          x: -200,
-          ease: 'Power1',
-          duration: 3000,
-          yoyo: false,
-          repeat: 0
-        })
+    const dialog2 = () => {
+      this.createDialogBox(speech[1], dialog3)
+    }
+
+    const dialog3 = () => {
+      this.createDialogBox(speech[2], finishCutscene)
+    }
+
+    const finishCutscene = () => {
+      this.tweens.add({
+        targets: this.buggy,
+        x: -200,
+        ease: 'Power1',
+        duration: 3000,
+        yoyo: false,
+        repeat: 0,
+        onComplete: () => {
+          this.scene.add(SCENES.BUILDING, BuildingScene, false)
+          this.scene.start(SCENES.BUILDING)
+        }
       })
+
+      this.tweens.add({
+        targets: this.survivor,
+        x: -200,
+        ease: 'Power1',
+        duration: 3000,
+        yoyo: false,
+        repeat: 0
+      })
+    }
+
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+      this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+
+      startFinishCutscene()
+    }
   }
 
   preload() {
@@ -222,6 +216,8 @@ class RoadScene extends Phaser.Scene {
   }
 
   create() {
+    this.dialog = new DialogService(this)
+
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
     bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
 
@@ -231,7 +227,7 @@ class RoadScene extends Phaser.Scene {
       .refreshBody()
 
     this.roadsign = this.physics.add
-      .staticImage(660, 340, IMAGES.ROADSIGN.KEY)
+      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
       .refreshBody()
       .setInteractive()
 

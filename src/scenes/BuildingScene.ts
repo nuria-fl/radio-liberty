@@ -1,19 +1,40 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
-import createSpeechBubble from '../utils/createSpeechBubble'
 import { Physics } from 'phaser'
+import DialogService from '../utils/dialog'
 
 class BuildingScene extends Phaser.Scene {
   survivor: Survivor
   floor: Physics.Arcade.Image
   engine: any
   playingCutscene = true
+  dialog: DialogService
 
   look = {
     // buggy: {
     //   key: 'lookBuggy',
     //   cb: this.lookAtBuggy
     // }
+  }
+
+  createDialogBox(text, cb = null) {
+    this.playingCutscene = true
+    this.dialog.init()
+    this.dialog.setText(text)
+    const addListener = () => {
+      this.input.once('pointerup', () => {
+        if (!this.dialog.animating) {
+          this.dialog.toggleWindow()
+          this.playingCutscene = false
+          if (cb) {
+            cb()
+          }
+        } else {
+          addListener()
+        }
+      })
+    }
+    addListener()
   }
 
   constructor() {
@@ -25,18 +46,9 @@ class BuildingScene extends Phaser.Scene {
   initCutscene() {
     this.initSurvivor()
 
-    createSpeechBubble(
-      {
-        width: 280,
-        height: 160,
-        quote:
-          "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
-      },
-      this.survivor.body,
-      this
-    ).then(() => {
-      this.playingCutscene = false
-    })
+    this.createDialogBox(
+      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
+    )
   }
 
   initSurvivor() {
@@ -106,6 +118,8 @@ class BuildingScene extends Phaser.Scene {
   }
 
   create() {
+    this.dialog = new DialogService(this)
+
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
     bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
 
