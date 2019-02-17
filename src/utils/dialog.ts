@@ -11,13 +11,13 @@ class DialogService {
   windowColor
   windowHeight
   padding
-  closeBtnColor
   dialogSpeed
   eventCounter
   visible
   dialog
   graphics
   closeBtn
+  animating = false
 
   constructor(scene) {
     this.scene = scene
@@ -34,8 +34,7 @@ class DialogService {
     this.windowColor = opts.windowColor || 0x303030
     this.windowHeight = opts.windowHeight || 100
     this.padding = opts.padding || 15
-    this.closeBtnColor = opts.closeBtnColor || 'darkgoldenrod'
-    this.dialogSpeed = opts.dialogSpeed || 3
+    this.dialogSpeed = opts.dialogSpeed || 4
 
     // used for animating the text
     this.eventCounter = 0
@@ -109,41 +108,6 @@ class DialogService {
       dimensions.rectWidth,
       dimensions.rectHeight
     )
-    // this.createCloseModalButton()
-    // this.createCloseModalButtonBorder()
-  }
-
-  private createCloseModalButton() {
-    var self = this
-    this.closeBtn = this.scene.make.text({
-      x: this.getGameWidth() - this.padding - 14,
-      y: this.getGameHeight() - this.windowHeight - this.padding + 3,
-      text: '×',
-      style: {
-        font: 'bold 12px Arial',
-        fill: this.closeBtnColor
-      }
-    })
-    this.closeBtn.setInteractive()
-
-    this.closeBtn.on('pointerover', function() {
-      this.setTint(0xff0000)
-    })
-    this.closeBtn.on('pointerout', function() {
-      this.clearTint()
-    })
-    this.closeBtn.on('pointerdown', function() {
-      self.toggleWindow()
-    })
-
-    if (this.timedEvent) this.timedEvent.remove()
-    if (this.text) this.text.destroy()
-  }
-
-  private createCloseModalButtonBorder() {
-    var x = this.getGameWidth() - this.padding - 20
-    var y = this.getGameHeight() - this.windowHeight - this.padding
-    this.graphics.strokeRect(x, y, 20, 20)
   }
 
   toggleWindow() {
@@ -154,23 +118,21 @@ class DialogService {
   }
 
   // Sets the text for the dialog window
-  setText(text, animate) {
+  setText(text) {
     // Reset the dialog
     this.eventCounter = 0
     this.dialog = text.split('')
     if (this.timedEvent) this.timedEvent.remove()
 
-    var tempText = animate ? '' : text
-    this.setDialogText(tempText)
+    this.setDialogText('')
 
-    if (animate) {
-      this.timedEvent = this.scene.time.addEvent({
-        delay: 150 - this.dialogSpeed * 30,
-        callback: this.animateText,
-        callbackScope: this,
-        loop: true
-      })
-    }
+    this.animating = true
+    this.timedEvent = this.scene.time.addEvent({
+      delay: 150 - this.dialogSpeed * 30,
+      callback: this.animateText,
+      callbackScope: this,
+      loop: true
+    })
   }
 
   private animateText() {
@@ -178,11 +140,7 @@ class DialogService {
     this.text.setText(this.text.text + this.dialog[this.eventCounter - 1])
     if (this.eventCounter === this.dialog.length) {
       this.timedEvent.remove()
-      console.log('here')
-
-      // this.graphics.on('pointerdown', function() {
-      //   this.toggleWindow()
-      // })
+      this.animating = false
     }
   }
 

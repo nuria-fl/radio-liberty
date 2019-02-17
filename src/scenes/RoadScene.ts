@@ -34,14 +34,21 @@ class RoadScene extends Phaser.Scene {
   createDialogBox(text, cb = null) {
     this.playingCutscene = true
     this.dialog.init()
-    this.dialog.setText(text, true)
-    this.input.once('pointerup', () => {
-      this.dialog.toggleWindow()
-      this.playingCutscene = false
-      if (cb) {
-        cb()
-      }
-    })
+    this.dialog.setText(text)
+    const addListener = () => {
+      this.input.once('pointerup', () => {
+        if (!this.dialog.animating) {
+          this.dialog.toggleWindow()
+          this.playingCutscene = false
+          if (cb) {
+            cb()
+          }
+        } else {
+          addListener()
+        }
+      })
+    }
+    addListener()
   }
 
   initCutscene() {
