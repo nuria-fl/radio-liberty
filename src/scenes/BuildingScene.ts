@@ -1,14 +1,19 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
-import DialogService from '../utils/dialog'
+import { DialogService, createDialogBox } from '../utils/dialog'
+import {
+  loadSurvivor,
+  setupInput,
+  preloadBuggy,
+  preloadSurvivor
+} from '../utils/load'
+import { BaseScene } from './BaseScene'
 
-class BuildingScene extends Phaser.Scene {
+class BuildingScene extends BaseScene {
   survivor: Survivor
   floor: Physics.Arcade.Image
   engine: any
-  playingCutscene = true
-  dialog: DialogService
 
   look = {
     // buggy: {
@@ -17,24 +22,8 @@ class BuildingScene extends Phaser.Scene {
     // }
   }
 
-  createDialogBox(text, cb = null) {
-    this.playingCutscene = true
-    this.dialog.init()
-    this.dialog.setText(text)
-    const addListener = () => {
-      this.input.once('pointerup', () => {
-        if (!this.dialog.animating) {
-          this.dialog.toggleWindow()
-          this.playingCutscene = false
-          if (cb) {
-            cb()
-          }
-        } else {
-          addListener()
-        }
-      })
-    }
-    addListener()
+  createDialog(text, cb = null) {
+    createDialogBox(text, cb, this)
   }
 
   constructor() {
@@ -46,29 +35,20 @@ class BuildingScene extends Phaser.Scene {
   initCutscene() {
     this.initSurvivor()
 
-    this.createDialogBox(
+    this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
   }
 
   initSurvivor() {
-    this.survivor = new Survivor({
-      scene: this,
-      key: IMAGES.SURVIVOR.KEY,
-      x: 100,
-      y: 366
-    })
+    this.survivor = loadSurvivor(this, 500)
+
     this.physics.add.collider(this.floor, this.survivor)
     // this.physics.add.overlap(this.survivor, this.roadsign, () => {
     //   this.sys.events.emit(this.look.sign.key)
     // })
 
-    this.input.on('pointerdown', pointer => {
-      if (this.playingCutscene === false) {
-        this.survivor.setDestination(pointer.downX)
-        this.physics.moveTo(this.survivor, pointer.downX, this.survivor.y, 100)
-      }
-    })
+    setupInput(this.survivor, this)
   }
 
   // lookAtSign() {
@@ -98,23 +78,8 @@ class BuildingScene extends Phaser.Scene {
       IMAGES.ROADSIGN.KEY,
       `assets/images/${IMAGES.ROADSIGN.FILE}`
     )
-    this.load.spritesheet(
-      IMAGES.BUGGY.KEY,
-      `assets/images/${IMAGES.BUGGY.FILE}`,
-      {
-        frameWidth: 194,
-        frameHeight: 104
-      }
-    )
-
-    this.load.spritesheet(
-      IMAGES.SURVIVOR.KEY,
-      `assets/images/${IMAGES.SURVIVOR.FILE}`,
-      {
-        frameWidth: 37,
-        frameHeight: 88
-      }
-    )
+    preloadBuggy(this)
+    preloadSurvivor(this)
   }
 
   create() {

@@ -1,4 +1,4 @@
-import { SCENES, IMAGES } from '../constants'
+import { SCENES } from '../constants'
 import RoadScene from './RoadScene'
 
 class GameScene extends Phaser.Scene {

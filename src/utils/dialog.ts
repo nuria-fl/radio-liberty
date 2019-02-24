@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-class DialogService {
+export class DialogService {
   scene: Phaser.Scene
   timedEvent
   text
@@ -149,4 +149,23 @@ class DialogService {
     })
   }
 }
-export default DialogService
+
+export const createDialogBox = (text: string, cb: any, scene: any) => {
+  scene.playingCutscene = true
+  scene.dialog.init()
+  scene.dialog.setText(text)
+  const addListener = () => {
+    scene.input.once('pointerup', () => {
+      if (!scene.dialog.animating) {
+        scene.dialog.toggleWindow()
+        scene.playingCutscene = false
+        if (cb) {
+          cb()
+        }
+      } else {
+        addListener()
+      }
+    })
+  }
+  addListener()
+}

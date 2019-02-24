@@ -1,18 +1,23 @@
 import { Physics } from 'phaser'
-import DialogService from '../utils/dialog'
+import { BaseScene } from './BaseScene'
+import { DialogService, createDialogBox } from '../utils/dialog'
+import {
+  loadSurvivor,
+  setupInput,
+  preloadSurvivor,
+  preloadBuggy
+} from '../utils/load'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
-class RoadScene extends Phaser.Scene {
+class RoadScene extends BaseScene {
   survivor: Survivor
   buggy: Buggy
   floor: Physics.Arcade.Image
   roadsign: Physics.Arcade.Image
   engine: any
-  playingCutscene = true
-  dialog: DialogService
 
   look = {
     sign: {
@@ -31,24 +36,8 @@ class RoadScene extends Phaser.Scene {
     })
   }
 
-  createDialogBox(text, cb = null) {
-    this.playingCutscene = true
-    this.dialog.init()
-    this.dialog.setText(text)
-    const addListener = () => {
-      this.input.once('pointerup', () => {
-        if (!this.dialog.animating) {
-          this.dialog.toggleWindow()
-          this.playingCutscene = false
-          if (cb) {
-            cb()
-          }
-        } else {
-          addListener()
-        }
-      })
-    }
-    addListener()
+  createDialog(text, cb = null) {
+    createDialogBox(text, cb, this)
   }
 
   initCutscene() {
@@ -80,27 +69,14 @@ class RoadScene extends Phaser.Scene {
           this.initEngine()
           this.initSurvivor()
         }
-        this.createDialogBox('What the…?', finishCutscene)
+        this.createDialog('What the…?', finishCutscene)
       }
     })
   }
 
   initSurvivor() {
-    this.survivor = new Survivor({
-      scene: this,
-      key: IMAGES.SURVIVOR.KEY,
-      x: 100,
-      y: 346
-    })
-    this.anims.create({
-      key: 'walk',
-      frames: this.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
-        start: 0,
-        end: 3
-      }),
-      frameRate: 7,
-      repeat: -1
-    })
+    this.survivor = loadSurvivor(this)
+
     this.physics.add.collider(this.floor, this.survivor)
     this.physics.add.overlap(this.survivor, this.roadsign, () => {
       this.sys.events.emit(this.look.sign.key)
@@ -111,12 +87,7 @@ class RoadScene extends Phaser.Scene {
       this.sys.events.emit(this.look.buggy.key)
     })
 
-    this.input.on('pointerdown', pointer => {
-      if (this.playingCutscene === false) {
-        this.survivor.setDestination(pointer.downX)
-        this.physics.moveTo(this.survivor, pointer.downX, this.survivor.y, 100)
-      }
-    })
+    setupInput(this.survivor, this)
   }
 
   initEngine() {
@@ -127,7 +98,7 @@ class RoadScene extends Phaser.Scene {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
-      this.createDialogBox('It reads something like… P A … S')
+      this.createDialog('It reads something like… P A … S')
 
       this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
     }
@@ -141,15 +112,15 @@ class RoadScene extends Phaser.Scene {
     ]
 
     const startFinishCutscene = () => {
-      this.createDialogBox(speech[0], dialog2)
+      this.createDialog(speech[0], dialog2)
     }
 
     const dialog2 = () => {
-      this.createDialogBox(speech[1], dialog3)
+      this.createDialog(speech[1], dialog3)
     }
 
     const dialog3 = () => {
-      this.createDialogBox(speech[2], finishCutscene)
+      this.createDialog(speech[2], finishCutscene)
     }
 
     const finishCutscene = () => {
@@ -195,24 +166,9 @@ class RoadScene extends Phaser.Scene {
       IMAGES.ROADSIGN.KEY,
       `assets/images/${IMAGES.ROADSIGN.FILE}`
     )
-    this.load.audio(AUDIO.WALK.KEY, `assets/sound/${AUDIO.WALK.FILE}`)
-    this.load.spritesheet(
-      IMAGES.BUGGY.KEY,
-      `assets/images/${IMAGES.BUGGY.FILE}`,
-      {
-        frameWidth: 208,
-        frameHeight: 108
-      }
-    )
 
-    this.load.spritesheet(
-      IMAGES.SURVIVOR.KEY,
-      `assets/images/${IMAGES.SURVIVOR.FILE}`,
-      {
-        frameWidth: 40,
-        frameHeight: 120
-      }
-    )
+    preloadBuggy(this)
+    preloadSurvivor(this)
   }
 
   create() {
