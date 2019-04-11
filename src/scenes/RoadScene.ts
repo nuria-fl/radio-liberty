@@ -51,7 +51,9 @@ class RoadScene extends BaseScene {
 
     this.buggy.setInteractive()
     this.buggy.on('pointerup', () => {
-      this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
+      }
     })
 
     this.buggy.play('buggy-driving')
@@ -188,7 +190,9 @@ class RoadScene extends BaseScene {
       .setInteractive()
 
     this.roadsign.on('pointerup', () => {
-      this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+      }
     })
 
     this.initCutscene()
