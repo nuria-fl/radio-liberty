@@ -1,21 +1,10 @@
-import 'phaser'
-import LoadScene from './scenes/LoadScene'
+import Vue from 'vue';
+import App from './App.vue';
+import store from './store';
 
-const config = {
-  type: Phaser.WEBGL,
-  pixelArt: true,
-  roundPixels: true,
-  parent: 'content',
-  width: 830,
-  height: 520,
-  physics: {
-    default: 'arcade',
-    arcade: {
-      gravity: { y: 800 },
-      debug: false
-    }
-  },
-  scene: [LoadScene]
-}
+Vue.config.productionTip = false;
 
-const game = new Phaser.Game(config)
+new Vue({
+  store,
+  render: (h) => h(App),
+}).$mount('#app');
