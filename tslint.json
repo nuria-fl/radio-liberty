@@ -10,6 +10,8 @@
   },
   "rules": {
     "quotemark": [true, "single"],
+    "semicolon": [true, "never"],
+    "trailing-comma": [true, {"multiline": "never", "singleline": "never"}],
     "indent": [true, "spaces", 2],
     "interface-name": false,
     "ordered-imports": false,

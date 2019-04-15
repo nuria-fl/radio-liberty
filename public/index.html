@@ -6,6 +6,19 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title>phaser-game</title>
+    <style>
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .game {
+        position: relative;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -14,7 +27,7 @@
         enabled. Please enable it to continue.</strong
       >
     </noscript>
-    <div>
+    <div class="game">
       <div id="app"></div>
       <div id="content"></div>
     </div>

@@ -1,23 +1,25 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
+  <div class="game-overlay">
+    <Stats/>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from "vue";
+import Vue from 'vue'
+import Stats from '@/components/Stats.vue'
+
 export default Vue.extend({
-  name: "app"
-});
+  components: {
+    Stats
+  }
+})
 </script>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.game-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: monospace;
 }
 </style>
