@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import eventBus from '@/utils/eventBus'
 
 export default {
@@ -40,13 +40,13 @@ export default {
     document.removeEventListener('gameStatusChange', this.handleGameStatusChange)
   },
   computed: {
-    ...mapState(['stats', 'gameOver', 'isSick']),
+    ...mapState(['stats', 'gameOver', 'paused', 'isSick']),
     isActive () {
-      return this.gameOver === false
+      return this.gameOver === false && this.paused === false
     }
   },
   methods: {
-    ...mapMutations(['decrease']),
+    ...mapActions(['decrease']),
     startGameLoop () {
       this.decreaseStats()
     },
