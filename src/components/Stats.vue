@@ -21,7 +21,7 @@ import { mapState, mapActions } from 'vuex'
 import eventBus from '@/utils/eventBus'
 
 export default {
-  data () {
+  data() {
     return {
       loop: null,
       icons: {
@@ -31,30 +31,33 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     document.addEventListener('gameStatusChange', this.handleGameStatusChange)
     this.startGameLoop()
   },
-  beforeDestroy () {
+  beforeDestroy() {
     this.resetGameLoop()
-    document.removeEventListener('gameStatusChange', this.handleGameStatusChange)
+    document.removeEventListener(
+      'gameStatusChange',
+      this.handleGameStatusChange
+    )
   },
   computed: {
     ...mapState(['stats', 'gameOver', 'paused', 'isSick']),
-    isActive () {
+    isActive() {
       return this.gameOver === false && this.paused === false
     }
   },
   methods: {
     ...mapActions(['decrease']),
-    startGameLoop () {
+    startGameLoop() {
       this.decreaseStats()
     },
-    resetGameLoop () {
+    resetGameLoop() {
       clearTimeout(this.loop)
       this.loop = null
     },
-    handleGameStatusChange ({isPaused: detail}) {
+    handleGameStatusChange({ isPaused: detail }) {
       if (isPaused) {
         this.resetGameLoop()
       } else {

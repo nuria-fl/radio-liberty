@@ -77,6 +77,8 @@ class BuildingScene extends BaseScene {
   }
 
   public create() {
+    this.listenForGameOver()
+
     this.dialog = new DialogService(this)
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
