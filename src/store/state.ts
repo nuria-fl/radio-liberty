@@ -1,5 +1,5 @@
 import { MAX } from '@/data/constants'
-
+import items from '@/data/items'
 
 export default {
   gameOver: false,
@@ -10,5 +10,6 @@ export default {
     water: MAX,
     food: MAX
   },
-  inventory: []
+  inventory: [],
+  existingItems: items
 }
