@@ -13,13 +13,13 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  survivor: Survivor
-  buggy: Buggy
-  floor: Physics.Arcade.Image
-  roadsign: Physics.Arcade.Image
-  engine: any
+  public survivor: Survivor
+  public buggy: Buggy
+  public floor: Physics.Arcade.Image
+  public roadsign: Physics.Arcade.Image
+  public engine: any
 
-  look = {
+  public look = {
     sign: {
       key: 'lookSign',
       cb: this.lookAtSign
@@ -36,11 +36,11 @@ class RoadScene extends BaseScene {
     })
   }
 
-  createDialog(text, cb = null) {
+  public createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
   }
 
-  initCutscene() {
+  public initCutscene() {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
@@ -76,7 +76,7 @@ class RoadScene extends BaseScene {
     })
   }
 
-  initSurvivor() {
+  public initSurvivor() {
     this.survivor = loadSurvivor(this)
 
     this.physics.add.collider(this.floor, this.survivor)
@@ -92,11 +92,11 @@ class RoadScene extends BaseScene {
     setupInput(this.survivor, this)
   }
 
-  initEngine() {
+  public initEngine() {
     // should create an invisible shape on top of the engine area of the buggy
   }
 
-  lookAtSign() {
+  public lookAtSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -106,11 +106,11 @@ class RoadScene extends BaseScene {
     }
   }
 
-  lookAtBuggy() {
+  public lookAtBuggy() {
     const speech = [
-      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
-      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
-      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
+      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
+      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
     ]
 
     const startFinishCutscene = () => {
@@ -157,23 +157,19 @@ class RoadScene extends BaseScene {
     }
   }
 
-  preload() {
-    this.load.image(
-      IMAGES.ROADSIGN.KEY,
-      `assets/images/${IMAGES.ROADSIGN.FILE}`
-    )
-    this.load.image(IMAGES.ROAD.KEY, `assets/images/${IMAGES.ROAD.FILE}`)
-    this.load.image(IMAGES.FLOOR.KEY, `assets/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(
-      IMAGES.ROADSIGN.KEY,
-      `assets/images/${IMAGES.ROADSIGN.FILE}`
-    )
+  public preload() {
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
 
     preloadBuggy(this)
     preloadSurvivor(this)
   }
 
-  create() {
+  public create() {
+    this.listenForGameOver()
+
     this.dialog = new DialogService(this)
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
@@ -198,7 +194,7 @@ class RoadScene extends BaseScene {
     this.initCutscene()
   }
 
-  update() {
+  public update() {
     if (!this.playingCutscene) {
       this.survivor.update()
     }

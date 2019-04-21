@@ -1,7 +1,7 @@
 import { IMAGES } from '../constants'
 
 export default class Buggy extends Phaser.GameObjects.Sprite {
-  body: Phaser.Physics.Arcade.Body
+  public body: Phaser.Physics.Arcade.Body
 
   constructor({
     scene,

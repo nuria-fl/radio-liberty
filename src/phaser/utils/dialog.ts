@@ -1,10 +1,10 @@
 import Phaser from 'phaser'
 
 export class DialogService {
-  scene: Phaser.Scene
-  timedEvent
-  text
-  config = {
+  public scene: Phaser.Scene
+  public timedEvent
+  public text
+  public config = {
     borderAlpha: 1,
     borderColor: 0x101010,
     borderThickness: 3,
@@ -14,18 +14,18 @@ export class DialogService {
     padding: 15,
     dialogSpeed: 4
   }
-  eventCounter
-  visible
-  dialog
-  graphics
-  animating = false
+  public eventCounter
+  public visible
+  public dialog
+  public graphics
+  public animating = false
 
   constructor(scene) {
     this.scene = scene
   }
 
   // Initialize the dialog modal
-  init(opts: any = {}) {
+  public init(opts: any = {}) {
     // set properties from opts object or use defaults
     Object.assign(this.config, opts)
 
@@ -36,6 +36,30 @@ export class DialogService {
 
     // Create the dialog window
     this.createWindow()
+  }
+
+  public toggleWindow() {
+    this.visible = !this.visible
+    if (this.text) { this.text.visible = this.visible }
+    if (this.graphics) { this.graphics.visible = this.visible }
+  }
+
+  // Sets the text for the dialog window
+  public setText(text) {
+    // Reset the dialog
+    this.eventCounter = 0
+    this.dialog = text.split('')
+    if (this.timedEvent) { this.timedEvent.remove() }
+
+    this.setDialogText('')
+
+    this.animating = true
+    this.timedEvent = this.scene.time.addEvent({
+      delay: 150 - this.config.dialogSpeed * 30,
+      callback: this.animateText,
+      callbackScope: this,
+      loop: true
+    })
   }
 
   // Gets the width of the game (based on the scene)
@@ -50,10 +74,10 @@ export class DialogService {
 
   // Calculates where to place the dialog window based on the game size
   private calculateWindowDimensions(width, height) {
-    var x = this.config.padding
-    var y = height - this.config.windowHeight - this.config.padding
-    var rectWidth = width - this.config.padding * 2
-    var rectHeight = this.config.windowHeight
+    const x = this.config.padding
+    const y = height - this.config.windowHeight - this.config.padding
+    const rectWidth = width - this.config.padding * 2
+    const rectHeight = this.config.windowHeight
     return {
       x,
       y,
@@ -78,9 +102,9 @@ export class DialogService {
   }
 
   private createWindow() {
-    var gameHeight = this.getGameHeight()
-    var gameWidth = this.getGameWidth()
-    var dimensions = this.calculateWindowDimensions(gameWidth, gameHeight)
+    const gameHeight = this.getGameHeight()
+    const gameWidth = this.getGameWidth()
+    const dimensions = this.calculateWindowDimensions(gameWidth, gameHeight)
     this.graphics = this.scene.add.graphics()
 
     this.createOuterWindow(
@@ -97,30 +121,6 @@ export class DialogService {
     )
   }
 
-  toggleWindow() {
-    this.visible = !this.visible
-    if (this.text) this.text.visible = this.visible
-    if (this.graphics) this.graphics.visible = this.visible
-  }
-
-  // Sets the text for the dialog window
-  setText(text) {
-    // Reset the dialog
-    this.eventCounter = 0
-    this.dialog = text.split('')
-    if (this.timedEvent) this.timedEvent.remove()
-
-    this.setDialogText('')
-
-    this.animating = true
-    this.timedEvent = this.scene.time.addEvent({
-      delay: 150 - this.config.dialogSpeed * 30,
-      callback: this.animateText,
-      callbackScope: this,
-      loop: true
-    })
-  }
-
   private animateText() {
     this.eventCounter++
     this.text.setText(this.text.text + this.dialog[this.eventCounter - 1])
@@ -133,10 +133,10 @@ export class DialogService {
   // Calcuate the position of the text in the dialog window
   private setDialogText(text) {
     // Reset the dialog
-    if (this.text) this.text.destroy()
+    if (this.text) { this.text.destroy() }
 
-    var x = this.config.padding + 10
-    var y =
+    const x = this.config.padding + 10
+    const y =
       this.getGameHeight() - this.config.windowHeight - this.config.padding + 10
 
     this.text = this.scene.make.text({

@@ -5,24 +5,20 @@ import { IMAGES, AUDIO } from '../constants'
 export const preloadSurvivor = (scene: BaseScene) => {
   scene.load.spritesheet(
     IMAGES.SURVIVOR.KEY,
-    `assets/images/${IMAGES.SURVIVOR.FILE}`,
+    `/images/${IMAGES.SURVIVOR.FILE}`,
     {
       frameWidth: 40,
       frameHeight: 120
     }
   )
-  scene.load.audio(AUDIO.WALK.KEY, `assets/sound/${AUDIO.WALK.FILE}`)
+  scene.load.audio(AUDIO.WALK.KEY, `/sound/${AUDIO.WALK.FILE}`)
 }
 
 export const preloadBuggy = (scene: BaseScene) => {
-  scene.load.spritesheet(
-    IMAGES.BUGGY.KEY,
-    `assets/images/${IMAGES.BUGGY.FILE}`,
-    {
-      frameWidth: 208,
-      frameHeight: 108
-    }
-  )
+  scene.load.spritesheet(IMAGES.BUGGY.KEY, `/images/${IMAGES.BUGGY.FILE}`, {
+    frameWidth: 208,
+    frameHeight: 108
+  })
 }
 
 export const loadSurvivor = (scene: BaseScene, x = 100, y = 352) => {
@@ -45,7 +41,7 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 352) => {
 }
 
 export const setupInput = (character: Survivor, scene: BaseScene) => {
-  scene.input.on('pointerdown', pointer => {
+  scene.input.on('pointerdown', (pointer) => {
     if (scene.playingCutscene === false) {
       character.setDestination(pointer.downX)
       scene.physics.moveTo(character, pointer.downX, character.y, 100)

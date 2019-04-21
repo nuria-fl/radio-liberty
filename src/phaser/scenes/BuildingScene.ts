@@ -11,19 +11,15 @@ import {
 import { BaseScene } from './BaseScene'
 
 class BuildingScene extends BaseScene {
-  survivor: Survivor
-  floor: Physics.Arcade.Image
-  engine: any
+  public survivor: Survivor
+  public floor: Physics.Arcade.Image
+  public engine: any
 
-  look = {
+  public look = {
     // buggy: {
     //   key: 'lookBuggy',
     //   cb: this.lookAtBuggy
     // }
-  }
-
-  createDialog(text, cb = null) {
-    createDialogBox(text, cb, this)
   }
 
   constructor() {
@@ -32,15 +28,19 @@ class BuildingScene extends BaseScene {
     })
   }
 
-  initCutscene() {
+  public createDialog(text, cb = null) {
+    createDialogBox(text, cb, this)
+  }
+
+  public initCutscene() {
     this.initSurvivor()
 
     this.createDialog(
-      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
+      'Hm, doesn\'t look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I\'m running low'
     )
   }
 
-  initSurvivor() {
+  public initSurvivor() {
     this.survivor = loadSurvivor(this, 500)
 
     this.physics.add.collider(this.floor, this.survivor)
@@ -67,22 +67,18 @@ class BuildingScene extends BaseScene {
   //   this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
   // }
 
-  preload() {
-    this.load.image(
-      IMAGES.ROADSIGN.KEY,
-      `assets/images/${IMAGES.ROADSIGN.FILE}`
-    )
-    this.load.image(IMAGES.ROAD.KEY, `assets/images/${IMAGES.ROAD.FILE}`)
-    this.load.image(IMAGES.FLOOR.KEY, `assets/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(
-      IMAGES.ROADSIGN.KEY,
-      `assets/images/${IMAGES.ROADSIGN.FILE}`
-    )
+  public preload() {
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
   }
 
-  create() {
+  public create() {
+    this.listenForGameOver()
+
     this.dialog = new DialogService(this)
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
@@ -96,7 +92,7 @@ class BuildingScene extends BaseScene {
     this.initCutscene()
   }
 
-  update() {
+  public update() {
     if (!this.playingCutscene) {
       this.survivor.update()
     }
