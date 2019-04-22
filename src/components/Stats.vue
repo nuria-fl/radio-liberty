@@ -64,7 +64,7 @@ export default {
         this.startGameLoop()
       }
     },
-    decreaseStats () {
+    decreaseStats() {
       const decreaseInterval = 12 * 1000
       this.loop = setTimeout(() => {
         if (this.isActive) {
@@ -84,6 +84,9 @@ export default {
 
 <style lang="scss">
   .Stats {
+    position: absolute;
+    top: 0;
+    left: 0;
     display: flex;
     margin: 0;
     padding: 0;

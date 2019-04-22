@@ -1,4 +1,4 @@
-# phaser-game
+# Radio Liberty
 
 An adventure game with a pinch of survival mechanics
 
