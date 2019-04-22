@@ -4,6 +4,7 @@ import items from '@/data/items'
 export default {
   gameOver: false,
   paused: false,
+  enabled: false,
   isSick: false,
   stats: {
     health: MAX,

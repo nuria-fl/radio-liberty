@@ -1,13 +1,13 @@
 <template>
-  <div class="game-overlay">
+  <div class="game-overlay" v-if="!gameOver">
     <Stats/>
-    <Inventory />
+    <Inventory v-show="enabled" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue'
-import { mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from 'vuex'
 import Stats from '@/components/Stats.vue'
 import Inventory from '@/components/Inventory.vue'
 
@@ -16,11 +16,21 @@ export default Vue.extend({
     Stats,
     Inventory
   },
-  mounted() {
-    this.initInventory()
+  computed: {
+    ...mapState(['gameOver', 'enabled'])
   },
   methods: {
+    ...mapMutations(['enable', 'disable']),
     ...mapActions(['initInventory'])
+  },
+  mounted() {
+    this.initInventory()
+    document.addEventListener('playCutscene', this.disable)
+    document.addEventListener('stopCutscene', this.enable)
+  },
+  beforeDestroy() {
+    document.removeEventListener('playCutscene', this.disable)
+    document.removeEventListener('stopCutscene', this.enable)
   }
 })
 </script>

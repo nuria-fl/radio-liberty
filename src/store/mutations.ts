@@ -1,8 +1,8 @@
 import utils from '@/utils/utils'
-import { MAX, MAXINVENTORY} from '@/data/constants'
+import { MAX, MAXINVENTORY } from '@/data/constants'
 
 const findIndexById = (uid, collection) => {
-  return collection.findIndex((item) => item.uid === uid)
+  return collection.findIndex(item => item.uid === uid)
 }
 
 export default {
@@ -15,7 +15,13 @@ export default {
   playGame(state) {
     state.paused = false
   },
-  setStat(state, {stat, amount}) {
+  enable(state) {
+    state.enabled = true
+  },
+  disable(state) {
+    state.enabled = false
+  },
+  setStat(state, { stat, amount }) {
     state.stats[stat] = amount
   },
   addInventory(state, item) {

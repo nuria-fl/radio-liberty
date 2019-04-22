@@ -40,8 +40,12 @@ export class DialogService {
 
   public toggleWindow() {
     this.visible = !this.visible
-    if (this.text) { this.text.visible = this.visible }
-    if (this.graphics) { this.graphics.visible = this.visible }
+    if (this.text) {
+      this.text.visible = this.visible
+    }
+    if (this.graphics) {
+      this.graphics.visible = this.visible
+    }
   }
 
   // Sets the text for the dialog window
@@ -49,7 +53,9 @@ export class DialogService {
     // Reset the dialog
     this.eventCounter = 0
     this.dialog = text.split('')
-    if (this.timedEvent) { this.timedEvent.remove() }
+    if (this.timedEvent) {
+      this.timedEvent.remove()
+    }
 
     this.setDialogText('')
 
@@ -133,7 +139,9 @@ export class DialogService {
   // Calcuate the position of the text in the dialog window
   private setDialogText(text) {
     // Reset the dialog
-    if (this.text) { this.text.destroy() }
+    if (this.text) {
+      this.text.destroy()
+    }
 
     const x = this.config.padding + 10
     const y =
@@ -152,6 +160,7 @@ export class DialogService {
 
 export const createDialogBox = (text: string, cb: any, scene: any) => {
   scene.playingCutscene = true
+  document.dispatchEvent(new Event('playCutscene'))
   scene.dialog.init()
   scene.dialog.setText(text)
   const addListener = () => {
@@ -159,6 +168,7 @@ export const createDialogBox = (text: string, cb: any, scene: any) => {
       if (!scene.dialog.animating) {
         scene.dialog.toggleWindow()
         scene.playingCutscene = false
+        document.dispatchEvent(new Event('stopCutscene'))
         if (cb) {
           cb()
         }
