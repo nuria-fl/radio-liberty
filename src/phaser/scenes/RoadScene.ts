@@ -7,6 +7,7 @@ import {
   preloadSurvivor,
   preloadBuggy
 } from '../utils/load'
+import { pickUp } from '../utils/inventory'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
@@ -17,6 +18,7 @@ class RoadScene extends BaseScene {
   public buggy: Buggy
   public floor: Physics.Arcade.Image
   public roadsign: Physics.Arcade.Image
+  public pinecone: Physics.Arcade.Image
   public engine: any
 
   public look = {
@@ -27,6 +29,10 @@ class RoadScene extends BaseScene {
     buggy: {
       key: 'lookBuggy',
       cb: this.lookAtBuggy
+    },
+    pinecone: {
+      key: 'lookPinecone',
+      cb: this.lookAtPinecone
     }
   }
 
@@ -84,6 +90,10 @@ class RoadScene extends BaseScene {
       this.sys.events.emit(this.look.sign.key)
     })
 
+    this.physics.add.overlap(this.survivor, this.pinecone, () => {
+      this.sys.events.emit(this.look.pinecone.key)
+    })
+
     // this should be with the buggy engine instead
     this.physics.add.overlap(this.survivor, this.buggy, () => {
       this.sys.events.emit(this.look.buggy.key)
@@ -108,9 +118,9 @@ class RoadScene extends BaseScene {
 
   public lookAtBuggy() {
     const speech = [
-      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
-      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
-      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
+      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
     ]
 
     const startFinishCutscene = () => {
@@ -157,11 +167,33 @@ class RoadScene extends BaseScene {
     }
   }
 
+  public lookAtPinecone() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog(
+        'Oh, a pine cone! I can get some pine nuts out of that. Will need something to crack open the shell though...'
+      )
+
+      pickUp('pinecone')
+
+      this.pinecone.destroy()
+
+      this.sys.events.off(
+        this.look.pinecone.key,
+        this.look.pinecone.cb,
+        this,
+        false
+      )
+    }
+  }
+
   public preload() {
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
 
     preloadBuggy(this)
     preloadSurvivor(this)
@@ -188,6 +220,17 @@ class RoadScene extends BaseScene {
     this.roadsign.on('pointerup', () => {
       if (!this.playingCutscene) {
         this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+      }
+    })
+
+    this.pinecone = this.physics.add
+      .staticImage(550, 420, IMAGES.PINECONE.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.pinecone.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
       }
     })
 

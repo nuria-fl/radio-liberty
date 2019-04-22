@@ -18,9 +18,12 @@ export default {
     const newAmount = state.stats[stat] - amount
     commit('setStat', { stat, amount: newAmount > MAX ? MAX : newAmount })
   },
-  initInventory({ state, commit }) {
-    const water = state.existingItems.find(item => item.id === 'water-clean')
+  initInventory({ dispatch }) {
+    dispatch('addToInventory', 'water-clean')
+  },
+  addToInventory({ state, commit }, itemId: string) {
+    const item = state.existingItems.find(item => item.id === itemId)
 
-    commit('addInventory', water)
+    commit('addInventory', item)
   }
 }

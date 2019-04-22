@@ -6,6 +6,7 @@
 </template>
 
 <script lang="ts">
+import { mapActions } from 'vuex'
 import Stats from '@/components/Stats.vue'
 import InventoryOverlay from '@/components/InventoryOverlay.vue'
 
@@ -19,12 +20,22 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addToInventory']),
     openInventory() {
       this.showInventory = true
     },
     closeInventory() {
       this.showInventory = false
+    },
+    handlePickUp(ev) {
+      this.addToInventory(ev.detail)
     }
+  },
+  mounted() {
+    document.addEventListener('pickUp', this.handlePickUp)
+  },
+  beforeDestroy() {
+    document.removeEventListener('pickUp', this.handlePickUp)
   }
 }
 </script>
