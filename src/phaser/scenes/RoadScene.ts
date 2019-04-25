@@ -42,11 +42,97 @@ class RoadScene extends BaseScene {
     })
   }
 
-  public createDialog(text, cb = null) {
+  public preload() {
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
+
+    preloadBuggy(this)
+    preloadSurvivor(this)
+  }
+
+  public create() {
+    this.initScene()
+
+    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
+
+    this.floor = this.physics.add
+      .staticImage(0, 412, IMAGES.FLOOR.KEY)
+      .setOrigin(0, 0)
+      .refreshBody()
+
+    this.roadsign = this.physics.add
+      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.roadsign.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+      }
+    })
+
+    this.pinecone = this.physics.add
+      .staticImage(550, 420, IMAGES.PINECONE.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.pinecone.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
+      }
+    })
+
+    this.initCutscene()
+  }
+
+  public update() {
+    if (!this.playingCutscene) {
+      this.survivor.update()
+    }
+  }
+
+  public activateHovers() {
+    const baseText = this.useText.text
+
+    const setText = (text: string) => {
+      if (this.useText.active) {
+        this.useText.setText(text)
+      }
+    }
+
+    // TO DO store event listeners
+
+    this.roadsign.on('pointerover', () => {
+      setText(baseText + ' Road sign')
+    })
+    this.roadsign.on('pointerout', () => {
+      setText(baseText)
+    })
+
+    if (this.pinecone) {
+      this.pinecone.on('pointerover', () => {
+        setText(baseText + ' Pine cone')
+      })
+      this.pinecone.on('pointerout', () => {
+        setText(baseText)
+      })
+    }
+
+    this.input.on('pointerdown', () => {
+      // TO DO: remove event listeners
+      this.useText.destroy()
+    })
+  }
+
+  private createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
   }
 
-  public initCutscene() {
+  private initCutscene() {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
@@ -82,7 +168,7 @@ class RoadScene extends BaseScene {
     })
   }
 
-  public initSurvivor() {
+  private initSurvivor() {
     this.survivor = loadSurvivor(this)
 
     this.physics.add.collider(this.floor, this.survivor)
@@ -102,11 +188,11 @@ class RoadScene extends BaseScene {
     setupInput(this.survivor, this)
   }
 
-  public initEngine() {
+  private initEngine() {
     // should create an invisible shape on top of the engine area of the buggy
   }
 
-  public lookAtSign() {
+  private lookAtSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -116,7 +202,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public lookAtBuggy() {
+  private lookAtBuggy() {
     const speech = [
       "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
       "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
@@ -167,7 +253,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public lookAtPinecone() {
+  private lookAtPinecone() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -185,61 +271,6 @@ class RoadScene extends BaseScene {
         this,
         false
       )
-    }
-  }
-
-  public preload() {
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
-    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
-
-    preloadBuggy(this)
-    preloadSurvivor(this)
-  }
-
-  public create() {
-    this.listenForGameOver()
-
-    this.dialog = new DialogService(this)
-
-    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
-    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
-
-    this.floor = this.physics.add
-      .staticImage(0, 412, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
-
-    this.roadsign = this.physics.add
-      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
-      .refreshBody()
-      .setInteractive()
-
-    this.roadsign.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
-      }
-    })
-
-    this.pinecone = this.physics.add
-      .staticImage(550, 420, IMAGES.PINECONE.KEY)
-      .refreshBody()
-      .setInteractive()
-
-    this.pinecone.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
-      }
-    })
-
-    this.initCutscene()
-  }
-
-  public update() {
-    if (!this.playingCutscene) {
-      this.survivor.update()
     }
   }
 }

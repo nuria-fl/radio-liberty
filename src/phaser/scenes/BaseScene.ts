@@ -3,11 +3,29 @@ import { DialogService } from '../utils/dialog'
 export class BaseScene extends Phaser.Scene {
   public playingCutscene = true
   public dialog: DialogService
+  public useText: Phaser.GameObjects.Text
 
-  public listenForGameOver() {
-    document.addEventListener('gameOver', () => {
-      this.playingCutscene = true
-      this.add.text(100, 100, 'Game over')
-    })
+  public initScene() {
+    this.addListeners()
+    this.dialog = new DialogService(this)
+  }
+
+  public activateHovers() {
+    throw new Error('Class should implement activateHovers method')
+  }
+
+  private addListeners() {
+    document.addEventListener('gameOver', this.handleGameOver.bind(this))
+    document.addEventListener('useItem', this.handleUseItem.bind(this))
+  }
+
+  private handleGameOver() {
+    this.playingCutscene = true
+    this.add.text(100, 100, 'Game over')
+  }
+
+  private handleUseItem(ev: CustomEvent) {
+    this.useText = this.add.text(100, 500, `Use ${ev.detail.name} with`)
+    this.activateHovers()
   }
 }
