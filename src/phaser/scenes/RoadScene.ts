@@ -14,14 +14,14 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  public survivor: Survivor
-  public buggy: Buggy
-  public floor: Physics.Arcade.Image
-  public roadsign: Physics.Arcade.Image
-  public pinecone: Physics.Arcade.Image
-  public engine: any
+  private survivor: Survivor
+  private buggy: Buggy
+  private floor: Physics.Arcade.Image
+  private roadsign: Physics.Arcade.Image
+  private pinecone: Physics.Arcade.Image
+  private engine: any
 
-  public look = {
+  private look = {
     sign: {
       key: 'lookSign',
       cb: this.lookAtSign
@@ -33,6 +33,25 @@ class RoadScene extends BaseScene {
     pinecone: {
       key: 'lookPinecone',
       cb: this.lookAtPinecone
+    }
+  }
+
+  private use = {
+    roadsign: {
+      setText: null,
+      name: 'Road sign'
+    },
+    buggy: {
+      setText: null,
+      name: 'Buggy'
+    },
+    pinecone: {
+      setText: null,
+      name: 'Pine cone'
+    },
+    survivor: {
+      setText: null,
+      name: 'Survivor'
     }
   }
 
@@ -96,7 +115,10 @@ class RoadScene extends BaseScene {
   }
 
   public activateHovers() {
+    this.playingCutscene = true
     const baseText = this.useText.text
+
+    this.survivor.setInteractive()
 
     const setText = (text: string) => {
       if (this.useText.active) {
@@ -104,27 +126,26 @@ class RoadScene extends BaseScene {
       }
     }
 
-    // TO DO store event listeners
+    const reset = () => setText(baseText)
 
-    this.roadsign.on('pointerover', () => {
-      setText(baseText + ' Road sign')
-    })
-    this.roadsign.on('pointerout', () => {
-      setText(baseText)
-    })
+    Object.keys(this.use).forEach(key => {
+      this.use[key].setText = () => {
+        setText(`${baseText} ${this.use[key].name}`)
+      }
 
-    if (this.pinecone) {
-      this.pinecone.on('pointerover', () => {
-        setText(baseText + ' Pine cone')
-      })
-      this.pinecone.on('pointerout', () => {
-        setText(baseText)
-      })
-    }
+      this[key].on('pointerover', this.use[key].setText)
+      this[key].on('pointerout', reset)
+    })
 
     this.input.on('pointerdown', () => {
-      // TO DO: remove event listeners
+      Object.keys(this.use).forEach(key => {
+        this[key].off('pointerover', this.use[key].setText)
+        this[key].off('pointerout', reset)
+        this.use[key].setText = null
+      })
+      this.survivor.removeInteractive()
       this.useText.destroy()
+      this.playingCutscene = false
     })
   }
 
