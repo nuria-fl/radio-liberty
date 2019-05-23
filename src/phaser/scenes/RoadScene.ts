@@ -7,6 +7,7 @@ import {
   preloadSurvivor,
   preloadBuggy
 } from '../utils/load'
+import { randomLine } from '../default-lines'
 import { pickUp } from '../utils/inventory'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
@@ -39,19 +40,46 @@ class RoadScene extends BaseScene {
   private use = {
     roadsign: {
       setText: null,
-      name: 'Road sign'
+      name: 'Road sign',
+      use: () => {
+        this.interactingWithObject = true
+        console.log('here')
+
+        return this.createDialog(randomLine())
+      }
     },
     buggy: {
       setText: null,
-      name: 'Buggy'
+      name: 'Buggy',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
     },
     pinecone: {
       setText: null,
-      name: 'Pine cone'
+      name: 'Pine cone',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
     },
     survivor: {
       setText: null,
-      name: 'Survivor'
+      name: 'Survivor',
+      use: () => {
+        this.interactingWithObject = true
+        // make currentObject an object with type, so it's easier if it's consumable
+        if (this.currentObjectId === 'water-clean') {
+          // should drink water
+          return
+        }
+
+        if (this.currentObjectId === 'taser') {
+          return this.createDialog('NO WAY!!')
+        }
+        return this.createDialog(randomLine())
+      }
     }
   }
 
@@ -114,7 +142,10 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public activateHovers() {
+  public activateHovers(currentObjectId) {
+    this.currentObjectId = currentObjectId
+    this.interactingWithObject = false
+
     this.playingCutscene = true
     const baseText = this.useText.text
 
@@ -134,18 +165,24 @@ class RoadScene extends BaseScene {
       }
 
       this[key].on('pointerover', this.use[key].setText)
+      this[key].on('pointerdown', this.use[key].use)
       this[key].on('pointerout', reset)
     })
 
     this.input.on('pointerdown', () => {
       Object.keys(this.use).forEach(key => {
         this[key].off('pointerover', this.use[key].setText)
+        this[key].off('pointerdown', this.use[key].use)
         this[key].off('pointerout', reset)
         this.use[key].setText = null
       })
+      if (!this.interactingWithObject) {
+        this.playingCutscene = false
+      }
+
       this.survivor.removeInteractive()
       this.useText.destroy()
-      this.playingCutscene = false
+      this.currentObjectId = null
     })
   }
 
