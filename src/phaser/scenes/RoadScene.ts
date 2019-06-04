@@ -69,13 +69,12 @@ class RoadScene extends BaseScene {
       name: 'Survivor',
       use: () => {
         this.interactingWithObject = true
-        // make currentObject an object with type, so it's easier if it's consumable
-        if (this.currentObjectId === 'water-clean') {
-          // should drink water
+        if (this.currentObject.consumable) {
+          document.dispatchEvent(new CustomEvent('consume', { detail: { id: this.currentObject.id} }))
           return
         }
 
-        if (this.currentObjectId === 'taser') {
+        if (this.currentObject.id === 'taser') {
           return this.createDialog('NO WAY!!')
         }
         return this.createDialog(randomLine())
@@ -142,8 +141,8 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public activateHovers(currentObjectId) {
-    this.currentObjectId = currentObjectId
+  public activateHovers(currentObject) {
+    this.currentObject = currentObject
     this.interactingWithObject = false
 
     this.playingCutscene = true
@@ -159,7 +158,7 @@ class RoadScene extends BaseScene {
 
     const reset = () => setText(baseText)
 
-    Object.keys(this.use).forEach(key => {
+    Object.keys(this.use).forEach((key) => {
       this.use[key].setText = () => {
         setText(`${baseText} ${this.use[key].name}`)
       }
@@ -170,7 +169,7 @@ class RoadScene extends BaseScene {
     })
 
     this.input.on('pointerdown', () => {
-      Object.keys(this.use).forEach(key => {
+      Object.keys(this.use).forEach((key) => {
         this[key].off('pointerover', this.use[key].setText)
         this[key].off('pointerdown', this.use[key].use)
         this[key].off('pointerout', reset)
@@ -182,7 +181,7 @@ class RoadScene extends BaseScene {
 
       this.survivor.removeInteractive()
       this.useText.destroy()
-      this.currentObjectId = null
+      this.currentObject = null
     })
   }
 
@@ -262,9 +261,9 @@ class RoadScene extends BaseScene {
 
   private lookAtBuggy() {
     const speech = [
-      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
-      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
-      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
+      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
+      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
     ]
 
     const startFinishCutscene = () => {

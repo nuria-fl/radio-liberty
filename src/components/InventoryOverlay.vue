@@ -5,7 +5,7 @@
       <InventoryItem @use="close" id="taser" name="Taser gun" />
       <InventoryItem @use="close" id="notebook" name="Notebook" />
       <InventoryItem @use="close" id="radio" name="Radio" />
-      <InventoryItem @use="close" v-for="item in inventory" :key="item.uid" :id="item.id" :name="item.name" />
+      <InventoryItem @use="close" v-for="item in inventory" :key="item.uid" :id="item.id" :name="item.name" :consumable="item.consumable" />
     </div>
   </div>
 </template>

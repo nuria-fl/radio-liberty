@@ -20,19 +20,24 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addToInventory']),
+    ...mapActions(['addToInventory', 'consume']),
     openInventory() {
       this.showInventory = true
     },
     closeInventory() {
       this.showInventory = false
     },
-    handlePickUp(ev) {
-      this.addToInventory(ev.detail)
+    handlePickUp({ detail }) {
+      this.addToInventory(detail)
+    },
+    handleConsume({ detail }) {
+      this.consume(detail.id)
     }
   },
   mounted() {
     document.addEventListener('pickUp', this.handlePickUp)
+    document.addEventListener('consume', this.handleConsume)
+
   },
   beforeDestroy() {
     document.removeEventListener('pickUp', this.handlePickUp)

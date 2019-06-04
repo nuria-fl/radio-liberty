@@ -15,6 +15,7 @@ export default {
     }
   },
   increase({ state, commit }, { stat, amount }) {
+    if (stat === 'energy') { return }
     const newAmount = state.stats[stat] - amount
     commit('setStat', { stat, amount: newAmount > MAX ? MAX : newAmount })
   },
@@ -22,8 +23,24 @@ export default {
     dispatch('addToInventory', 'water-clean')
   },
   addToInventory({ state, commit }, itemId: string) {
-    const item = state.existingItems.find(item => item.id === itemId)
+    const item = state.existingItems.find((item) => item.id === itemId)
 
     commit('addInventory', item)
+  },
+  consume({state, commit, dispatch}, itemId: string) {
+    const item = state.inventory.find((item) => item.id === itemId)
+
+    if (item) {
+      Object.keys(item.value).forEach((stat) => {
+        dispatch('increase', {
+          stat,
+          amount: item.value[stat]
+        })
+      })
+
+      commit('removeInventory', item.uuid)
+    } else {
+      console.log('item not found', itemId)
+    }
   }
 }

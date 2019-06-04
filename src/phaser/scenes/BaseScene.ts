@@ -4,7 +4,7 @@ export class BaseScene extends Phaser.Scene {
   public playingCutscene = true
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
-  public currentObjectId: string = null
+  public currentObject: {id: string, name: string, consumable: boolean} = null
   public interactingWithObject = false
 
   public initScene() {
@@ -12,7 +12,7 @@ export class BaseScene extends Phaser.Scene {
     this.dialog = new DialogService(this)
   }
 
-  public activateHovers(currentObjectId) {
+  public activateHovers(currentObject) {
     throw new Error('Class should implement activateHovers method')
   }
 
@@ -28,6 +28,6 @@ export class BaseScene extends Phaser.Scene {
 
   private handleUseItem(ev: CustomEvent) {
     this.useText = this.add.text(100, 500, `Use ${ev.detail.name} with`)
-    this.activateHovers(ev.detail.id)
+    this.activateHovers(ev.detail)
   }
 }
