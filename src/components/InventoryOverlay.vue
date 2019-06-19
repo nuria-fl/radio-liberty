@@ -2,26 +2,22 @@
   <div class="overlay">
     <button @click="close" class="overlay__close">&times;</button>
     <div class="inventory-grid">
-      <div class="inventory-grid__item">
-        Taser gun
-      </div>
-      <div class="inventory-grid__item">
-        Notebook
-      </div>
-      <div class="inventory-grid__item">
-        Radio
-      </div>
-      <div v-for="item in inventory" :key="item.uid" class="inventory-grid__item">
-        {{ item.name }}
-      </div>
+      <InventoryItem @use="close" id="taser" name="Taser gun" />
+      <InventoryItem @use="close" id="notebook" name="Notebook" />
+      <InventoryItem @use="close" id="radio" name="Radio" />
+      <InventoryItem @use="close" v-for="item in inventory" :key="item.uid" :id="item.id" :name="item.name" :consumable="item.consumable" />
     </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import InventoryItem from '@/components/InventoryItem'
 
 export default {
+  components: {
+    InventoryItem
+  },
   mounted() {
     document.addEventListener('keyup', e => {
       if (e.key === 'Escape') {
@@ -95,12 +91,5 @@ export default {
   grid-template-columns: repeat(5, 1fr);
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
-  &__item {
-    min-height: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0,0,0,.7);
-  }
 }
 </style>

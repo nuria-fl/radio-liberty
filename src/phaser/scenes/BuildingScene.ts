@@ -36,7 +36,7 @@ class BuildingScene extends BaseScene {
     this.initSurvivor()
 
     this.createDialog(
-      'Hm, doesn\'t look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I\'m running low'
+      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
   }
 
@@ -77,9 +77,7 @@ class BuildingScene extends BaseScene {
   }
 
   public create() {
-    this.listenForGameOver()
-
-    this.dialog = new DialogService(this)
+    this.initScene()
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
     bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)

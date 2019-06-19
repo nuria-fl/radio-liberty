@@ -9958,7 +9958,7 @@ declare namespace Phaser {
              * @param context Only remove the listeners that have this context.
              * @param once Only remove one-time listeners.
              */
-            public off(event: string | symbol, fn: Function, context: any, once: boolean): Phaser.Events.EventEmitter
+            public off(event: string | symbol, fn?: Function, context?: any, once?: boolean): Phaser.Events.EventEmitter
 
             /**
              * Remove all listeners, or those of the specified event.

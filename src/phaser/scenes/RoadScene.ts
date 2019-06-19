@@ -7,6 +7,7 @@ import {
   preloadSurvivor,
   preloadBuggy
 } from '../utils/load'
+import { randomLine } from '../default-lines'
 import { pickUp } from '../utils/inventory'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
@@ -14,14 +15,14 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  public survivor: Survivor
-  public buggy: Buggy
-  public floor: Physics.Arcade.Image
-  public roadsign: Physics.Arcade.Image
-  public pinecone: Physics.Arcade.Image
-  public engine: any
+  private survivor: Survivor
+  private buggy: Buggy
+  private floor: Physics.Arcade.Image
+  private roadsign: Physics.Arcade.Image
+  private pinecone: Physics.Arcade.Image
+  private engine: any
 
-  public look = {
+  private look = {
     sign: {
       key: 'lookSign',
       cb: this.lookAtSign
@@ -36,17 +37,158 @@ class RoadScene extends BaseScene {
     }
   }
 
+  private use = {
+    roadsign: {
+      setText: null,
+      name: 'Road sign',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    buggy: {
+      setText: null,
+      name: 'Buggy',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    pinecone: {
+      setText: null,
+      name: 'Pine cone',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    survivor: {
+      setText: null,
+      name: 'Survivor',
+      use: () => {
+        this.interactingWithObject = true
+        if (this.currentObject.consumable) {
+          document.dispatchEvent(new CustomEvent('consume', { detail: { id: this.currentObject.id} }))
+          return this.createDialog('Ah… much better')
+        }
+
+        if (this.currentObject.id === 'taser') {
+          return this.createDialog('NO WAY!!')
+        }
+        return this.createDialog(randomLine())
+      }
+    }
+  }
+
   constructor() {
     super({
       key: SCENES.ROAD
     })
   }
 
-  public createDialog(text, cb = null) {
+  public preload() {
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
+    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
+    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
+
+    preloadBuggy(this)
+    preloadSurvivor(this)
+  }
+
+  public create() {
+    this.initScene()
+
+    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
+
+    this.floor = this.physics.add
+      .staticImage(0, 412, IMAGES.FLOOR.KEY)
+      .setOrigin(0, 0)
+      .refreshBody()
+
+    this.roadsign = this.physics.add
+      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.roadsign.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+      }
+    })
+
+    this.pinecone = this.physics.add
+      .staticImage(550, 420, IMAGES.PINECONE.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.pinecone.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
+      }
+    })
+
+    this.initCutscene()
+  }
+
+  public update() {
+    if (!this.playingCutscene) {
+      this.survivor.update()
+    }
+  }
+
+  public activateHovers(currentObject) {
+    this.currentObject = currentObject
+    this.interactingWithObject = false
+
+    this.startCutscene()
+
+    const baseText = this.useText.text
+
+    this.survivor.setInteractive()
+
+    const setText = (text: string) => {
+      if (this.useText.active) {
+        this.useText.setText(text)
+      }
+    }
+
+    const reset = () => setText(baseText)
+
+    Object.keys(this.use).forEach((key) => {
+      this.use[key].setText = () => {
+        setText(`${baseText} ${this.use[key].name}`)
+      }
+
+      this[key].on('pointerover', this.use[key].setText)
+      this[key].on('pointerdown', this.use[key].use)
+      this[key].on('pointerout', reset)
+    })
+
+    this.input.on('pointerdown', () => {
+      Object.keys(this.use).forEach((key) => {
+        this[key].off('pointerover', this.use[key].setText)
+        this[key].off('pointerdown', this.use[key].use)
+        this[key].off('pointerout', reset)
+        this.use[key].setText = null
+      })
+      if (!this.interactingWithObject) {
+        this.stopCutscene()
+      }
+
+      this.survivor.removeInteractive()
+      this.useText.destroy()
+      this.currentObject = null
+    })
+  }
+
+  private createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
   }
 
-  public initCutscene() {
+  private initCutscene() {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
@@ -82,7 +224,7 @@ class RoadScene extends BaseScene {
     })
   }
 
-  public initSurvivor() {
+  private initSurvivor() {
     this.survivor = loadSurvivor(this)
 
     this.physics.add.collider(this.floor, this.survivor)
@@ -102,11 +244,11 @@ class RoadScene extends BaseScene {
     setupInput(this.survivor, this)
   }
 
-  public initEngine() {
+  private initEngine() {
     // should create an invisible shape on top of the engine area of the buggy
   }
 
-  public lookAtSign() {
+  private lookAtSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -116,11 +258,11 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public lookAtBuggy() {
+  private lookAtBuggy() {
     const speech = [
-      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
-      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
-      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
+      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
+      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
     ]
 
     const startFinishCutscene = () => {
@@ -167,7 +309,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  public lookAtPinecone() {
+  private lookAtPinecone() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -185,61 +327,6 @@ class RoadScene extends BaseScene {
         this,
         false
       )
-    }
-  }
-
-  public preload() {
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
-    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
-
-    preloadBuggy(this)
-    preloadSurvivor(this)
-  }
-
-  public create() {
-    this.listenForGameOver()
-
-    this.dialog = new DialogService(this)
-
-    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
-    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
-
-    this.floor = this.physics.add
-      .staticImage(0, 412, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
-
-    this.roadsign = this.physics.add
-      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
-      .refreshBody()
-      .setInteractive()
-
-    this.roadsign.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
-      }
-    })
-
-    this.pinecone = this.physics.add
-      .staticImage(550, 420, IMAGES.PINECONE.KEY)
-      .refreshBody()
-      .setInteractive()
-
-    this.pinecone.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
-      }
-    })
-
-    this.initCutscene()
-  }
-
-  public update() {
-    if (!this.playingCutscene) {
-      this.survivor.update()
     }
   }
 }

@@ -159,16 +159,14 @@ export class DialogService {
 }
 
 export const createDialogBox = (text: string, cb: any, scene: any) => {
-  scene.playingCutscene = true
-  document.dispatchEvent(new Event('playCutscene'))
+  scene.startCutscene()
   scene.dialog.init()
   scene.dialog.setText(text)
   const addListener = () => {
     scene.input.once('pointerup', () => {
       if (!scene.dialog.animating) {
         scene.dialog.toggleWindow()
-        scene.playingCutscene = false
-        document.dispatchEvent(new Event('stopCutscene'))
+        scene.stopCutscene()
         if (cb) {
           cb()
         }
