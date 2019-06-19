@@ -16,7 +16,7 @@ export default {
   },
   increase({ state, commit }, { stat, amount }) {
     if (stat === 'energy') { return }
-    const newAmount = state.stats[stat] - amount
+    const newAmount = state.stats[stat] + amount
     commit('setStat', { stat, amount: newAmount > MAX ? MAX : newAmount })
   },
   initInventory({ dispatch }) {

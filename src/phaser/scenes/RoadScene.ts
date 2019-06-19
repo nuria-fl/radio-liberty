@@ -43,8 +43,6 @@ class RoadScene extends BaseScene {
       name: 'Road sign',
       use: () => {
         this.interactingWithObject = true
-        console.log('here')
-
         return this.createDialog(randomLine())
       }
     },
@@ -71,7 +69,7 @@ class RoadScene extends BaseScene {
         this.interactingWithObject = true
         if (this.currentObject.consumable) {
           document.dispatchEvent(new CustomEvent('consume', { detail: { id: this.currentObject.id} }))
-          return
+          return this.createDialog('Ah… much better')
         }
 
         if (this.currentObject.id === 'taser') {
@@ -145,7 +143,8 @@ class RoadScene extends BaseScene {
     this.currentObject = currentObject
     this.interactingWithObject = false
 
-    this.playingCutscene = true
+    this.startCutscene()
+
     const baseText = this.useText.text
 
     this.survivor.setInteractive()
@@ -176,7 +175,7 @@ class RoadScene extends BaseScene {
         this.use[key].setText = null
       })
       if (!this.interactingWithObject) {
-        this.playingCutscene = false
+        this.stopCutscene()
       }
 
       this.survivor.removeInteractive()

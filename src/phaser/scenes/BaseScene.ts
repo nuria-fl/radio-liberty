@@ -16,13 +16,23 @@ export class BaseScene extends Phaser.Scene {
     throw new Error('Class should implement activateHovers method')
   }
 
+  public startCutscene() {
+    this.playingCutscene = true
+    document.dispatchEvent(new Event('playCutscene'))
+  }
+
+  public stopCutscene() {
+    this.playingCutscene = false
+    document.dispatchEvent(new Event('stopCutscene'))
+  }
+
   private addListeners() {
     document.addEventListener('gameOver', this.handleGameOver.bind(this))
     document.addEventListener('useItem', this.handleUseItem.bind(this))
   }
 
   private handleGameOver() {
-    this.playingCutscene = true
+    this.startCutscene()
     this.add.text(100, 100, 'Game over')
   }
 
