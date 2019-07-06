@@ -1,10 +1,12 @@
 import { DialogService } from '../utils/dialog'
+import Survivor from '../sprites/Survivor'
 
 export class BaseScene extends Phaser.Scene {
+  public survivor: Survivor
   public playingCutscene = true
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
-  public currentObject: {id: string, name: string, consumable: boolean} = null
+  public currentObject: { id: string; name: string; consumable: boolean } = null
   public interactingWithObject = false
 
   public initScene() {

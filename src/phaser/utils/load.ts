@@ -21,7 +21,7 @@ export const preloadBuggy = (scene: BaseScene) => {
   })
 }
 
-export const loadSurvivor = (scene: BaseScene, x = 100, y = 352) => {
+export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
   scene.anims.create({
     key: 'walk',
     frames: scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
@@ -41,7 +41,7 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 352) => {
 }
 
 export const setupInput = (character: Survivor, scene: BaseScene) => {
-  scene.input.on('pointerdown', (pointer) => {
+  scene.input.on('pointerdown', pointer => {
     if (scene.playingCutscene === false) {
       character.setDestination(pointer.downX)
       scene.physics.moveTo(character, pointer.downX, character.y, 100)

@@ -10,12 +10,10 @@ import {
 import { randomLine } from '../default-lines'
 import { pickUp } from '../utils/inventory'
 import { SCENES, IMAGES, AUDIO } from '../constants'
-import Survivor from '../sprites/Survivor'
 import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  private survivor: Survivor
   private buggy: Buggy
   private floor: Physics.Arcade.Image
   private roadsign: Physics.Arcade.Image
@@ -68,7 +66,11 @@ class RoadScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         if (this.currentObject.consumable) {
-          document.dispatchEvent(new CustomEvent('consume', { detail: { id: this.currentObject.id} }))
+          document.dispatchEvent(
+            new CustomEvent('consume', {
+              detail: { id: this.currentObject.id }
+            })
+          )
           return this.createDialog('Ah… much better')
         }
 
@@ -101,15 +103,16 @@ class RoadScene extends BaseScene {
     this.initScene()
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
-    bg.setDisplaySize(this.game.canvas.width, this.game.canvas.height)
+
+    this.physics.world.setBounds(0, 0, bg.width, bg.height)
 
     this.floor = this.physics.add
-      .staticImage(0, 412, IMAGES.FLOOR.KEY)
+      .staticImage(0, 570, IMAGES.FLOOR.KEY)
       .setOrigin(0, 0)
       .refreshBody()
 
     this.roadsign = this.physics.add
-      .staticImage(660, 360, IMAGES.ROADSIGN.KEY)
+      .staticImage(700, 485, IMAGES.ROADSIGN.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -120,7 +123,7 @@ class RoadScene extends BaseScene {
     })
 
     this.pinecone = this.physics.add
-      .staticImage(550, 420, IMAGES.PINECONE.KEY)
+      .staticImage(550, 555, IMAGES.PINECONE.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -130,6 +133,23 @@ class RoadScene extends BaseScene {
       }
     })
 
+    this.buggy = new Buggy({
+      scene: this,
+      key: IMAGES.BUGGY.KEY,
+      x: 1000,
+      y: 520
+    })
+    this.physics.add.collider(this.floor, this.buggy)
+
+    this.buggy.setInteractive()
+    this.buggy.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
+      }
+    })
+
+    this.cameras.main.setBounds(0, 0, 1260, 720)
+    this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.initCutscene()
   }
 
@@ -157,7 +177,7 @@ class RoadScene extends BaseScene {
 
     const reset = () => setText(baseText)
 
-    Object.keys(this.use).forEach((key) => {
+    Object.keys(this.use).forEach(key => {
       this.use[key].setText = () => {
         setText(`${baseText} ${this.use[key].name}`)
       }
@@ -168,7 +188,7 @@ class RoadScene extends BaseScene {
     })
 
     this.input.on('pointerdown', () => {
-      Object.keys(this.use).forEach((key) => {
+      Object.keys(this.use).forEach(key => {
         this[key].off('pointerover', this.use[key].setText)
         this[key].off('pointerdown', this.use[key].use)
         this[key].off('pointerout', reset)
@@ -189,21 +209,6 @@ class RoadScene extends BaseScene {
   }
 
   private initCutscene() {
-    this.buggy = new Buggy({
-      scene: this,
-      key: IMAGES.BUGGY.KEY,
-      x: 1000,
-      y: 359
-    })
-    this.physics.add.collider(this.floor, this.buggy)
-
-    this.buggy.setInteractive()
-    this.buggy.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
-      }
-    })
-
     this.buggy.play('buggy-driving')
 
     this.tweens.add({
@@ -218,6 +223,7 @@ class RoadScene extends BaseScene {
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
+          this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
         }
         this.createDialog('What the…?', finishCutscene)
       }
@@ -260,9 +266,9 @@ class RoadScene extends BaseScene {
 
   private lookAtBuggy() {
     const speech = [
-      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
-      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
-      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
+      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
     ]
 
     const startFinishCutscene = () => {
@@ -285,6 +291,9 @@ class RoadScene extends BaseScene {
         duration: 3000,
         yoyo: false,
         repeat: 0,
+        onStart: () => {
+          this.cameras.main.fadeOut()
+        },
         onComplete: () => {
           this.scene.add(SCENES.BUILDING, BuildingScene, false)
           this.scene.start(SCENES.BUILDING)
@@ -304,6 +313,9 @@ class RoadScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.stop()
       this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+
+      this.survivor.body.setCollideWorldBounds(false)
+      this.buggy.body.setCollideWorldBounds(false)
 
       startFinishCutscene()
     }
