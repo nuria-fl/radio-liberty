@@ -34,7 +34,11 @@ export const IMAGES = {
   PINECONE: {
     KEY: 'PINECONE',
     FILE: 'pine-cone.png'
-  }
+  },
+  BUILDING: {
+    KEY: 'BUILDING',
+    FILE: 'building.png'
+  },
 }
 
 export const AUDIO = {
