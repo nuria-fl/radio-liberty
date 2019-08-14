@@ -9,8 +9,21 @@ import {
   preloadSurvivor
 } from '../utils/load'
 import { BaseScene } from './BaseScene'
+import { randomLine } from '../default-lines'
 
 class BuildingScene extends BaseScene {
+  public use = {
+    ...this.use,
+    buggy: {
+      setText: null,
+      name: 'Buggy',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    }
+  }
+
   public survivor: Survivor
   public floor: Physics.Arcade.Image
   public engine: any

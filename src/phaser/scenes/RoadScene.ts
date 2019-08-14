@@ -14,28 +14,8 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  private buggy: Buggy
-  private floor: Physics.Arcade.Image
-  private roadsign: Physics.Arcade.Image
-  private pinecone: Physics.Arcade.Image
-  private engine: any
-
-  private look = {
-    sign: {
-      key: 'lookSign',
-      cb: this.lookAtSign
-    },
-    buggy: {
-      key: 'lookBuggy',
-      cb: this.lookAtBuggy
-    },
-    pinecone: {
-      key: 'lookPinecone',
-      cb: this.lookAtPinecone
-    }
-  }
-
-  private use = {
+  public use = {
+    ...this.use,
     roadsign: {
       setText: null,
       name: 'Road sign',
@@ -59,26 +39,27 @@ class RoadScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
-    },
-    survivor: {
-      setText: null,
-      name: 'Survivor',
-      use: () => {
-        this.interactingWithObject = true
-        if (this.currentObject.consumable) {
-          document.dispatchEvent(
-            new CustomEvent('consume', {
-              detail: { id: this.currentObject.id }
-            })
-          )
-          return this.createDialog('Ah… much better')
-        }
+    }
+  }
 
-        if (this.currentObject.id === 'taser') {
-          return this.createDialog('NO WAY!!')
-        }
-        return this.createDialog(randomLine())
-      }
+  private buggy: Buggy
+  private floor: Physics.Arcade.Image
+  private roadsign: Physics.Arcade.Image
+  private pinecone: Physics.Arcade.Image
+  private engine: any
+
+  private look = {
+    sign: {
+      key: 'lookSign',
+      cb: this.lookAtSign
+    },
+    buggy: {
+      key: 'lookBuggy',
+      cb: this.lookAtBuggy
+    },
+    pinecone: {
+      key: 'lookPinecone',
+      cb: this.lookAtPinecone
     }
   }
 
@@ -157,55 +138,6 @@ class RoadScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.update()
     }
-  }
-
-  public activateHovers(currentObject) {
-    this.currentObject = currentObject
-    this.interactingWithObject = false
-
-    this.startCutscene()
-
-    const baseText = this.useText.text
-
-    this.survivor.setInteractive()
-
-    const setText = (text: string) => {
-      if (this.useText.active) {
-        this.useText.setText(text)
-      }
-    }
-
-    const reset = () => setText(baseText)
-
-    Object.keys(this.use).forEach(key => {
-      this.use[key].setText = () => {
-        setText(`${baseText} ${this.use[key].name}`)
-      }
-
-      this[key].on('pointerover', this.use[key].setText)
-      this[key].on('pointerdown', this.use[key].use)
-      this[key].on('pointerout', reset)
-    })
-
-    this.input.on('pointerdown', () => {
-      Object.keys(this.use).forEach(key => {
-        this[key].off('pointerover', this.use[key].setText)
-        this[key].off('pointerdown', this.use[key].use)
-        this[key].off('pointerout', reset)
-        this.use[key].setText = null
-      })
-      if (!this.interactingWithObject) {
-        this.stopCutscene()
-      }
-
-      this.survivor.removeInteractive()
-      this.useText.destroy()
-      this.currentObject = null
-    })
-  }
-
-  private createDialog(text, cb = null) {
-    createDialogBox(text, cb, this)
   }
 
   private initCutscene() {
