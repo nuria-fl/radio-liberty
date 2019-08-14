@@ -33,16 +33,13 @@ class BuildingScene extends BaseScene {
   }
 
   public initCutscene() {
-    this.initSurvivor()
-    this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
-
     this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
   }
 
   public initSurvivor() {
-    this.survivor = loadSurvivor(this, 500, 625)
+    this.survivor = loadSurvivor(this, 1000, 625)
 
     this.physics.add.collider(this.floor, this.survivor)
 
@@ -60,7 +57,7 @@ class BuildingScene extends BaseScene {
     this.initScene()
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING.KEY).setOrigin(0)
-    
+
     this.physics.world.setBounds(0, 0, bg.width, bg.height)
 
     this.floor = this.physics.add
@@ -68,8 +65,27 @@ class BuildingScene extends BaseScene {
       .setOrigin(0, 0)
       .refreshBody()
 
+    this.initSurvivor()
+
     this.cameras.main.setBounds(0, 0, 1280, 800)
-    this.initCutscene()
+    this.cameras.main.fadeIn()
+
+    setTimeout(() => {
+      this.cameras.main.pan(
+        this.survivor.x,
+        this.survivor.y,
+        4000,
+        'Linear',
+        false,
+        (_, progress) => {
+          if (progress === 1) {
+            this.cameras.main.startFollow(this.survivor)
+
+            this.initCutscene()
+          }
+        }
+      )
+    }, 700)
   }
 
   public update() {
