@@ -43,8 +43,8 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
 export const setupInput = (character: Survivor, scene: BaseScene) => {
   scene.input.on('pointerdown', pointer => {
     if (scene.playingCutscene === false) {
-      character.setDestination(pointer.downX)
-      scene.physics.moveTo(character, pointer.downX, character.y, 100)
+      character.setDestination(pointer.worldX)
+      scene.physics.moveTo(character, pointer.worldX, character.y, 100)
     }
   })
 }
