@@ -1,7 +1,8 @@
 import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
-import { DialogService, createDialogBox } from '../utils/dialog'
+import { pickUp } from '../utils/inventory'
+import { createDialogBox } from '../utils/dialog'
 import {
   loadSurvivor,
   setupInput,
@@ -21,18 +22,44 @@ class BuildingScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
+    },
+    ladder: {
+      setText: null,
+      name: 'Ladder',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    bucket: {
+      setText: null,
+      name: 'Bucket',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
     }
   }
 
   public survivor: Survivor
   public floor: Physics.Arcade.Image
   public engine: any
+  public ladder: Physics.Arcade.Image
+  public bucket: Physics.Arcade.Image
 
-  public look = {
+  public interact = {
     // buggy: {
-    //   key: 'lookBuggy',
-    //   cb: this.lookAtBuggy
+    //   key: 'interactBuggy',
+    //   cb: this.interactAtBuggy
     // }
+    bucket: {
+      key: 'interactBucket',
+      cb: this.interactBucket
+    },
+    ladder: {
+      key: 'interactLadder',
+      cb: this.interactLadder
+    }
   }
 
   constructor() {
@@ -56,12 +83,21 @@ class BuildingScene extends BaseScene {
 
     this.physics.add.collider(this.floor, this.survivor)
 
+    this.physics.add.overlap(this.survivor, this.bucket, () => {
+      this.sys.events.emit(this.interact.bucket.key)
+    })
+    this.physics.add.overlap(this.survivor, this.ladder, () => {
+      this.sys.events.emit(this.interact.ladder.key)
+    })
+
     setupInput(this.survivor, this)
   }
 
   public preload() {
     this.load.image(IMAGES.BUILDING.KEY, `/images/${IMAGES.BUILDING.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
+    this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
+    this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
   }
@@ -77,6 +113,36 @@ class BuildingScene extends BaseScene {
       .staticImage(0, 684, IMAGES.FLOOR.KEY)
       .setOrigin(0, 0)
       .refreshBody()
+
+    this.ladder = this.physics.add
+      .staticImage(1130, 532, IMAGES.LADDER.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.bucket = this.physics.add
+      .staticImage(1200, 660, IMAGES.BUCKET.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.bucket.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(
+          this.interact.bucket.key,
+          this.interact.bucket.cb,
+          this
+        )
+      }
+    })
+
+    this.ladder.on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(
+          this.interact.ladder.key,
+          this.interact.ladder.cb,
+          this
+        )
+      }
+    })
 
     this.initSurvivor()
 
@@ -104,6 +170,38 @@ class BuildingScene extends BaseScene {
   public update() {
     if (!this.playingCutscene) {
       this.survivor.update()
+    }
+  }
+
+  private interactBucket() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      pickUp('bucket')
+
+      this.bucket.destroy()
+
+      this.sys.events.off(
+        this.interact.bucket.key,
+        this.interact.bucket.cb,
+        this,
+        false
+      )
+    }
+  }
+
+  private interactLadder() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      console.log('go up/down')
+
+      this.sys.events.off(
+        this.interact.ladder.key,
+        this.interact.ladder.cb,
+        this,
+        false
+      )
     }
   }
 }

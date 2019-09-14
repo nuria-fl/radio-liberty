@@ -39,6 +39,14 @@ export const IMAGES = {
     KEY: 'BUILDING',
     FILE: 'building.png'
   },
+  LADDER: {
+    KEY: 'LADDER',
+    FILE: 'ladder.png'
+  },
+  BUCKET: {
+    KEY: 'BUCKET',
+    FILE: 'bucket.png'
+  }
 }
 
 export const AUDIO = {

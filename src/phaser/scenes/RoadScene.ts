@@ -48,18 +48,18 @@ class RoadScene extends BaseScene {
   private pinecone: Physics.Arcade.Image
   private engine: any
 
-  private look = {
+  private interact = {
     sign: {
       key: 'lookSign',
-      cb: this.lookAtSign
+      cb: this.interactSign
     },
     buggy: {
       key: 'lookBuggy',
-      cb: this.lookAtBuggy
+      cb: this.interactBuggy
     },
     pinecone: {
       key: 'lookPinecone',
-      cb: this.lookAtPinecone
+      cb: this.interactPinecone
     }
   }
 
@@ -99,7 +99,7 @@ class RoadScene extends BaseScene {
 
     this.roadsign.on('pointerup', () => {
       if (!this.playingCutscene) {
-        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
+        this.sys.events.on(this.interact.sign.key, this.interact.sign.cb, this)
       }
     })
 
@@ -110,7 +110,11 @@ class RoadScene extends BaseScene {
 
     this.pinecone.on('pointerup', () => {
       if (!this.playingCutscene) {
-        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
+        this.sys.events.on(
+          this.interact.pinecone.key,
+          this.interact.pinecone.cb,
+          this
+        )
       }
     })
 
@@ -125,7 +129,11 @@ class RoadScene extends BaseScene {
     this.buggy.setInteractive()
     this.buggy.on('pointerup', () => {
       if (!this.playingCutscene) {
-        this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
+        this.sys.events.on(
+          this.interact.buggy.key,
+          this.interact.buggy.cb,
+          this
+        )
       }
     })
 
@@ -167,16 +175,16 @@ class RoadScene extends BaseScene {
 
     this.physics.add.collider(this.floor, this.survivor)
     this.physics.add.overlap(this.survivor, this.roadsign, () => {
-      this.sys.events.emit(this.look.sign.key)
+      this.sys.events.emit(this.interact.sign.key)
     })
 
     this.physics.add.overlap(this.survivor, this.pinecone, () => {
-      this.sys.events.emit(this.look.pinecone.key)
+      this.sys.events.emit(this.interact.pinecone.key)
     })
 
     // this should be with the buggy engine instead
     this.physics.add.overlap(this.survivor, this.buggy, () => {
-      this.sys.events.emit(this.look.buggy.key)
+      this.sys.events.emit(this.interact.buggy.key)
     })
 
     setupInput(this.survivor, this)
@@ -186,17 +194,22 @@ class RoadScene extends BaseScene {
     // should create an invisible shape on top of the engine area of the buggy
   }
 
-  private lookAtSign() {
+  private interactSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
       this.createDialog('It reads something like… P A … S')
 
-      this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
+      this.sys.events.off(
+        this.interact.sign.key,
+        this.interact.sign.cb,
+        this,
+        false
+      )
     }
   }
 
-  private lookAtBuggy() {
+  private interactBuggy() {
     const speech = [
       "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
       "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
@@ -244,7 +257,12 @@ class RoadScene extends BaseScene {
 
     if (!this.playingCutscene) {
       this.survivor.stop()
-      this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+      this.sys.events.off(
+        this.interact.buggy.key,
+        this.interact.buggy.cb,
+        this,
+        false
+      )
 
       this.survivor.body.setCollideWorldBounds(false)
       this.buggy.body.setCollideWorldBounds(false)
@@ -253,7 +271,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  private lookAtPinecone() {
+  private interactPinecone() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -266,8 +284,8 @@ class RoadScene extends BaseScene {
       this.pinecone.destroy()
 
       this.sys.events.off(
-        this.look.pinecone.key,
-        this.look.pinecone.cb,
+        this.interact.pinecone.key,
+        this.interact.pinecone.cb,
         this,
         false
       )

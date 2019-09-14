@@ -5,6 +5,11 @@ export default [
     description: 'Can get some pine nuts out of there',
     action: 'scavenge',
     usesUntilBreakdown: 0
+  },
+  {
+    id: 'bucket',
+    name: 'Bucket',
+    description: 'Can store any liquid'
   }
   // {
   //   id: 'salt',
