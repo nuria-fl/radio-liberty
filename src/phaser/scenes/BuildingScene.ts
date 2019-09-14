@@ -11,6 +11,7 @@ import {
 } from '../utils/load'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
+import Buggy from '../sprites/Buggy'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -42,11 +43,14 @@ class BuildingScene extends BaseScene {
   }
 
   public survivor: Survivor
+  public buggy: Buggy
   public floor: Physics.Arcade.Image
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
+  public drop: Phaser.GameObjects.Image
+  public dropAnimation: Phaser.Tweens.Tween
 
   public interact = {
     // buggy: {
@@ -97,6 +101,8 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
     this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
+    this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
+    this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
   }
@@ -127,6 +133,28 @@ class BuildingScene extends BaseScene {
       .staticImage(820, 340, IMAGES.WOOD.KEY)
       .refreshBody()
       .setInteractive()
+
+    this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
+
+    this.dropAnimation = this.tweens.add({
+      targets: this.drop,
+      y: '+=250',
+      ease: 'Linear',
+      duration: 600,
+      repeatDelay: 2000,
+      repeat: -1, // infinity
+      yoyo: false
+    })
+
+    this.buggy = new Buggy({
+      scene: this,
+      key: IMAGES.BUGGY.KEY,
+      x: 400,
+      y: 600
+    })
+    this.buggy.play('buggy-parked')
+    this.physics.add.collider(this.floor, this.buggy)
+    this.buggy.setInteractive()
 
     this.initSurvivor()
 

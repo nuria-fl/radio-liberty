@@ -50,6 +50,14 @@ export const IMAGES = {
   WOOD: {
     KEY: 'WOOD',
     FILE: 'wood.png'
+  },
+  CLOTH: {
+    KEY: 'CLOTH',
+    FILE: 'cloth.png'
+  },
+  DROP: {
+    KEY: 'DROP',
+    FILE: 'drop.png'
   }
 }
 
