@@ -15,14 +15,14 @@ import { randomLine } from '../default-lines'
 class BuildingScene extends BaseScene {
   public use = {
     ...this.use,
-    buggy: {
-      setText: null,
-      name: 'Buggy',
-      use: () => {
-        this.interactingWithObject = true
-        return this.createDialog(randomLine())
-      }
-    },
+    // buggy: {
+    //   setText: null,
+    //   name: 'Buggy',
+    //   use: () => {
+    //     this.interactingWithObject = true
+    //     return this.createDialog(randomLine())
+    //   }
+    // },
     ladder: {
       setText: null,
       name: 'Ladder',
@@ -46,6 +46,7 @@ class BuildingScene extends BaseScene {
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
+  public wood: Physics.Arcade.Image
 
   public interact = {
     // buggy: {
@@ -59,6 +60,10 @@ class BuildingScene extends BaseScene {
     ladder: {
       key: 'interactLadder',
       cb: this.interactLadder
+    },
+    wood: {
+      key: 'interactWood',
+      cb: this.interactWood
     }
   }
 
@@ -91,6 +96,7 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
     this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
+    this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
   }
@@ -117,10 +123,16 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.wood = this.physics.add
+      .staticImage(820, 340, IMAGES.WOOD.KEY)
+      .refreshBody()
+      .setInteractive()
+
     this.initSurvivor()
 
     this.setupEvent('bucket')
     this.setupEvent('ladder')
+    this.setupEvent('wood')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
@@ -156,6 +168,23 @@ class BuildingScene extends BaseScene {
       pickUp('bucket')
 
       this.bucket.destroy()
+
+      this.sys.events.off(
+        this.interact.bucket.key,
+        this.interact.bucket.cb,
+        this,
+        false
+      )
+    }
+  }
+
+  private interactWood() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      pickUp('wood')
+
+      this.wood.destroy()
 
       this.sys.events.off(
         this.interact.bucket.key,

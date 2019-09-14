@@ -46,6 +46,10 @@ export const IMAGES = {
   BUCKET: {
     KEY: 'BUCKET',
     FILE: 'bucket.png'
+  },
+  WOOD: {
+    KEY: 'WOOD',
+    FILE: 'wood.png'
   }
 }
 
