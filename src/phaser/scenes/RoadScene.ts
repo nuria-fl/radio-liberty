@@ -14,6 +14,20 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
+  public interact = {
+    roadsign: {
+      key: 'lookSign',
+      cb: this.interactSign
+    },
+    buggy: {
+      key: 'lookBuggy',
+      cb: this.interactBuggy
+    },
+    pinecone: {
+      key: 'lookPinecone',
+      cb: this.interactPinecone
+    }
+  }
   public use = {
     ...this.use,
     roadsign: {
@@ -47,21 +61,6 @@ class RoadScene extends BaseScene {
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
   private engine: any
-
-  private interact = {
-    sign: {
-      key: 'lookSign',
-      cb: this.interactSign
-    },
-    buggy: {
-      key: 'lookBuggy',
-      cb: this.interactBuggy
-    },
-    pinecone: {
-      key: 'lookPinecone',
-      cb: this.interactPinecone
-    }
-  }
 
   constructor() {
     super({
@@ -97,26 +96,10 @@ class RoadScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.roadsign.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.interact.sign.key, this.interact.sign.cb, this)
-      }
-    })
-
     this.pinecone = this.physics.add
       .staticImage(550, 555, IMAGES.PINECONE.KEY)
       .refreshBody()
       .setInteractive()
-
-    this.pinecone.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(
-          this.interact.pinecone.key,
-          this.interact.pinecone.cb,
-          this
-        )
-      }
-    })
 
     this.buggy = new Buggy({
       scene: this,
@@ -127,15 +110,6 @@ class RoadScene extends BaseScene {
     this.physics.add.collider(this.floor, this.buggy)
 
     this.buggy.setInteractive()
-    this.buggy.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(
-          this.interact.buggy.key,
-          this.interact.buggy.cb,
-          this
-        )
-      }
-    })
 
     this.cameras.main.setBounds(0, 0, 1260, 720)
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
@@ -163,6 +137,9 @@ class RoadScene extends BaseScene {
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
+          this.setupEvent('roadsign')
+          this.setupEvent('pinecone')
+          this.setupEvent('buggy')
           this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
         }
         this.createDialog('What the…?', finishCutscene)
@@ -174,18 +151,6 @@ class RoadScene extends BaseScene {
     this.survivor = loadSurvivor(this)
 
     this.physics.add.collider(this.floor, this.survivor)
-    this.physics.add.overlap(this.survivor, this.roadsign, () => {
-      this.sys.events.emit(this.interact.sign.key)
-    })
-
-    this.physics.add.overlap(this.survivor, this.pinecone, () => {
-      this.sys.events.emit(this.interact.pinecone.key)
-    })
-
-    // this should be with the buggy engine instead
-    this.physics.add.overlap(this.survivor, this.buggy, () => {
-      this.sys.events.emit(this.interact.buggy.key)
-    })
 
     setupInput(this.survivor, this)
   }
@@ -201,8 +166,8 @@ class RoadScene extends BaseScene {
       this.createDialog('It reads something like… P A … S')
 
       this.sys.events.off(
-        this.interact.sign.key,
-        this.interact.sign.cb,
+        this.interact.roadsign.key,
+        this.interact.roadsign.cb,
         this,
         false
       )

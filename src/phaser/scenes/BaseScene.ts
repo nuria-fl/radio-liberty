@@ -31,6 +31,7 @@ export class BaseScene extends Phaser.Scene {
       }
     }
   }
+  public interact = {}
 
   public initScene() {
     this.addListeners()
@@ -49,6 +50,17 @@ export class BaseScene extends Phaser.Scene {
 
   public createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
+  }
+
+  public setupEvent(key: string) {
+    this[key].on('pointerup', () => {
+      if (!this.playingCutscene) {
+        this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
+      }
+    })
+    this.physics.add.overlap(this.survivor, this[key], () => {
+      this.sys.events.emit(this.interact[key].key)
+    })
   }
 
   private addListeners() {

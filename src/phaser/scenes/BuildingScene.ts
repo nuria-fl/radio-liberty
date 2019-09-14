@@ -83,13 +83,6 @@ class BuildingScene extends BaseScene {
 
     this.physics.add.collider(this.floor, this.survivor)
 
-    this.physics.add.overlap(this.survivor, this.bucket, () => {
-      this.sys.events.emit(this.interact.bucket.key)
-    })
-    this.physics.add.overlap(this.survivor, this.ladder, () => {
-      this.sys.events.emit(this.interact.ladder.key)
-    })
-
     setupInput(this.survivor, this)
   }
 
@@ -124,27 +117,10 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.bucket.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(
-          this.interact.bucket.key,
-          this.interact.bucket.cb,
-          this
-        )
-      }
-    })
-
-    this.ladder.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(
-          this.interact.ladder.key,
-          this.interact.ladder.cb,
-          this
-        )
-      }
-    })
-
     this.initSurvivor()
+
+    this.setupEvent('bucket')
+    this.setupEvent('ladder')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
