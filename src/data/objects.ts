@@ -10,6 +10,13 @@ export default [
     id: 'bucket',
     name: 'Bucket',
     description: 'Can store any liquid'
+  },
+  {
+    id: 'wood',
+    name: 'Wood',
+    description: 'Useful for crafting',
+    action: 'scavenge',
+    usesUntilBreakdown: 0
   }
   // {
   //   id: 'salt',
@@ -30,13 +37,6 @@ export default [
   //   name: 'Rope',
   //   description: 'Useful for crafting',
   //   action: 'craft',
-  //   usesUntilBreakdown: 0
-  // },
-  // {
-  //   id: 'wood',
-  //   name: 'Wood',
-  //   description: 'Useful for crafting',
-  //   action: 'scavenge',
   //   usesUntilBreakdown: 0
   // },
   // {

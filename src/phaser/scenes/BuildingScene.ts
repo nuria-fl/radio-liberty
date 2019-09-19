@@ -45,12 +45,14 @@ class BuildingScene extends BaseScene {
   public survivor: Survivor
   public buggy: Buggy
   public floor: Physics.Arcade.Image
+  public upstairsFloor: Physics.Arcade.Image
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
+  public isUpstairs = false
 
   public interact = {
     // buggy: {
@@ -90,7 +92,28 @@ class BuildingScene extends BaseScene {
   public initSurvivor() {
     this.survivor = loadSurvivor(this, 1000, 625)
 
-    this.physics.add.collider(this.floor, this.survivor)
+    this.physics.add.collider(this.floor, this.survivor, () => {
+      if (this.isUpstairs) {
+        this.isUpstairs = false
+        this.sys.events.off(
+          this.interact.ladder.key,
+          this.interact.ladder.cb,
+          this,
+          false
+        )
+      }
+    })
+    this.physics.add.collider(this.upstairsFloor, this.survivor, () => {
+      if (this.survivor.body.y < 350 && !this.isUpstairs) {
+        this.isUpstairs = true
+        this.sys.events.off(
+          this.interact.ladder.key,
+          this.interact.ladder.cb,
+          this,
+          false
+        )
+      }
+    })
 
     setupInput(this.survivor, this)
   }
@@ -118,6 +141,13 @@ class BuildingScene extends BaseScene {
       .staticImage(0, 684, IMAGES.FLOOR.KEY)
       .setOrigin(0, 0)
       .refreshBody()
+
+    this.upstairsFloor = this.physics.add
+      .staticImage(0, 395, IMAGES.FLOOR.KEY)
+      .setOrigin(0, 0)
+      .refreshBody()
+
+    this.upstairsFloor.body.checkCollision.down = false
 
     this.ladder = this.physics.add
       .staticImage(1130, 532, IMAGES.LADDER.KEY)
@@ -184,6 +214,7 @@ class BuildingScene extends BaseScene {
   }
 
   public update() {
+    this.physics.world.gravity.y = 800
     if (!this.playingCutscene) {
       this.survivor.update()
     }
@@ -227,14 +258,14 @@ class BuildingScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
-      console.log('go up/down')
-
-      this.sys.events.off(
-        this.interact.ladder.key,
-        this.interact.ladder.cb,
-        this,
-        false
-      )
+      if (this.isUpstairs) {
+        this.upstairsFloor.body.checkCollision.up = false
+        this.survivor.body.setVelocityY(400)
+      } else {
+        this.upstairsFloor.body.checkCollision.up = true
+        this.physics.world.gravity.y = 0
+        this.survivor.body.setVelocityY(-400)
+      }
     }
   }
 }
