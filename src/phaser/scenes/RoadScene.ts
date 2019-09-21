@@ -14,28 +14,22 @@ import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
-  private buggy: Buggy
-  private floor: Physics.Arcade.Image
-  private roadsign: Physics.Arcade.Image
-  private pinecone: Physics.Arcade.Image
-  private engine: any
-
-  private look = {
-    sign: {
+  public interact = {
+    roadsign: {
       key: 'lookSign',
-      cb: this.lookAtSign
+      cb: this.interactSign
     },
     buggy: {
       key: 'lookBuggy',
-      cb: this.lookAtBuggy
+      cb: this.interactBuggy
     },
     pinecone: {
       key: 'lookPinecone',
-      cb: this.lookAtPinecone
+      cb: this.interactPinecone
     }
   }
-
-  private use = {
+  public use = {
+    ...this.use,
     roadsign: {
       setText: null,
       name: 'Road sign',
@@ -59,28 +53,14 @@ class RoadScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
-    },
-    survivor: {
-      setText: null,
-      name: 'Survivor',
-      use: () => {
-        this.interactingWithObject = true
-        if (this.currentObject.consumable) {
-          document.dispatchEvent(
-            new CustomEvent('consume', {
-              detail: { id: this.currentObject.id }
-            })
-          )
-          return this.createDialog('Ah… much better')
-        }
-
-        if (this.currentObject.id === 'taser') {
-          return this.createDialog('NO WAY!!')
-        }
-        return this.createDialog(randomLine())
-      }
     }
   }
+
+  private buggy: Buggy
+  private floor: Physics.Arcade.Image
+  private roadsign: Physics.Arcade.Image
+  private pinecone: Physics.Arcade.Image
+  private engine: any
 
   constructor() {
     super({
@@ -116,22 +96,10 @@ class RoadScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.roadsign.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.sign.key, this.look.sign.cb, this)
-      }
-    })
-
     this.pinecone = this.physics.add
       .staticImage(550, 555, IMAGES.PINECONE.KEY)
       .refreshBody()
       .setInteractive()
-
-    this.pinecone.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.pinecone.key, this.look.pinecone.cb, this)
-      }
-    })
 
     this.buggy = new Buggy({
       scene: this,
@@ -142,11 +110,6 @@ class RoadScene extends BaseScene {
     this.physics.add.collider(this.floor, this.buggy)
 
     this.buggy.setInteractive()
-    this.buggy.on('pointerup', () => {
-      if (!this.playingCutscene) {
-        this.sys.events.on(this.look.buggy.key, this.look.buggy.cb, this)
-      }
-    })
 
     this.cameras.main.setBounds(0, 0, 1260, 720)
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
@@ -157,55 +120,6 @@ class RoadScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.update()
     }
-  }
-
-  public activateHovers(currentObject) {
-    this.currentObject = currentObject
-    this.interactingWithObject = false
-
-    this.startCutscene()
-
-    const baseText = this.useText.text
-
-    this.survivor.setInteractive()
-
-    const setText = (text: string) => {
-      if (this.useText.active) {
-        this.useText.setText(text)
-      }
-    }
-
-    const reset = () => setText(baseText)
-
-    Object.keys(this.use).forEach(key => {
-      this.use[key].setText = () => {
-        setText(`${baseText} ${this.use[key].name}`)
-      }
-
-      this[key].on('pointerover', this.use[key].setText)
-      this[key].on('pointerdown', this.use[key].use)
-      this[key].on('pointerout', reset)
-    })
-
-    this.input.on('pointerdown', () => {
-      Object.keys(this.use).forEach(key => {
-        this[key].off('pointerover', this.use[key].setText)
-        this[key].off('pointerdown', this.use[key].use)
-        this[key].off('pointerout', reset)
-        this.use[key].setText = null
-      })
-      if (!this.interactingWithObject) {
-        this.stopCutscene()
-      }
-
-      this.survivor.removeInteractive()
-      this.useText.destroy()
-      this.currentObject = null
-    })
-  }
-
-  private createDialog(text, cb = null) {
-    createDialogBox(text, cb, this)
   }
 
   private initCutscene() {
@@ -223,6 +137,9 @@ class RoadScene extends BaseScene {
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
+          this.setupEvent('roadsign')
+          this.setupEvent('pinecone')
+          this.setupEvent('buggy')
           this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
         }
         this.createDialog('What the…?', finishCutscene)
@@ -234,18 +151,6 @@ class RoadScene extends BaseScene {
     this.survivor = loadSurvivor(this)
 
     this.physics.add.collider(this.floor, this.survivor)
-    this.physics.add.overlap(this.survivor, this.roadsign, () => {
-      this.sys.events.emit(this.look.sign.key)
-    })
-
-    this.physics.add.overlap(this.survivor, this.pinecone, () => {
-      this.sys.events.emit(this.look.pinecone.key)
-    })
-
-    // this should be with the buggy engine instead
-    this.physics.add.overlap(this.survivor, this.buggy, () => {
-      this.sys.events.emit(this.look.buggy.key)
-    })
 
     setupInput(this.survivor, this)
   }
@@ -254,17 +159,22 @@ class RoadScene extends BaseScene {
     // should create an invisible shape on top of the engine area of the buggy
   }
 
-  private lookAtSign() {
+  private interactSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
       this.createDialog('It reads something like… P A … S')
 
-      this.sys.events.off(this.look.sign.key, this.look.sign.cb, this, false)
+      this.sys.events.off(
+        this.interact.roadsign.key,
+        this.interact.roadsign.cb,
+        this,
+        false
+      )
     }
   }
 
-  private lookAtBuggy() {
+  private interactBuggy() {
     const speech = [
       "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
       "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
@@ -312,7 +222,12 @@ class RoadScene extends BaseScene {
 
     if (!this.playingCutscene) {
       this.survivor.stop()
-      this.sys.events.off(this.look.buggy.key, this.look.buggy.cb, this, false)
+      this.sys.events.off(
+        this.interact.buggy.key,
+        this.interact.buggy.cb,
+        this,
+        false
+      )
 
       this.survivor.body.setCollideWorldBounds(false)
       this.buggy.body.setCollideWorldBounds(false)
@@ -321,7 +236,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  private lookAtPinecone() {
+  private interactPinecone() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
@@ -334,8 +249,8 @@ class RoadScene extends BaseScene {
       this.pinecone.destroy()
 
       this.sys.events.off(
-        this.look.pinecone.key,
-        this.look.pinecone.cb,
+        this.interact.pinecone.key,
+        this.interact.pinecone.cb,
         this,
         false
       )

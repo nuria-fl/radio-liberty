@@ -34,6 +34,30 @@ export const IMAGES = {
   PINECONE: {
     KEY: 'PINECONE',
     FILE: 'pine-cone.png'
+  },
+  BUILDING: {
+    KEY: 'BUILDING',
+    FILE: 'building.png'
+  },
+  LADDER: {
+    KEY: 'LADDER',
+    FILE: 'ladder.png'
+  },
+  BUCKET: {
+    KEY: 'BUCKET',
+    FILE: 'bucket.png'
+  },
+  WOOD: {
+    KEY: 'WOOD',
+    FILE: 'wood.png'
+  },
+  CLOTH: {
+    KEY: 'CLOTH',
+    FILE: 'cloth.png'
+  },
+  DROP: {
+    KEY: 'DROP',
+    FILE: 'drop.png'
   }
 }
 
