@@ -12,10 +12,10 @@ class GameScene extends Phaser.Scene {
   public preload() {}
 
   public create() {
-    // this.scene.add(SCENES.ROAD, RoadScene, false)
-    // this.scene.launch(SCENES.ROAD)
-    this.scene.add(SCENES.BUILDING, BuildingScene, false)
-    this.scene.launch(SCENES.BUILDING)
+    this.scene.add(SCENES.ROAD, RoadScene, false)
+    this.scene.launch(SCENES.ROAD)
+    // this.scene.add(SCENES.BUILDING, BuildingScene, false)
+    // this.scene.launch(SCENES.BUILDING)
   }
 }
 
