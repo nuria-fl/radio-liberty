@@ -62,6 +62,10 @@ export const IMAGES = {
 }
 
 export const AUDIO = {
+  INTRO: {
+    KEY: 'INTRO',
+    FILE: 'intro.mp3'
+  },
   WALK: {
     KEY: 'WALK',
     FILE: 'walk.mp3'

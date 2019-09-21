@@ -61,6 +61,7 @@ class RoadScene extends BaseScene {
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
   private engine: any
+  private introAudio: Phaser.Sound.BaseSound
 
   constructor() {
     super({
@@ -69,6 +70,7 @@ class RoadScene extends BaseScene {
   }
 
   public preload() {
+    this.load.audio(AUDIO.INTRO.KEY, `/sound/${AUDIO.INTRO.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
@@ -81,6 +83,10 @@ class RoadScene extends BaseScene {
 
   public create() {
     this.initScene()
+
+    this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
+
+    this.introAudio.play()
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
 
@@ -104,7 +110,7 @@ class RoadScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
-      x: 1000,
+      x: 1400,
       y: 520
     })
     this.physics.add.collider(this.floor, this.buggy)
@@ -113,6 +119,7 @@ class RoadScene extends BaseScene {
 
     this.cameras.main.setBounds(0, 0, 1260, 720)
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
+    this.cameras.main.fadeIn(3000)
     this.initCutscene()
   }
 
@@ -129,7 +136,7 @@ class RoadScene extends BaseScene {
       targets: this.buggy,
       x: 200,
       ease: 'Power1',
-      duration: 3000,
+      duration: 28000,
       yoyo: false,
       repeat: 0,
       onComplete: () => {
