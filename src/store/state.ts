@@ -2,7 +2,7 @@ import { MAX } from '@/data/constants'
 import items from '@/data/items'
 
 export default {
-  gameOver: false,
+  gameOver: true,
   paused: false,
   enabled: false,
   isSick: false,

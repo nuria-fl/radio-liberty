@@ -141,6 +141,7 @@ class RoadScene extends BaseScene {
       repeat: 0,
       onComplete: () => {
         const finishCutscene = () => {
+          document.dispatchEvent(new CustomEvent('startGame'))
           this.buggy.play('buggy-parked')
           this.initEngine()
           this.initSurvivor()
@@ -149,7 +150,7 @@ class RoadScene extends BaseScene {
           this.setupEvent('buggy')
           this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
         }
-        this.createDialog('What the…?', finishCutscene)
+        this.createDialog('What the…?\n\n(click to continue)', finishCutscene)
       }
     })
   }
