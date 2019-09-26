@@ -13,9 +13,15 @@ class GameScene extends Phaser.Scene {
 
   public create() {
     this.scene.add(SCENES.ROAD, RoadScene, false)
-    this.scene.launch(SCENES.ROAD)
-    // this.scene.add(SCENES.BUILDING, BuildingScene, false)
-    // this.scene.launch(SCENES.BUILDING)
+    this.add
+      .text(342, 284, 'Start Game', {
+        fontSize: 24,
+        color: '#fff'
+      })
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', () => {
+        this.scene.start(SCENES.ROAD)
+      })
   }
 }
 

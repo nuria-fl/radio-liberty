@@ -20,15 +20,17 @@ export default Vue.extend({
     ...mapState(['gameOver', 'enabled'])
   },
   methods: {
-    ...mapMutations(['enable', 'disable']),
+    ...mapMutations(['enable', 'disable', 'startGame']),
     ...mapActions(['initInventory'])
   },
   mounted() {
     this.initInventory()
+    document.addEventListener('startGame', this.startGame)
     document.addEventListener('playCutscene', this.disable)
     document.addEventListener('stopCutscene', this.enable)
   },
   beforeDestroy() {
+    document.removeEventListener('startGame', this.startGame)
     document.removeEventListener('playCutscene', this.disable)
     document.removeEventListener('stopCutscene', this.enable)
   }
