@@ -90,7 +90,7 @@ class RoadScene extends BaseScene {
 
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
 
-    this.physics.world.setBounds(0, 0, bg.width, bg.height)
+    this.physics.world.setBounds(0, 0, bg.width * 2, bg.height)
 
     this.floor = this.physics.add
       .staticImage(0, 570, IMAGES.FLOOR.KEY)
@@ -110,14 +110,14 @@ class RoadScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
-      x: 1400,
+      x: 2500,
       y: 520
     })
     this.physics.add.collider(this.floor, this.buggy)
 
     this.buggy.setInteractive()
 
-    this.cameras.main.setBounds(0, 0, 1260, 720)
+    this.cameras.main.setBounds(0, 0, bg.width * 2, 720)
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.cameras.main.fadeIn(3000)
     this.initCutscene()
@@ -135,7 +135,7 @@ class RoadScene extends BaseScene {
     this.tweens.add({
       targets: this.buggy,
       x: 200,
-      ease: 'Power1',
+      ease: 'Sine.easeOut',
       duration: 28000,
       yoyo: false,
       repeat: 0,
