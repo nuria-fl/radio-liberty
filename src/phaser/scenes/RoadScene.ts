@@ -57,7 +57,7 @@ class RoadScene extends BaseScene {
   }
 
   private buggy: Buggy
-  private floor: Physics.Arcade.Image
+  private platforms: Physics.Arcade.StaticGroup
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
   private engine: any
@@ -82,20 +82,23 @@ class RoadScene extends BaseScene {
   }
 
   public create() {
+    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+
+    this.platforms = this.physics.add.staticGroup()
+
+    const floor = this.platforms
+      .create(0, 570, IMAGES.FLOOR.KEY, null, false)
+      .setOrigin(0)
+    floor.scaleX = 36
+    floor.refreshBody()
+
     this.initScene()
 
     this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
 
     this.introAudio.play()
 
-    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
-
     this.physics.world.setBounds(0, 0, bg.width * 2, bg.height)
-
-    this.floor = this.physics.add
-      .staticImage(0, 570, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
 
     this.roadsign = this.physics.add
       .staticImage(700, 485, IMAGES.ROADSIGN.KEY)
@@ -113,7 +116,7 @@ class RoadScene extends BaseScene {
       x: 2500,
       y: 520
     })
-    this.physics.add.collider(this.floor, this.buggy)
+    this.physics.add.collider(this.platforms, this.buggy)
 
     this.buggy.setInteractive()
 
@@ -136,7 +139,7 @@ class RoadScene extends BaseScene {
       targets: this.buggy,
       x: 200,
       ease: 'Sine.easeOut',
-      duration: 28000,
+      duration: 3000,
       yoyo: false,
       repeat: 0,
       onComplete: () => {
@@ -158,7 +161,7 @@ class RoadScene extends BaseScene {
   private initSurvivor() {
     this.survivor = loadSurvivor(this)
 
-    this.physics.add.collider(this.floor, this.survivor)
+    this.physics.add.collider(this.platforms, this.survivor)
 
     setupInput(this.survivor, this)
   }
