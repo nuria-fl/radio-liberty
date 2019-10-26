@@ -15,7 +15,7 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
     this.target = null
     this.body.setSize(40, 120)
     this.body.setCollideWorldBounds(true)
-    this.body.stopVelocityOnCollide = true
+    // this.body.stopVelocityOnCollide = true
     this.walkSound = this.scene.sound.add(AUDIO.WALK.KEY)
   }
 

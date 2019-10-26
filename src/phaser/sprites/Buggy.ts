@@ -38,6 +38,6 @@ export default class Buggy extends Phaser.GameObjects.Sprite {
 
     this.body.setSize(80, 100)
     this.body.setCollideWorldBounds(true)
-    this.body.stopVelocityOnCollide = true
+    // this.body.stopVelocityOnCollide = true
   }
 }
