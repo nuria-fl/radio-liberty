@@ -9,10 +9,8 @@ class GameScene extends Phaser.Scene {
     })
   }
 
-  public preload() {}
-
   public create() {
-    this.scene.add(SCENES.BUILDING, BuildingScene, false)
+    this.scene.add(SCENES.ROAD, RoadScene, false)
     this.add
       .text(342, 284, 'Start Game', {
         fontSize: 24,
@@ -20,7 +18,7 @@ class GameScene extends Phaser.Scene {
       })
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => {
-        this.scene.start(SCENES.BUILDING)
+        this.scene.start(SCENES.ROAD)
       })
   }
 }

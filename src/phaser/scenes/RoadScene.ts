@@ -73,6 +73,7 @@ class RoadScene extends BaseScene {
     this.load.audio(AUDIO.INTRO.KEY, `/sound/${AUDIO.INTRO.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.ROAD_LONG.KEY, `/images/${IMAGES.ROAD_LONG.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
@@ -82,14 +83,15 @@ class RoadScene extends BaseScene {
   }
 
   public create() {
+    this.add.image(600, 60, IMAGES.ROAD_LONG.KEY).setOrigin(0)
     const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
 
     this.platforms = this.physics.add.staticGroup()
 
     const floor = this.platforms
       .create(0, 570, IMAGES.FLOOR.KEY, null, false)
-      .setOrigin(0)
-    floor.scaleX = 36
+    floor.scaleX = 42
+    floor.setOrigin(0)
     floor.refreshBody()
 
     this.initScene()
@@ -121,6 +123,7 @@ class RoadScene extends BaseScene {
     this.buggy.setInteractive()
 
     this.cameras.main.setBounds(0, 0, bg.width * 2, 720)
+    this.cameras.main.setBackgroundColor('#9fb9b4')
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.cameras.main.fadeIn(3000)
     this.initCutscene()
@@ -139,7 +142,7 @@ class RoadScene extends BaseScene {
       targets: this.buggy,
       x: 200,
       ease: 'Sine.easeOut',
-      duration: 3000,
+      duration: 28000,
       yoyo: false,
       repeat: 0,
       onComplete: () => {
@@ -187,9 +190,9 @@ class RoadScene extends BaseScene {
 
   private interactBuggy() {
     const speech = [
-      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
-      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
-      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
+      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
+      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
     ]
 
     const startFinishCutscene = () => {
