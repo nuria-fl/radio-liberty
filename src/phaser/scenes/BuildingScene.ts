@@ -44,8 +44,9 @@ class BuildingScene extends BaseScene {
 
   public survivor: Survivor
   public buggy: Buggy
-  public floor: Physics.Arcade.Image
-  public upstairsFloor: Physics.Arcade.Image
+  public platforms: Physics.Arcade.StaticGroup
+  public upstairsFloor: Physics.Arcade.Sprite
+  public floor: Physics.Arcade.Sprite
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
@@ -92,28 +93,29 @@ class BuildingScene extends BaseScene {
   public initSurvivor() {
     this.survivor = loadSurvivor(this, 1000, 625)
 
-    this.physics.add.collider(this.floor, this.survivor, () => {
-      if (this.isUpstairs) {
-        this.isUpstairs = false
-        this.sys.events.off(
-          this.interact.ladder.key,
-          this.interact.ladder.cb,
-          this,
-          false
-        )
+    this.physics.add.collider(
+      this.platforms,
+      this.survivor,
+      (survivor: Survivor, platform: Physics.Arcade.Sprite) => {
+        if (platform.y > 600 && this.isUpstairs) {
+          this.isUpstairs = false
+          this.sys.events.off(
+            this.interact.ladder.key,
+            this.interact.ladder.cb,
+            this,
+            false
+          )
+        } else if (survivor.body.y < 350 && !this.isUpstairs) {
+          this.isUpstairs = true
+          this.sys.events.off(
+            this.interact.ladder.key,
+            this.interact.ladder.cb,
+            this,
+            false
+          )
+        }
       }
-    })
-    this.physics.add.collider(this.upstairsFloor, this.survivor, () => {
-      if (this.survivor.body.y < 350 && !this.isUpstairs) {
-        this.isUpstairs = true
-        this.sys.events.off(
-          this.interact.ladder.key,
-          this.interact.ladder.cb,
-          this,
-          false
-        )
-      }
-    })
+    )
 
     setupInput(this.survivor, this)
   }
@@ -137,15 +139,22 @@ class BuildingScene extends BaseScene {
 
     this.physics.world.setBounds(0, 0, bg.width, bg.height)
 
-    this.floor = this.physics.add
-      .staticImage(0, 684, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
+    this.platforms = this.physics.add.staticGroup()
 
-    this.upstairsFloor = this.physics.add
-      .staticImage(0, 395, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
+    const floor = this.platforms
+      .create(0, 684, IMAGES.FLOOR.KEY, null, false)
+      .setOrigin(0)
+    floor.scaleX = bg.width / 30
+    floor.refreshBody()
+
+    this.platforms.create(680, 365, IMAGES.FLOOR.KEY, null, false)
+    this.platforms.create(1278, 365, IMAGES.FLOOR.KEY, null, false)
+
+    this.upstairsFloor = this.platforms
+      .create(710, 395, IMAGES.FLOOR.KEY, null, false)
+      .setOrigin(0)
+    this.upstairsFloor.scaleX = 9
+    this.upstairsFloor.refreshBody()
 
     this.upstairsFloor.body.checkCollision.down = false
 
@@ -183,7 +192,7 @@ class BuildingScene extends BaseScene {
       y: 600
     })
     this.buggy.play('buggy-parked')
-    this.physics.add.collider(this.floor, this.buggy)
+    this.physics.add.collider(this.platforms, this.buggy)
     this.buggy.setInteractive()
 
     this.initSurvivor()

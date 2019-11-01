@@ -31,6 +31,10 @@ export const IMAGES = {
     KEY: 'ROAD',
     FILE: 'road.png'
   },
+  ROAD_LONG: {
+    KEY: 'ROAD_LONG',
+    FILE: 'road-long.png'
+  },
   PINECONE: {
     KEY: 'PINECONE',
     FILE: 'pine-cone.png'

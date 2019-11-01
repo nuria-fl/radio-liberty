@@ -57,7 +57,7 @@ class RoadScene extends BaseScene {
   }
 
   private buggy: Buggy
-  private floor: Physics.Arcade.Image
+  private platforms: Physics.Arcade.StaticGroup
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
   private engine: any
@@ -73,6 +73,7 @@ class RoadScene extends BaseScene {
     this.load.audio(AUDIO.INTRO.KEY, `/sound/${AUDIO.INTRO.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
+    this.load.image(IMAGES.ROAD_LONG.KEY, `/images/${IMAGES.ROAD_LONG.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
     this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
@@ -82,20 +83,24 @@ class RoadScene extends BaseScene {
   }
 
   public create() {
+    this.add.image(600, 60, IMAGES.ROAD_LONG.KEY).setOrigin(0)
+    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+
+    this.platforms = this.physics.add.staticGroup()
+
+    const floor = this.platforms
+      .create(0, 570, IMAGES.FLOOR.KEY, null, false)
+    floor.scaleX = 42
+    floor.setOrigin(0)
+    floor.refreshBody()
+
     this.initScene()
 
     this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
 
     this.introAudio.play()
 
-    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
-
-    this.physics.world.setBounds(0, 0, bg.width, bg.height)
-
-    this.floor = this.physics.add
-      .staticImage(0, 570, IMAGES.FLOOR.KEY)
-      .setOrigin(0, 0)
-      .refreshBody()
+    this.physics.world.setBounds(0, 0, bg.width * 2, bg.height)
 
     this.roadsign = this.physics.add
       .staticImage(700, 485, IMAGES.ROADSIGN.KEY)
@@ -110,14 +115,15 @@ class RoadScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
-      x: 1400,
+      x: 2500,
       y: 520
     })
-    this.physics.add.collider(this.floor, this.buggy)
+    this.physics.add.collider(this.platforms, this.buggy)
 
     this.buggy.setInteractive()
 
-    this.cameras.main.setBounds(0, 0, 1260, 720)
+    this.cameras.main.setBounds(0, 0, bg.width * 2, 720)
+    this.cameras.main.setBackgroundColor('#9fb9b4')
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.cameras.main.fadeIn(3000)
     this.initCutscene()
@@ -135,7 +141,7 @@ class RoadScene extends BaseScene {
     this.tweens.add({
       targets: this.buggy,
       x: 200,
-      ease: 'Power1',
+      ease: 'Sine.easeOut',
       duration: 28000,
       yoyo: false,
       repeat: 0,
@@ -158,7 +164,7 @@ class RoadScene extends BaseScene {
   private initSurvivor() {
     this.survivor = loadSurvivor(this)
 
-    this.physics.add.collider(this.floor, this.survivor)
+    this.physics.add.collider(this.platforms, this.survivor)
 
     setupInput(this.survivor, this)
   }
@@ -184,9 +190,9 @@ class RoadScene extends BaseScene {
 
   private interactBuggy() {
     const speech = [
-      "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
-      "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
-      "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
+      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
+      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
     ]
 
     const startFinishCutscene = () => {
