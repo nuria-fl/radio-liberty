@@ -48,6 +48,14 @@ export class BaseScene extends Phaser.Scene {
     document.dispatchEvent(new Event('stopCutscene'))
   }
 
+  public removeItem(object) {
+    document.dispatchEvent(
+      new CustomEvent('removeItem', {
+        detail: { id: object.id }
+      })
+    )
+  }
+
   public createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
   }

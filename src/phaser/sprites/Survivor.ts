@@ -50,7 +50,7 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
       if (
         (movingRight && this.body.x >= this.target) ||
         (movingLeft && this.body.x <= this.target) ||
-        !movingLeft && !movingRight
+        (!movingLeft && !movingRight)
       ) {
         this.stop()
       }

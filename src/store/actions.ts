@@ -15,7 +15,9 @@ export default {
     }
   },
   increase({ state, commit }, { stat, amount }) {
-    if (stat === 'energy') { return }
+    if (stat === 'energy') {
+      return
+    }
     const newAmount = state.stats[stat] + amount
     commit('setStat', { stat, amount: newAmount > MAX ? MAX : newAmount })
   },
@@ -27,10 +29,13 @@ export default {
 
     commit('addInventory', item)
   },
+  removeFromInventory({ state, commit }, itemId: string) {
+    const itemInventory = state.inventory.find(item => item.id === itemId)
+
+    commit('removeInventory', itemInventory.uid)
+  },
   consume({ state, commit, dispatch }, itemId: string) {
     const item = state.inventory.find(item => item.id === itemId)
-
-    console.log(item)
 
     if (item) {
       Object.keys(item.value).forEach(stat => {

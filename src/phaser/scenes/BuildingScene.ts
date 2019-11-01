@@ -39,6 +39,17 @@ class BuildingScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
+    },
+    puddle: {
+      setText: null,
+      name: 'Puddle',
+      use: () => {
+        this.interactingWithObject = true
+        if (this.currentObject.id === 'bucket') {
+          return this.setUpWaterCollector()
+        }
+        return this.createDialog(randomLine())
+      }
     }
   }
 
@@ -50,7 +61,9 @@ class BuildingScene extends BaseScene {
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
+  public waterCollector: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
+  public puddle: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
@@ -173,6 +186,13 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.puddle = this.physics.add
+      .staticImage(630, 710, IMAGES.FLOOR.KEY)
+      .setScale(2.5, 0.9)
+      .setAlpha(0, 0, 0, 0)
+      .refreshBody()
+      .setInteractive()
+
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
     this.dropAnimation = this.tweens.add({
@@ -224,9 +244,7 @@ class BuildingScene extends BaseScene {
 
   public update() {
     this.physics.world.gravity.y = 800
-    if (!this.playingCutscene) {
-      this.survivor.update()
-    }
+    this.survivor.update()
   }
 
   private interactBucket() {
@@ -276,6 +294,18 @@ class BuildingScene extends BaseScene {
         this.survivor.body.setVelocityY(-400)
       }
     }
+  }
+
+  private setUpWaterCollector() {
+    this.startCutscene()
+    this.survivor.setDestination(650)
+    this.physics.moveTo(this.survivor, 590, this.survivor.y, 100)
+    this.removeItem(this.currentObject)
+    this.waterCollector = this.physics.add
+      .staticImage(605, 665, IMAGES.BUCKET.KEY)
+      .refreshBody()
+      .setInteractive()
+    return this.createDialog('Water collector set!')
   }
 }
 

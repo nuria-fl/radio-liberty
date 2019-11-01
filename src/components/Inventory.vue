@@ -20,7 +20,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addToInventory', 'consume']),
+    ...mapActions(['addToInventory', 'removeFromInventory', 'consume']),
     openInventory() {
       this.showInventory = true
     },
@@ -30,17 +30,21 @@ export default {
     handlePickUp({ detail }) {
       this.addToInventory(detail)
     },
+    handleRemove({ detail }) {
+      this.removeFromInventory(detail.id)
+    },
     handleConsume({ detail }) {
       this.consume(detail.id)
     }
   },
   mounted() {
     document.addEventListener('pickUp', this.handlePickUp)
+    document.addEventListener('removeItem', this.handleRemove)
     document.addEventListener('consume', this.handleConsume)
-
   },
   beforeDestroy() {
     document.removeEventListener('pickUp', this.handlePickUp)
+    document.removeEventListener('removeItem', this.handleRemove)
   }
 }
 </script>
