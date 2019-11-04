@@ -48,13 +48,21 @@ export class BaseScene extends Phaser.Scene {
     document.dispatchEvent(new Event('stopCutscene'))
   }
 
+  public removeItem(object) {
+    document.dispatchEvent(
+      new CustomEvent('removeItem', {
+        detail: { id: object.id }
+      })
+    )
+  }
+
   public createDialog(text, cb = null) {
     createDialogBox(text, cb, this)
   }
 
   public setupEvent(key: string) {
     this[key].on('pointerup', () => {
-      if (!this.playingCutscene) {
+      if (!this.playingCutscene || this.interact[key].manualSetup) {
         this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
       }
     })

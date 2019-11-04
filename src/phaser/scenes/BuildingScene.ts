@@ -39,6 +39,17 @@ class BuildingScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
+    },
+    puddle: {
+      setText: null,
+      name: 'Puddle',
+      use: () => {
+        this.interactingWithObject = true
+        if (this.currentObject.id === 'bucket') {
+          return this.setUpWaterCollector()
+        }
+        return this.createDialog(randomLine())
+      }
     }
   }
 
@@ -50,10 +61,13 @@ class BuildingScene extends BaseScene {
   public engine: any
   public ladder: Physics.Arcade.Image
   public bucket: Physics.Arcade.Image
+  public waterCollector: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
+  public puddle: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
+  public hasWaterCollector = false
 
   public interact = {
     // buggy: {
@@ -71,6 +85,11 @@ class BuildingScene extends BaseScene {
     wood: {
       key: 'interactWood',
       cb: this.interactWood
+    },
+    puddle: {
+      key: 'interactPuddle',
+      cb: this.interactPuddle,
+      manualSetup: true
     }
   }
 
@@ -173,6 +192,13 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.puddle = this.physics.add
+      .staticImage(600, 700, IMAGES.FLOOR.KEY)
+      .setScale(1.5, 0.9)
+      .setAlpha(0, 0, 0, 0)
+      .refreshBody()
+      .setInteractive()
+
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
     this.dropAnimation = this.tweens.add({
@@ -224,9 +250,7 @@ class BuildingScene extends BaseScene {
 
   public update() {
     this.physics.world.gravity.y = 800
-    if (!this.playingCutscene) {
-      this.survivor.update()
-    }
+    this.survivor.update()
   }
 
   private interactBucket() {
@@ -275,6 +299,33 @@ class BuildingScene extends BaseScene {
         this.physics.world.gravity.y = 0
         this.survivor.body.setVelocityY(-400)
       }
+    }
+  }
+
+  private setUpWaterCollector() {
+    this.startCutscene()
+    this.setupEvent('puddle')
+    this.survivor.setDestination(650)
+    this.physics.moveTo(this.survivor, 590, this.survivor.y, 100)
+  }
+
+  private interactPuddle() {
+    if (!this.hasWaterCollector) {
+      this.survivor.stop()
+      this.removeItem({ id: 'bucket' })
+      this.waterCollector = this.physics.add
+        .staticImage(605, 665, IMAGES.BUCKET.KEY)
+        .refreshBody()
+        .setInteractive()
+      this.createDialog('Water collector set!')
+      this.hasWaterCollector = true
+
+      this.sys.events.off(
+        this.interact.puddle.key,
+        this.interact.puddle.cb,
+        this,
+        false
+      )
     }
   }
 }

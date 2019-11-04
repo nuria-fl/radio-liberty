@@ -42,17 +42,17 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
 
 export const setupInput = (character: Survivor, scene: BaseScene) => {
   scene.input.on('pointerdown', pointer => {
-    // remove all interactions
-    Object.keys(scene.interact).forEach(k => {
-      scene.sys.events.off(
-        scene.interact[k].key,
-        scene.interact[k].cb,
-        scene,
-        false
-      )
-    })
-
     if (scene.playingCutscene === false) {
+      // remove all interactions
+      Object.keys(scene.interact).forEach(k => {
+        scene.sys.events.off(
+          scene.interact[k].key,
+          scene.interact[k].cb,
+          scene,
+          false
+        )
+      })
+
       character.setDestination(pointer.worldX)
       scene.physics.moveTo(character, pointer.worldX, character.y, 100)
     }
