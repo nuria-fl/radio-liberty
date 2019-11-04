@@ -62,7 +62,7 @@ export class BaseScene extends Phaser.Scene {
 
   public setupEvent(key: string) {
     this[key].on('pointerup', () => {
-      if (!this.playingCutscene) {
+      if (!this.playingCutscene || this.interact[key].manualSetup) {
         this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
       }
     })

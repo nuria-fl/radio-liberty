@@ -67,6 +67,7 @@ class BuildingScene extends BaseScene {
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
+  public hasWaterCollector = false
 
   public interact = {
     // buggy: {
@@ -84,6 +85,11 @@ class BuildingScene extends BaseScene {
     wood: {
       key: 'interactWood',
       cb: this.interactWood
+    },
+    puddle: {
+      key: 'interactPuddle',
+      cb: this.interactPuddle,
+      manualSetup: true
     }
   }
 
@@ -187,8 +193,8 @@ class BuildingScene extends BaseScene {
       .setInteractive()
 
     this.puddle = this.physics.add
-      .staticImage(630, 710, IMAGES.FLOOR.KEY)
-      .setScale(2.5, 0.9)
+      .staticImage(600, 700, IMAGES.FLOOR.KEY)
+      .setScale(1.5, 0.9)
       .setAlpha(0, 0, 0, 0)
       .refreshBody()
       .setInteractive()
@@ -298,14 +304,29 @@ class BuildingScene extends BaseScene {
 
   private setUpWaterCollector() {
     this.startCutscene()
+    this.setupEvent('puddle')
     this.survivor.setDestination(650)
     this.physics.moveTo(this.survivor, 590, this.survivor.y, 100)
-    this.removeItem(this.currentObject)
-    this.waterCollector = this.physics.add
-      .staticImage(605, 665, IMAGES.BUCKET.KEY)
-      .refreshBody()
-      .setInteractive()
-    return this.createDialog('Water collector set!')
+  }
+
+  private interactPuddle() {
+    if (!this.hasWaterCollector) {
+      this.survivor.stop()
+      this.removeItem({ id: 'bucket' })
+      this.waterCollector = this.physics.add
+        .staticImage(605, 665, IMAGES.BUCKET.KEY)
+        .refreshBody()
+        .setInteractive()
+      this.createDialog('Water collector set!')
+      this.hasWaterCollector = true
+
+      this.sys.events.off(
+        this.interact.puddle.key,
+        this.interact.puddle.cb,
+        this,
+        false
+      )
+    }
   }
 }
 
