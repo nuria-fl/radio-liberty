@@ -62,13 +62,25 @@ export class BaseScene extends Phaser.Scene {
 
   public setupEvent(key: string) {
     this[key].on('pointerup', () => {
-      if (!this.playingCutscene || this.interact[key].manualSetup) {
+      if (!this.playingCutscene) {
         this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
       }
     })
     this.physics.add.overlap(this.survivor, this[key], () => {
       this.sys.events.emit(this.interact[key].key)
+      if (!this.interact[key].permanent) {
+        this.offEvent(key)
+      }
     })
+  }
+
+  private offEvent(key: string) {
+    this.sys.events.off(
+      this.interact[key].key,
+      this.interact[key].cb,
+      this,
+      false
+    )
   }
 
   private addListeners() {

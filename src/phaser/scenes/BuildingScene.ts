@@ -64,9 +64,12 @@ class BuildingScene extends BaseScene {
   public waterCollector: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
   public puddle: Physics.Arcade.Image
+  public pit: Physics.Arcade.Image
+  public wall: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
+  public initWaterCollectorSetup = false
   public hasWaterCollector = false
 
   public interact = {
@@ -80,7 +83,8 @@ class BuildingScene extends BaseScene {
     },
     ladder: {
       key: 'interactLadder',
-      cb: this.interactLadder
+      cb: this.interactLadder,
+      permanent: true
     },
     wood: {
       key: 'interactWood',
@@ -88,8 +92,15 @@ class BuildingScene extends BaseScene {
     },
     puddle: {
       key: 'interactPuddle',
-      cb: this.interactPuddle,
-      manualSetup: true
+      cb: this.interactPuddle
+    },
+    wall: {
+      key: 'interactWall',
+      cb: this.interactWall
+    },
+    pit: {
+      key: 'interactPit',
+      cb: this.interactPit
     }
   }
 
@@ -199,6 +210,20 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.pit = this.physics.add
+      .staticImage(885, 660, IMAGES.FLOOR.KEY)
+      .setScale(1.5, 0.9)
+      .setAlpha(0, 0, 0, 0)
+      .refreshBody()
+      .setInteractive()
+
+    this.wall = this.physics.add
+      .staticImage(935, 540, IMAGES.FLOOR.KEY)
+      .setScale(4, 2)
+      .setAlpha(0, 0, 0, 0)
+      .refreshBody()
+      .setInteractive()
+
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
     this.dropAnimation = this.tweens.add({
@@ -226,6 +251,9 @@ class BuildingScene extends BaseScene {
     this.setupEvent('bucket')
     this.setupEvent('ladder')
     this.setupEvent('wood')
+    this.setupEvent('puddle')
+    this.setupEvent('wall')
+    this.setupEvent('pit')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
@@ -260,13 +288,6 @@ class BuildingScene extends BaseScene {
       pickUp('bucket')
 
       this.bucket.destroy()
-
-      this.sys.events.off(
-        this.interact.bucket.key,
-        this.interact.bucket.cb,
-        this,
-        false
-      )
     }
   }
 
@@ -277,13 +298,6 @@ class BuildingScene extends BaseScene {
       pickUp('wood')
 
       this.wood.destroy()
-
-      this.sys.events.off(
-        this.interact.bucket.key,
-        this.interact.bucket.cb,
-        this,
-        false
-      )
     }
   }
 
@@ -304,12 +318,16 @@ class BuildingScene extends BaseScene {
 
   private setUpWaterCollector() {
     this.startCutscene()
-    this.setupEvent('puddle')
     this.survivor.setDestination(650)
     this.physics.moveTo(this.survivor, 590, this.survivor.y, 100)
+
+    this.sys.events.on('setWaterCollector', this.buildWaterCollector, this)
+    this.physics.add.overlap(this.survivor, this.puddle, () => {
+      this.sys.events.emit('setWaterCollector')
+    })
   }
 
-  private interactPuddle() {
+  private buildWaterCollector() {
     if (!this.hasWaterCollector) {
       this.survivor.stop()
       this.removeItem({ id: 'bucket' })
@@ -319,14 +337,35 @@ class BuildingScene extends BaseScene {
         .setInteractive()
       this.createDialog('Water collector set!')
       this.hasWaterCollector = true
+      this.initWaterCollectorSetup = false
 
       this.sys.events.off(
-        this.interact.puddle.key,
-        this.interact.puddle.cb,
+        'setWaterCollector',
+        this.buildWaterCollector,
         this,
         false
       )
     }
+  }
+
+  private interactPuddle() {
+    if (this.hasWaterCollector) {
+      this.createDialog('It will be full in a while.')
+    } else {
+      this.createDialog('So much water lost...')
+    }
+  }
+
+  private interactWall() {
+    this.createDialog(
+      'Someone has written the name "Libby" all over the wall... Geez, what a creep.'
+    )
+  }
+
+  private interactPit() {
+    this.createDialog(
+      'Perfect place to build a fire, if I can find something to burn'
+    )
   }
 }
 
