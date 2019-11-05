@@ -50,6 +50,30 @@ class BuildingScene extends BaseScene {
         }
         return this.createDialog(randomLine())
       }
+    },
+    wall: {
+      setText: null,
+      name: 'Wall',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    pit: {
+      setText: null,
+      name: 'Pit',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
+    wood: {
+      setText: null,
+      name: 'Wood',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
     }
   }
 
@@ -285,6 +309,8 @@ class BuildingScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
+      this.createDialog('A bucket. Convenient.')
+
       pickUp('bucket')
 
       this.bucket.destroy()
@@ -294,6 +320,8 @@ class BuildingScene extends BaseScene {
   private interactWood() {
     if (!this.playingCutscene) {
       this.survivor.stop()
+
+      this.createDialog('Dry wood, lucky me!')
 
       pickUp('wood')
 
