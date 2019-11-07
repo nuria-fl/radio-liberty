@@ -16,14 +16,14 @@ import Buggy from '../sprites/Buggy'
 class BuildingScene extends BaseScene {
   public use = {
     ...this.use,
-    // buggy: {
-    //   setText: null,
-    //   name: 'Buggy',
-    //   use: () => {
-    //     this.interactingWithObject = true
-    //     return this.createDialog(randomLine())
-    //   }
-    // },
+    buggy: {
+      setText: null,
+      name: 'Buggy',
+      use: () => {
+        this.interactingWithObject = true
+        return this.createDialog(randomLine())
+      }
+    },
     ladder: {
       setText: null,
       name: 'Ladder',
@@ -98,10 +98,10 @@ class BuildingScene extends BaseScene {
   public hasWaterCollector = false
 
   public interact = {
-    // buggy: {
-    //   key: 'interactBuggy',
-    //   cb: this.interactAtBuggy
-    // }
+    buggy: {
+      key: 'interactBuggy',
+      cb: this.interactBuggy
+    },
     bucket: {
       key: 'interactBucket',
       cb: this.interactBucket
@@ -291,6 +291,7 @@ class BuildingScene extends BaseScene {
     this.setupEvent('wall')
     this.setupEvent('pit')
     this.setupEvent('antennas')
+    this.setupEvent('buggy')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
@@ -435,6 +436,10 @@ class BuildingScene extends BaseScene {
         )
       }
     })
+  }
+
+  private interactBuggy() {
+    this.createDialog('Not much more I can do to fix it today.')
   }
 }
 
