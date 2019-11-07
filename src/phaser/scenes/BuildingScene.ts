@@ -90,6 +90,7 @@ class BuildingScene extends BaseScene {
   public puddle: Physics.Arcade.Image
   public pit: Physics.Arcade.Image
   public wall: Physics.Arcade.Image
+  public antennas: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
@@ -125,6 +126,10 @@ class BuildingScene extends BaseScene {
     pit: {
       key: 'interactPit',
       cb: this.interactPit
+    },
+    antennas: {
+      key: 'interactAntennas',
+      cb: this.interactAntennas
     }
   }
 
@@ -248,6 +253,13 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.antennas = this.physics.add
+      .staticImage(180, 325, IMAGES.FLOOR.KEY)
+      .setScale(5.8, 8)
+      .setAlpha(0, 0, 0, 0)
+      .refreshBody()
+      .setInteractive()
+
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
     this.dropAnimation = this.tweens.add({
@@ -278,6 +290,7 @@ class BuildingScene extends BaseScene {
     this.setupEvent('puddle')
     this.setupEvent('wall')
     this.setupEvent('pit')
+    this.setupEvent('antennas')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
@@ -394,6 +407,34 @@ class BuildingScene extends BaseScene {
     this.createDialog(
       'Perfect place to build a fire, if I can find something to burn'
     )
+  }
+
+  private interactAntennas() {
+    const focusBack = () => {
+      this.cameras.main.pan(
+        this.survivor.x,
+        this.survivor.y,
+        1000,
+        'Linear',
+        false,
+        (_, progress) => {
+          if (progress === 1) {
+            this.cameras.main.startFollow(this.survivor)
+            this.stopCutscene()
+          }
+        }
+      )
+    }
+    this.startCutscene()
+    this.cameras.main.stopFollow()
+    this.cameras.main.pan(0, 0, 1000, 'Linear', false, (_, progress) => {
+      if (progress === 1) {
+        this.createDialog(
+          'Hmm, looks like they are active. I wonder what they are for.',
+          focusBack
+        )
+      }
+    })
   }
 }
 
