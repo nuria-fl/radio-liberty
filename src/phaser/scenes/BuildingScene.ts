@@ -64,6 +64,9 @@ class BuildingScene extends BaseScene {
       name: 'Pit',
       use: () => {
         this.interactingWithObject = true
+        if (this.currentObject.id === 'wood') {
+          return this.setUpFire()
+        }
         return this.createDialog(randomLine())
       }
     },
@@ -94,8 +97,8 @@ class BuildingScene extends BaseScene {
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
-  public initWaterCollectorSetup = false
   public hasWaterCollector = false
+  public hasFire = false
 
   public interact = {
     buggy: {
@@ -137,10 +140,6 @@ class BuildingScene extends BaseScene {
     super({
       key: SCENES.BUILDING
     })
-  }
-
-  public createDialog(text, cb = null) {
-    createDialogBox(text, cb, this)
   }
 
   public initCutscene() {
@@ -379,7 +378,6 @@ class BuildingScene extends BaseScene {
         .setInteractive()
       this.createDialog('Water collector set!')
       this.hasWaterCollector = true
-      this.initWaterCollectorSetup = false
 
       this.sys.events.off(
         'setWaterCollector',
@@ -387,6 +385,30 @@ class BuildingScene extends BaseScene {
         this,
         false
       )
+    }
+  }
+
+  private setUpFire() {
+    this.startCutscene()
+    this.survivor.setDestination(885)
+    this.physics.moveTo(this.survivor, 885, this.survivor.y, 100)
+
+    this.sys.events.on('setFire', this.buildFire, this)
+    this.physics.add.overlap(this.survivor, this.pit, () => {
+      this.sys.events.emit('setFire')
+    })
+  }
+
+  private buildFire() {
+    if (!this.hasFire) {
+      this.survivor.stop()
+
+      this.removeItem({ id: 'wood' })
+      // TODO: Add fire sprite
+      this.createDialog('Fire is burning!')
+      this.hasFire = true
+
+      this.sys.events.off('setFire', this.buildFire, this, false)
     }
   }
 
@@ -405,9 +427,13 @@ class BuildingScene extends BaseScene {
   }
 
   private interactPit() {
-    this.createDialog(
-      'Perfect place to build a fire, if I can find something to burn'
-    )
+    if (this.hasFire) {
+      this.createDialog('It should last all night.')
+    } else {
+      this.createDialog(
+        'Perfect place to build a fire, if I can find something to burn'
+      )
+    }
   }
 
   private interactAntennas() {
