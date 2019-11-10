@@ -62,6 +62,10 @@ export const IMAGES = {
   DROP: {
     KEY: 'DROP',
     FILE: 'drop.png'
+  },
+  ROCK: {
+    KEY: 'ROCK',
+    FILE: 'rock.png'
   }
 }
 

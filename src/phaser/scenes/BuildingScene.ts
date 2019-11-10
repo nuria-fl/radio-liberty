@@ -77,6 +77,17 @@ class BuildingScene extends BaseScene {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
       }
+    },
+    rock: {
+      setText: null,
+      name: 'Rock',
+      use: () => {
+        this.interactingWithObject = true
+        if (this.currentObject.id === 'pinecone') {
+          return this.getNuts()
+        }
+        return this.createDialog(randomLine())
+      }
     }
   }
 
@@ -94,6 +105,7 @@ class BuildingScene extends BaseScene {
   public pit: Physics.Arcade.Image
   public wall: Physics.Arcade.Image
   public antennas: Physics.Arcade.Image
+  public rock: Physics.Arcade.Image
   public drop: Phaser.GameObjects.Image
   public dropAnimation: Phaser.Tweens.Tween
   public isUpstairs = false
@@ -117,6 +129,10 @@ class BuildingScene extends BaseScene {
     wood: {
       key: 'interactWood',
       cb: this.interactWood
+    },
+    rock: {
+      key: 'interactRock',
+      cb: this.interactRock
     },
     puddle: {
       key: 'interactPuddle',
@@ -186,6 +202,7 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
+    this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
   }
@@ -228,6 +245,11 @@ class BuildingScene extends BaseScene {
 
     this.wood = this.physics.add
       .staticImage(820, 340, IMAGES.WOOD.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.rock = this.physics.add
+      .staticImage(415, 625, IMAGES.ROCK.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -274,7 +296,7 @@ class BuildingScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       key: IMAGES.BUGGY.KEY,
-      x: 400,
+      x: 100,
       y: 600
     })
     this.buggy.play('buggy-parked')
@@ -291,6 +313,7 @@ class BuildingScene extends BaseScene {
     this.setupEvent('pit')
     this.setupEvent('antennas')
     this.setupEvent('buggy')
+    this.setupEvent('rock')
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
@@ -466,6 +489,30 @@ class BuildingScene extends BaseScene {
 
   private interactBuggy() {
     this.createDialog('Not much more I can do to fix it today.')
+  }
+
+  private interactRock() {
+    this.createDialog("I don't want to carry a rock around.")
+  }
+
+  private getNuts() {
+    this.startCutscene()
+    this.survivor.setDestination(415)
+    this.physics.moveTo(this.survivor, 415, this.survivor.y, 100)
+
+    const crackNuts = () => {
+      this.survivor.stop()
+      this.removeItem({ id: 'pinecone' })
+      pickUp('nuts')
+      this.createDialog('Yes! Delicious pine nuts')
+
+      this.sys.events.off('crackNuts', crackNuts, this, false)
+    }
+
+    this.sys.events.on('crackNuts', crackNuts, this)
+    this.physics.add.overlap(this.survivor, this.rock, () => {
+      this.sys.events.emit('crackNuts')
+    })
   }
 }
 

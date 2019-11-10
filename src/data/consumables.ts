@@ -14,6 +14,20 @@ export default [
     daysToPerish: 5
   },
   {
+    id: 'nuts',
+    name: 'Pine nuts',
+    description: 'Energy',
+    action: 'scavenge',
+    value: {
+      health: 0,
+      food: 10,
+      water: 0,
+      energy: 5
+    },
+    risk: 0,
+    daysToPerish: 5
+  },
+  {
     id: 'meat',
     name: 'Raw meat',
     description: 'Careful, might have parasites!',
