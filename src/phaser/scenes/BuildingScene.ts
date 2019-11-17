@@ -111,6 +111,7 @@ class BuildingScene extends BaseScene {
   public isUpstairs = false
   public hasWaterCollector = false
   public hasFire = false
+  public encounterHappened = false
 
   public interact = {
     buggy: {
@@ -315,6 +316,12 @@ class BuildingScene extends BaseScene {
     this.setupEvent('buggy')
     this.setupEvent('rock')
 
+    this.wood.on('pointerup', () => {
+      if (!this.encounterHappened) {
+        this.startEncounter()
+      }
+    })
+
     this.cameras.main.setBounds(0, 0, 1280, 800)
     this.cameras.main.fadeIn()
 
@@ -339,6 +346,25 @@ class BuildingScene extends BaseScene {
   public update() {
     this.physics.world.gravity.y = 800
     this.survivor.update()
+  }
+
+  private startEncounter() {
+    this.survivor.stop()
+    this.startCutscene()
+
+    this.survivor.moveTo(1000, 'left').then(() => {
+      const dialog1 = () => this.createDialog('Oh… Hello', dialog2)
+      const dialog2 = () => this.createDialog('* Growl *', dialog3)
+      const dialog3 = () =>
+        this.createDialog(
+          "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
+          () => {
+            // this.startCutscene()
+            this.encounterHappened = true
+          }
+        )
+      this.createDialog('* Growl *', dialog1)
+    })
   }
 
   private interactBucket() {
