@@ -382,57 +382,31 @@ class BuildingScene extends BaseScene {
 
   private setUpWaterCollector() {
     this.startCutscene()
-    this.survivor.setDestination(650)
-    this.physics.moveTo(this.survivor, 590, this.survivor.y, 100)
-
-    this.sys.events.on('setWaterCollector', this.buildWaterCollector, this)
-    this.physics.add.overlap(this.survivor, this.puddle, () => {
-      this.sys.events.emit('setWaterCollector')
+    this.survivor.moveTo(650, 'left').then(() => {
+      if (!this.hasWaterCollector) {
+        this.survivor.stop()
+        this.removeItem({ id: 'bucket' })
+        this.waterCollector = this.physics.add
+          .staticImage(605, 665, IMAGES.BUCKET.KEY)
+          .refreshBody()
+          .setInteractive()
+        this.createDialog('Water collector set!')
+        this.hasWaterCollector = true
+      }
     })
-  }
-
-  private buildWaterCollector() {
-    if (!this.hasWaterCollector) {
-      this.survivor.stop()
-      this.removeItem({ id: 'bucket' })
-      this.waterCollector = this.physics.add
-        .staticImage(605, 665, IMAGES.BUCKET.KEY)
-        .refreshBody()
-        .setInteractive()
-      this.createDialog('Water collector set!')
-      this.hasWaterCollector = true
-
-      this.sys.events.off(
-        'setWaterCollector',
-        this.buildWaterCollector,
-        this,
-        false
-      )
-    }
   }
 
   private setUpFire() {
     this.startCutscene()
-    this.survivor.setDestination(885)
-    this.physics.moveTo(this.survivor, 885, this.survivor.y, 100)
-
-    this.sys.events.on('setFire', this.buildFire, this)
-    this.physics.add.overlap(this.survivor, this.pit, () => {
-      this.sys.events.emit('setFire')
+    this.survivor.moveTo(885, 'left').then(() => {
+      if (!this.hasFire) {
+        this.survivor.stop()
+        this.removeItem({ id: 'wood' })
+        // TODO: Add fire sprite
+        this.createDialog('Fire is burning!')
+        this.hasFire = true
+      }
     })
-  }
-
-  private buildFire() {
-    if (!this.hasFire) {
-      this.survivor.stop()
-
-      this.removeItem({ id: 'wood' })
-      // TODO: Add fire sprite
-      this.createDialog('Fire is burning!')
-      this.hasFire = true
-
-      this.sys.events.off('setFire', this.buildFire, this, false)
-    }
   }
 
   private interactPuddle() {
