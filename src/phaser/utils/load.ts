@@ -33,16 +33,6 @@ export const preloadStranger = (scene: BaseScene) => {
 }
 
 export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
-  scene.anims.create({
-    key: 'walk',
-    frames: scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
-      start: 0,
-      end: 3
-    }),
-    frameRate: 7,
-    repeat: -1
-  })
-
   return new Survivor({
     scene,
     key: IMAGES.SURVIVOR.KEY,
