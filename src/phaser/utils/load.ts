@@ -21,6 +21,17 @@ export const preloadBuggy = (scene: BaseScene) => {
   })
 }
 
+export const preloadStranger = (scene: BaseScene) => {
+  scene.load.spritesheet(
+    IMAGES.STRANGER.KEY,
+    `/images/${IMAGES.STRANGER.FILE}`,
+    {
+      frameWidth: 32,
+      frameHeight: 100
+    }
+  )
+}
+
 export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
   scene.anims.create({
     key: 'walk',
@@ -42,7 +53,7 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
 
 export const setupInput = (character: Survivor, scene: BaseScene) => {
   scene.input.on('pointerdown', pointer => {
-    if (scene.playingCutscene === false) {
+    if (scene.playingCutscene === false && !character.isDown) {
       // remove all interactions
       Object.keys(scene.interact).forEach(k => {
         scene.sys.events.off(

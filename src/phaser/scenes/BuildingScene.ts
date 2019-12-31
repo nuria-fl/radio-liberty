@@ -7,11 +7,13 @@ import {
   loadSurvivor,
   setupInput,
   preloadBuggy,
-  preloadSurvivor
+  preloadSurvivor,
+  preloadStranger
 } from '../utils/load'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
+import Stranger from '../sprites/Stranger'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -88,11 +90,24 @@ class BuildingScene extends BaseScene {
         }
         return this.createDialog(randomLine())
       }
+    },
+    stranger: {
+      setText: null,
+      name: 'Stranger',
+      use: () => {
+        this.interactingWithObject = true
+
+        if (this.currentObject.id === 'taser') {
+          return this.finishEncounter()
+        }
+        return this.createDialog(randomLine())
+      }
     }
   }
 
   public survivor: Survivor
   public buggy: Buggy
+  public stranger: Stranger
   public platforms: Physics.Arcade.StaticGroup
   public upstairsFloor: Physics.Arcade.Sprite
   public floor: Physics.Arcade.Sprite
@@ -153,6 +168,8 @@ class BuildingScene extends BaseScene {
     }
   }
 
+  private timeout: number
+
   constructor() {
     super({
       key: SCENES.BUILDING
@@ -195,10 +212,22 @@ class BuildingScene extends BaseScene {
     setupInput(this.survivor, this)
   }
 
+  public initStranger() {
+    this.stranger = new Stranger({
+      scene: this,
+      key: IMAGES.STRANGER.KEY,
+      x: 750,
+      y: 340
+    })
+    this.stranger.setInteractive()
+    this.physics.add.collider(this.platforms, this.stranger)
+  }
+
   public preload() {
     this.load.image(IMAGES.BUILDING.KEY, `/images/${IMAGES.BUILDING.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
+    this.load.image(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`)
     this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
@@ -206,6 +235,7 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     preloadBuggy(this)
     preloadSurvivor(this)
+    preloadStranger(this)
   }
 
   public create() {
@@ -244,11 +274,6 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.wood = this.physics.add
-      .staticImage(820, 340, IMAGES.WOOD.KEY)
-      .refreshBody()
-      .setInteractive()
-
     this.rock = this.physics.add
       .staticImage(415, 625, IMAGES.ROCK.KEY)
       .refreshBody()
@@ -282,6 +307,17 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.initSurvivor()
+
+    this.initStranger()
+
+    this.wood = this.physics.add
+      .staticImage(820, 340, IMAGES.WOOD.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.physics.add.staticImage(771, 322, IMAGES.BOXES.KEY)
+
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
     this.dropAnimation = this.tweens.add({
@@ -303,8 +339,6 @@ class BuildingScene extends BaseScene {
     this.buggy.play('buggy-parked')
     this.physics.add.collider(this.platforms, this.buggy)
     this.buggy.setInteractive()
-
-    this.initSurvivor()
 
     this.setupEvent('bucket')
     this.setupEvent('ladder')
@@ -354,16 +388,81 @@ class BuildingScene extends BaseScene {
 
     this.survivor.moveTo(1000, 'left').then(() => {
       const dialog1 = () => this.createDialog('Oh… Hello', dialog2)
-      const dialog2 = () => this.createDialog('* Growl *', dialog3)
+      const dialog2 = () => {
+        this.tweens.add({
+          targets: this.stranger,
+          x: 880,
+          duration: 1000,
+          onComplete: () => {
+            this.createDialog('* Growl *', dialog3)
+          }
+        })
+      }
       const dialog3 = () =>
         this.createDialog(
           "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
-          () => {
-            // this.startCutscene()
-            this.encounterHappened = true
-          }
+          () => this.survivor.moveTo(1050, 'left').then(dialog4)
         )
-      this.createDialog('* Growl *', dialog1)
+
+      const dialog4 = () =>
+        this.createDialog("I don't think I can reason with him.", () => {
+          this.survivor.immobilize()
+          this.encounterHappened = true
+
+          this.timeout = setTimeout(() => {
+            this.strangerAttack().then(() => {
+              this.survivor.die()
+            })
+          }, 10000)
+        })
+
+      this.tweens.add({
+        targets: this.stranger,
+        x: 820,
+        duration: 1000,
+        onComplete: () => {
+          this.createDialog('* Growl *', dialog1)
+        }
+      })
+    })
+  }
+
+  private strangerAttack() {
+    return new Promise(resolve => {
+      this.tweens.add({
+        targets: this.stranger,
+        x: 1000,
+        duration: 10
+      })
+      this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
+        if (progress === 1) {
+          resolve()
+        }
+      })
+    })
+  }
+
+  private finishEncounter() {
+    clearTimeout(this.timeout)
+
+    this.strangerAttack().then(() => {
+      setTimeout(() => {
+        // radio sound
+        this.tweens.add({
+          targets: this.stranger,
+          x: 0,
+          duration: 1000,
+          onComplete: () => {
+            this.stranger.destroy()
+            this.survivor.recover()
+            this.createDialog('... What did just happen?', () =>
+              this.createDialog(
+                "Ugh… No time to think about that, I'm losing a lot of blood."
+              )
+            )
+          }
+        })
+      }, 3000)
     })
   }
 

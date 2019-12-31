@@ -4,6 +4,7 @@ import { BaseScene } from '../scenes/BaseScene'
 export default class Survivor extends Phaser.GameObjects.Sprite {
   public target = null
   public alive = true
+  public isDown = false
   public acceleration = 600
   public body: Phaser.Physics.Arcade.Body
   public walkSound
@@ -22,8 +23,18 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
     this.walkSound = this.scene.sound.add(AUDIO.WALK.KEY)
   }
 
+  public immobilize() {
+    this.isDown = true
+  }
+
+  public recover() {
+    this.isDown = false
+  }
+
   public setDestination(target) {
-    this.target = target - 20
+    if (!this.isDown) {
+      this.target = target - 20
+    }
   }
 
   public stop() {
@@ -35,7 +46,7 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
   }
 
   public update() {
-    if (this.target) {
+    if (this.target && !this.isDown) {
       const movingLeft = this.body.velocity.x < 0
       const movingRight = this.body.velocity.x > 0
       if (!this.anims.isPlaying) {
