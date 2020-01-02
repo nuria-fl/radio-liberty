@@ -10,6 +10,7 @@ export default {
     state.gameOver = true
   },
   startGame(state) {
+    state.started = true
     state.gameOver = false
   },
   pauseGame(state) {

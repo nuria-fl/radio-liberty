@@ -114,8 +114,6 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
           if (face === 'right') {
             this.faceRight()
           } else if (face === 'left') {
-            console.log(face, 'face left')
-
             this.faceLeft()
           }
           resolve()

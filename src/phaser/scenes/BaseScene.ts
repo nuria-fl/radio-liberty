@@ -74,6 +74,10 @@ export class BaseScene extends Phaser.Scene {
     })
   }
 
+  public endGame() {
+    document.dispatchEvent(new CustomEvent('endGame'))
+  }
+
   private offEvent(key: string) {
     this.sys.events.off(
       this.interact[key].key,
@@ -90,7 +94,7 @@ export class BaseScene extends Phaser.Scene {
 
   private handleGameOver() {
     this.startCutscene()
-    this.add.text(100, 100, 'Game over')
+    this.survivor.die()
   }
 
   private handleUseItem(ev: CustomEvent) {

@@ -410,7 +410,7 @@ class BuildingScene extends BaseScene {
 
           this.timeout = setTimeout(() => {
             this.strangerAttack().then(() => {
-              this.survivor.die()
+              this.endGame()
             })
           }, 10000)
         })
