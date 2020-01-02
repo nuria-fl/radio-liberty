@@ -2,7 +2,6 @@ import { SCENES, IMAGES } from '../constants'
 import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
 import { pickUp } from '../utils/inventory'
-import { createDialogBox } from '../utils/dialog'
 import {
   loadSurvivor,
   setupInput,
@@ -183,7 +182,7 @@ class BuildingScene extends BaseScene {
   }
 
   public initSurvivor() {
-    this.survivor = loadSurvivor(this, 1000, 625)
+    this.survivor = loadSurvivor(this, 300, 625)
 
     this.physics.add.collider(
       this.platforms,
@@ -455,6 +454,7 @@ class BuildingScene extends BaseScene {
           onComplete: () => {
             this.stranger.destroy()
             this.survivor.recover()
+            document.dispatchEvent(new CustomEvent('getHurt'))
             this.createDialog('... What did just happen?', () =>
               this.createDialog(
                 "Ugh… No time to think about that, I'm losing a lot of blood."
