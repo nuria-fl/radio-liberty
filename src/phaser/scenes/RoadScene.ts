@@ -1,6 +1,5 @@
 import { Physics } from 'phaser'
 import { BaseScene } from './BaseScene'
-import { DialogService, createDialogBox } from '../utils/dialog'
 import {
   loadSurvivor,
   setupInput,
@@ -147,18 +146,23 @@ class RoadScene extends BaseScene {
       repeat: 0,
       onComplete: () => {
         const finishCutscene = () => {
-          document.dispatchEvent(new CustomEvent('startGame'))
-          this.buggy.play('buggy-parked')
-          this.initEngine()
-          this.initSurvivor()
-          this.setupEvent('roadsign')
-          this.setupEvent('pinecone')
-          this.setupEvent('buggy')
-          this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
+          this.initGame()
         }
         this.createDialog('What the…?\n\n(click to continue)', finishCutscene)
       }
     })
+  }
+
+  private initGame() {
+    document.dispatchEvent(new CustomEvent('startGame'))
+    this.buggy.play('buggy-parked')
+    this.initEngine()
+    this.initSurvivor()
+    this.setupEvent('roadsign')
+    this.setupEvent('pinecone')
+    this.setupEvent('buggy')
+    this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
+    this.stopCutscene()
   }
 
   private initSurvivor() {
@@ -208,29 +212,16 @@ class RoadScene extends BaseScene {
     }
 
     const finishCutscene = () => {
-      this.tweens.add({
-        targets: this.buggy,
-        x: -200,
-        ease: 'Power1',
-        duration: 3000,
-        yoyo: false,
-        repeat: 0,
-        onStart: () => {
-          this.cameras.main.fadeOut()
-        },
-        onComplete: () => {
-          this.scene.add(SCENES.BUILDING, BuildingScene, false)
-          this.scene.start(SCENES.BUILDING)
-        }
-      })
-
-      this.tweens.add({
-        targets: this.survivor,
-        x: -200,
-        ease: 'Power1',
-        duration: 3000,
-        yoyo: false,
-        repeat: 0
+      this.survivor.moveTo(348, 'left').then(() => {
+        this.survivor.anims.play('push')
+        this.survivor.body.setVelocityX(-200)
+        this.buggy.body.setVelocityX(-200)
+        this.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {
+          if (progress === 1) {
+            this.scene.add(SCENES.BUILDING, BuildingScene, false)
+            this.scene.start(SCENES.BUILDING)
+          }
+        })
       })
     }
 
