@@ -55,6 +55,16 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
+    this.scene.anims.create({
+      key: 'fight',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 7,
+        end: 8
+      }),
+      frameRate: 4,
+      repeat: -1
+    })
+
     this.target = null
     this.body.setSize(40, 120)
     this.body.setCollideWorldBounds(true)

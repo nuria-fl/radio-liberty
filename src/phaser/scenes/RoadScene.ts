@@ -213,7 +213,7 @@ class RoadScene extends BaseScene {
 
     const finishCutscene = () => {
       this.survivor.moveTo(348, 'left').then(() => {
-        this.survivor.anims.play('push')
+        this.survivor.play('push')
         this.survivor.body.setVelocityX(-200)
         this.buggy.body.setVelocityX(-200)
         this.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {

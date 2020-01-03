@@ -435,6 +435,7 @@ class BuildingScene extends BaseScene {
       })
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
+          this.survivor.play('fight')
           resolve()
         }
       })
