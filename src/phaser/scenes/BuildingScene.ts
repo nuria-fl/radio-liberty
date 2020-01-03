@@ -448,19 +448,20 @@ class BuildingScene extends BaseScene {
     this.strangerAttack().then(() => {
       setTimeout(() => {
         // radio sound
+        this.survivor.play('getUp')
         this.tweens.add({
           targets: this.stranger,
           x: 0,
           duration: 1000,
           onComplete: () => {
             this.stranger.destroy()
-            this.survivor.recover()
             document.dispatchEvent(new CustomEvent('getHurt'))
-            this.createDialog('... What did just happen?', () =>
+            this.createDialog('... What did just happen?', () => {
+              this.survivor.recover()
               this.createDialog(
                 "Ugh… No time to think about that, I'm losing a lot of blood."
               )
-            )
+            })
           }
         })
       }, 3000)
