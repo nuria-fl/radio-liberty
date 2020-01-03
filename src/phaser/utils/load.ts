@@ -7,7 +7,7 @@ export const preloadSurvivor = (scene: BaseScene) => {
     IMAGES.SURVIVOR.KEY,
     `/images/${IMAGES.SURVIVOR.FILE}`,
     {
-      frameWidth: 40,
+      frameWidth: 132,
       frameHeight: 120
     }
   )

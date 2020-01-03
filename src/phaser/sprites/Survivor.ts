@@ -36,6 +36,15 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
+    this.scene.anims.create({
+      key: 'dead',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 4,
+        end: 4
+      }),
+      repeat: -1
+    })
+
     this.target = null
     this.body.setSize(40, 120)
     this.body.setCollideWorldBounds(true)
@@ -123,8 +132,8 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
   }
 
   public die() {
-    this.body.setAcceleration(0, 0)
-    this.body.setVelocity(0, -300)
+    this.stop()
+    this.anims.play('dead')
     this.alive = false
   }
 }
