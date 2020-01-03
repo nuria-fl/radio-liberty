@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
+import { mapState, mapActions, mapMutations } from 'vuex'
 import eventBus from '@/utils/eventBus'
 
 export default {
@@ -33,6 +33,8 @@ export default {
   },
   mounted() {
     document.addEventListener('gameStatusChange', this.handleGameStatusChange)
+    document.addEventListener('getHurt', this.handleHurt)
+    document.addEventListener('getCured', this.handleCure)
     this.startGameLoop()
   },
   beforeDestroy() {
@@ -41,6 +43,8 @@ export default {
       'gameStatusChange',
       this.handleGameStatusChange
     )
+    document.removeEventListener('getHurt', this.handleHurt)
+    document.removeEventListener('getCured', this.handleCure)
   },
   computed: {
     ...mapState(['stats', 'gameOver', 'paused', 'isSick']),
@@ -49,6 +53,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['getCured', 'getSick']),
     ...mapActions(['decrease']),
     startGameLoop() {
       this.decreaseStats()
@@ -64,6 +69,13 @@ export default {
         this.startGameLoop()
       }
     },
+    handleHurt() {
+      this.decrease({ stat: 'health', amount: 20 })
+      this.getSick()
+    },
+    handleCure() {
+      this.getCured()
+    },
     decreaseStats() {
       const decreaseInterval = 12 * 1000
       this.loop = setTimeout(() => {
@@ -71,7 +83,7 @@ export default {
           this.decrease({ stat: 'water', amount: 3 })
           this.decrease({ stat: 'food', amount: 2 })
           if (this.isSick) {
-            this.decrease({ stat: 'health', amount: 2 })
+            this.decrease({ stat: 'health', amount: 10 })
           }
 
           this.decreaseStats()

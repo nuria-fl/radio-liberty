@@ -7,7 +7,7 @@ export const preloadSurvivor = (scene: BaseScene) => {
     IMAGES.SURVIVOR.KEY,
     `/images/${IMAGES.SURVIVOR.FILE}`,
     {
-      frameWidth: 40,
+      frameWidth: 132,
       frameHeight: 120
     }
   )
@@ -21,17 +21,18 @@ export const preloadBuggy = (scene: BaseScene) => {
   })
 }
 
-export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
-  scene.anims.create({
-    key: 'walk',
-    frames: scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
-      start: 0,
-      end: 3
-    }),
-    frameRate: 7,
-    repeat: -1
-  })
+export const preloadStranger = (scene: BaseScene) => {
+  scene.load.spritesheet(
+    IMAGES.STRANGER.KEY,
+    `/images/${IMAGES.STRANGER.FILE}`,
+    {
+      frameWidth: 32,
+      frameHeight: 100
+    }
+  )
+}
 
+export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
   return new Survivor({
     scene,
     key: IMAGES.SURVIVOR.KEY,
@@ -42,7 +43,7 @@ export const loadSurvivor = (scene: BaseScene, x = 100, y = 510) => {
 
 export const setupInput = (character: Survivor, scene: BaseScene) => {
   scene.input.on('pointerdown', pointer => {
-    if (scene.playingCutscene === false) {
+    if (scene.playingCutscene === false && !character.isDown) {
       // remove all interactions
       Object.keys(scene.interact).forEach(k => {
         scene.sys.events.off(

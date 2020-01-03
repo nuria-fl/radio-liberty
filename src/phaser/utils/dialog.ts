@@ -167,6 +167,9 @@ export class DialogService {
 }
 
 export const createDialogBox = (text: string, cb: any, scene: any) => {
+  if (scene.survivor) {
+    scene.survivor.stop()
+  }
   scene.startCutscene()
   scene.dialog.init()
   scene.dialog.setText(text)

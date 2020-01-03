@@ -19,6 +19,10 @@ export const IMAGES = {
     KEY: 'SURVIVOR',
     FILE: 'survivor.png'
   },
+  STRANGER: {
+    KEY: 'STRANGER',
+    FILE: 'stranger.png'
+  },
   BUGGY: {
     KEY: 'BUGGY',
     FILE: 'buggy.png'
@@ -47,6 +51,10 @@ export const IMAGES = {
     KEY: 'LADDER',
     FILE: 'ladder.png'
   },
+  BOXES: {
+    KEY: 'BOXES',
+    FILE: 'boxes.png'
+  },
   BUCKET: {
     KEY: 'BUCKET',
     FILE: 'bucket.png'
@@ -62,6 +70,10 @@ export const IMAGES = {
   DROP: {
     KEY: 'DROP',
     FILE: 'drop.png'
+  },
+  ROCK: {
+    KEY: 'ROCK',
+    FILE: 'rock.png'
   }
 }
 
