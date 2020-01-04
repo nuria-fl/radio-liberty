@@ -13,6 +13,7 @@ import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
 import Stranger from '../sprites/Stranger'
+import Firepit from '../sprites/Firepit'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -62,7 +63,7 @@ class BuildingScene extends BaseScene {
     },
     pit: {
       setText: null,
-      name: 'Pit',
+      name: 'Fire pit',
       use: () => {
         this.interactingWithObject = true
         if (this.currentObject.id === 'wood') {
@@ -116,7 +117,7 @@ class BuildingScene extends BaseScene {
   public waterCollector: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
   public puddle: Physics.Arcade.Image
-  public pit: Physics.Arcade.Image
+  public pit: Firepit
   public wall: Physics.Arcade.Image
   public antennas: Physics.Arcade.Image
   public rock: Physics.Arcade.Image
@@ -232,6 +233,14 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
+    this.load.spritesheet(
+      IMAGES.FIREPIT.KEY,
+      `/images/${IMAGES.FIREPIT.FILE}`,
+      {
+        frameWidth: 84,
+        frameHeight: 60
+      }
+    )
     preloadBuggy(this)
     preloadSurvivor(this)
     preloadStranger(this)
@@ -286,12 +295,15 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.pit = this.physics.add
-      .staticImage(885, 660, IMAGES.FLOOR.KEY)
-      .setScale(1.5, 0.9)
-      .setAlpha(0, 0, 0, 0)
-      .refreshBody()
-      .setInteractive()
+    this.pit = new Firepit({
+      scene: this,
+      x: 880,
+      y: 653,
+      key: IMAGES.FIREPIT.KEY
+    })
+    this.physics.add.collider(this.platforms, this.pit)
+    this.pit.play('default')
+    this.pit.setInteractive()
 
     this.wall = this.physics.add
       .staticImage(935, 540, IMAGES.FLOOR.KEY)
@@ -533,6 +545,7 @@ class BuildingScene extends BaseScene {
         // TODO: Add fire sprite
         this.createDialog('Fire is burning!')
         this.hasFire = true
+        this.pit.play('burning')
       }
     })
   }

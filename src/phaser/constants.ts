@@ -47,6 +47,10 @@ export const IMAGES = {
     KEY: 'BUILDING',
     FILE: 'building.png'
   },
+  FIREPIT: {
+    KEY: 'FIREPIT',
+    FILE: 'fireplace.png'
+  },
   LADDER: {
     KEY: 'LADDER',
     FILE: 'ladder.png'
