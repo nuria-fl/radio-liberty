@@ -200,6 +200,7 @@ class RoadScene extends BaseScene {
     ]
 
     const startFinishCutscene = () => {
+      this.survivor.play('backwards')
       this.createDialog(speech[0], dialog2)
     }
 

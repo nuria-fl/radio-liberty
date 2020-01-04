@@ -190,6 +190,7 @@ class BuildingScene extends BaseScene {
       this.survivor,
       (survivor: Survivor, platform: Physics.Arcade.Sprite) => {
         if (platform.y > 600 && this.isUpstairs) {
+          this.survivor.play('stand')
           this.isUpstairs = false
           this.sys.events.off(
             this.interact.ladder.key,
@@ -198,6 +199,7 @@ class BuildingScene extends BaseScene {
             false
           )
         } else if (survivor.body.y < 350 && !this.isUpstairs) {
+          this.survivor.play('stand')
           this.isUpstairs = true
           this.sys.events.off(
             this.interact.ladder.key,
@@ -507,8 +509,15 @@ class BuildingScene extends BaseScene {
 
   private interactLadder() {
     if (!this.playingCutscene) {
-      this.survivor.stop()
-
+      if (this.survivor.body.velocity.x !== 0) {
+        this.survivor.stop()
+      }
+      if (
+        !this.survivor.anims.currentAnim ||
+        this.survivor.anims.currentAnim.key !== 'climbing'
+      ) {
+        this.survivor.play('climbing')
+      }
       if (this.isUpstairs) {
         this.upstairsFloor.body.checkCollision.up = false
         this.survivor.body.setVelocityY(400)
