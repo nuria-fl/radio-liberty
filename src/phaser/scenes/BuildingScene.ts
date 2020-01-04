@@ -254,6 +254,7 @@ class BuildingScene extends BaseScene {
 
     this.platforms.create(680, 365, IMAGES.FLOOR.KEY, null, false)
     this.platforms.create(1278, 365, IMAGES.FLOOR.KEY, null, false)
+    this.platforms.create(740, 425, IMAGES.FLOOR.KEY, null, false)
 
     this.upstairsFloor = this.platforms
       .create(710, 395, IMAGES.FLOOR.KEY, null, false)
