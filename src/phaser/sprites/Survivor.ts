@@ -45,6 +45,54 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
+    this.scene.anims.create({
+      key: 'push',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 5,
+        end: 6
+      }),
+      frameRate: 4,
+      repeat: -1
+    })
+
+    this.scene.anims.create({
+      key: 'fight',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 7,
+        end: 8
+      }),
+      frameRate: 4,
+      repeat: -1
+    })
+
+    this.scene.anims.create({
+      key: 'getUp',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 9,
+        end: 9
+      }),
+      repeat: -1
+    })
+
+    this.scene.anims.create({
+      key: 'backwards',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 10,
+        end: 10
+      }),
+      repeat: -1
+    })
+
+    this.scene.anims.create({
+      key: 'climbing',
+      frames: this.scene.anims.generateFrameNumbers(IMAGES.SURVIVOR.KEY, {
+        start: 11,
+        end: 12
+      }),
+      frameRate: 4,
+      repeat: -1
+    })
+
     this.target = null
     this.body.setSize(40, 120)
     this.body.setCollideWorldBounds(true)
@@ -70,7 +118,13 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
     this.body.velocity.x = 0
     this.target = null
     this.walkSound.stop()
-    this.anims.play('stand')
+    const stoppableAnimations = ['walk', 'climbing']
+    if (
+      !this.anims.currentAnim ||
+      stoppableAnimations.includes(this.anims.currentAnim.key)
+    ) {
+      this.anims.play('stand')
+    }
   }
 
   public update() {

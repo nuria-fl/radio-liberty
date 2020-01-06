@@ -13,6 +13,7 @@ import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
 import Stranger from '../sprites/Stranger'
+import Firepit from '../sprites/Firepit'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -62,7 +63,7 @@ class BuildingScene extends BaseScene {
     },
     pit: {
       setText: null,
-      name: 'Pit',
+      name: 'Fire pit',
       use: () => {
         this.interactingWithObject = true
         if (this.currentObject.id === 'wood') {
@@ -116,7 +117,7 @@ class BuildingScene extends BaseScene {
   public waterCollector: Physics.Arcade.Image
   public wood: Physics.Arcade.Image
   public puddle: Physics.Arcade.Image
-  public pit: Physics.Arcade.Image
+  public pit: Firepit
   public wall: Physics.Arcade.Image
   public antennas: Physics.Arcade.Image
   public rock: Physics.Arcade.Image
@@ -189,6 +190,7 @@ class BuildingScene extends BaseScene {
       this.survivor,
       (survivor: Survivor, platform: Physics.Arcade.Sprite) => {
         if (platform.y > 600 && this.isUpstairs) {
+          this.survivor.play('stand')
           this.isUpstairs = false
           this.sys.events.off(
             this.interact.ladder.key,
@@ -197,6 +199,7 @@ class BuildingScene extends BaseScene {
             false
           )
         } else if (survivor.body.y < 350 && !this.isUpstairs) {
+          this.survivor.play('stand')
           this.isUpstairs = true
           this.sys.events.off(
             this.interact.ladder.key,
@@ -232,6 +235,14 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
+    this.load.spritesheet(
+      IMAGES.FIREPIT.KEY,
+      `/images/${IMAGES.FIREPIT.FILE}`,
+      {
+        frameWidth: 84,
+        frameHeight: 60
+      }
+    )
     preloadBuggy(this)
     preloadSurvivor(this)
     preloadStranger(this)
@@ -254,6 +265,7 @@ class BuildingScene extends BaseScene {
 
     this.platforms.create(680, 365, IMAGES.FLOOR.KEY, null, false)
     this.platforms.create(1278, 365, IMAGES.FLOOR.KEY, null, false)
+    this.platforms.create(740, 425, IMAGES.FLOOR.KEY, null, false)
 
     this.upstairsFloor = this.platforms
       .create(710, 395, IMAGES.FLOOR.KEY, null, false)
@@ -285,12 +297,15 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.pit = this.physics.add
-      .staticImage(885, 660, IMAGES.FLOOR.KEY)
-      .setScale(1.5, 0.9)
-      .setAlpha(0, 0, 0, 0)
-      .refreshBody()
-      .setInteractive()
+    this.pit = new Firepit({
+      scene: this,
+      x: 880,
+      y: 653,
+      key: IMAGES.FIREPIT.KEY
+    })
+    this.physics.add.collider(this.platforms, this.pit)
+    this.pit.play('default')
+    this.pit.setInteractive()
 
     this.wall = this.physics.add
       .staticImage(935, 540, IMAGES.FLOOR.KEY)
@@ -435,6 +450,7 @@ class BuildingScene extends BaseScene {
       })
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
+          this.survivor.play('fight')
           resolve()
         }
       })
@@ -447,19 +463,20 @@ class BuildingScene extends BaseScene {
     this.strangerAttack().then(() => {
       setTimeout(() => {
         // radio sound
+        this.survivor.play('getUp')
         this.tweens.add({
           targets: this.stranger,
           x: 0,
           duration: 1000,
           onComplete: () => {
             this.stranger.destroy()
-            this.survivor.recover()
             document.dispatchEvent(new CustomEvent('getHurt'))
-            this.createDialog('... What did just happen?', () =>
+            this.createDialog('... What did just happen?', () => {
+              this.survivor.recover()
               this.createDialog(
                 "Ugh… No time to think about that, I'm losing a lot of blood."
               )
-            )
+            })
           }
         })
       }, 3000)
@@ -492,8 +509,15 @@ class BuildingScene extends BaseScene {
 
   private interactLadder() {
     if (!this.playingCutscene) {
-      this.survivor.stop()
-
+      if (this.survivor.body.velocity.x !== 0) {
+        this.survivor.stop()
+      }
+      if (
+        !this.survivor.anims.currentAnim ||
+        this.survivor.anims.currentAnim.key !== 'climbing'
+      ) {
+        this.survivor.play('climbing')
+      }
       if (this.isUpstairs) {
         this.upstairsFloor.body.checkCollision.up = false
         this.survivor.body.setVelocityY(400)
@@ -530,6 +554,7 @@ class BuildingScene extends BaseScene {
         // TODO: Add fire sprite
         this.createDialog('Fire is burning!')
         this.hasFire = true
+        this.pit.play('burning')
       }
     })
   }
