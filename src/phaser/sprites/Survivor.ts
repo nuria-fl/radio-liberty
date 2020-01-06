@@ -106,6 +106,7 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
 
   public recover() {
     this.isDown = false
+    this.anims.play('stand')
   }
 
   public setDestination(target) {

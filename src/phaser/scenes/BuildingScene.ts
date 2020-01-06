@@ -1,4 +1,4 @@
-import { SCENES, IMAGES } from '../constants'
+import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
 import { pickUp } from '../utils/inventory'
@@ -105,29 +105,6 @@ class BuildingScene extends BaseScene {
     }
   }
 
-  public survivor: Survivor
-  public buggy: Buggy
-  public stranger: Stranger
-  public platforms: Physics.Arcade.StaticGroup
-  public upstairsFloor: Physics.Arcade.Sprite
-  public floor: Physics.Arcade.Sprite
-  public engine: any
-  public ladder: Physics.Arcade.Image
-  public bucket: Physics.Arcade.Image
-  public waterCollector: Physics.Arcade.Image
-  public wood: Physics.Arcade.Image
-  public puddle: Physics.Arcade.Image
-  public pit: Firepit
-  public wall: Physics.Arcade.Image
-  public antennas: Physics.Arcade.Image
-  public rock: Physics.Arcade.Image
-  public drop: Phaser.GameObjects.Image
-  public dropAnimation: Phaser.Tweens.Tween
-  public isUpstairs = false
-  public hasWaterCollector = false
-  public hasFire = false
-  public encounterHappened = false
-
   public interact = {
     buggy: {
       key: 'interactBuggy',
@@ -168,6 +145,31 @@ class BuildingScene extends BaseScene {
     }
   }
 
+  public survivor: Survivor
+  private buggy: Buggy
+  private stranger: Stranger
+  private platforms: Physics.Arcade.StaticGroup
+  private upstairsFloor: Physics.Arcade.Sprite
+  private floor: Physics.Arcade.Sprite
+  private engine: any
+  private ladder: Physics.Arcade.Image
+  private bucket: Physics.Arcade.Image
+  private waterCollector: Physics.Arcade.Image
+  private wood: Physics.Arcade.Image
+  private puddle: Physics.Arcade.Image
+  private pit: Firepit
+  private wall: Physics.Arcade.Image
+  private antennas: Physics.Arcade.Image
+  private rock: Physics.Arcade.Image
+  private drop: Phaser.GameObjects.Image
+  private dropAnimation: Phaser.Tweens.Tween
+  private isUpstairs = false
+  private hasWaterCollector = false
+  private hasFire = false
+  private encounterHappened = false
+  private fireAudio: Phaser.Sound.BaseSound
+  private staticAudio: Phaser.Sound.BaseSound
+  private dropAudio: Phaser.Sound.BaseSound
   private timeout: number
 
   constructor() {
@@ -176,56 +178,10 @@ class BuildingScene extends BaseScene {
     })
   }
 
-  public initCutscene() {
-    this.createDialog(
-      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
-    )
-  }
-
-  public initSurvivor() {
-    this.survivor = loadSurvivor(this, 300, 625)
-
-    this.physics.add.collider(
-      this.platforms,
-      this.survivor,
-      (survivor: Survivor, platform: Physics.Arcade.Sprite) => {
-        if (platform.y > 600 && this.isUpstairs) {
-          this.survivor.play('stand')
-          this.isUpstairs = false
-          this.sys.events.off(
-            this.interact.ladder.key,
-            this.interact.ladder.cb,
-            this,
-            false
-          )
-        } else if (survivor.body.y < 350 && !this.isUpstairs) {
-          this.survivor.play('stand')
-          this.isUpstairs = true
-          this.sys.events.off(
-            this.interact.ladder.key,
-            this.interact.ladder.cb,
-            this,
-            false
-          )
-        }
-      }
-    )
-
-    setupInput(this.survivor, this)
-  }
-
-  public initStranger() {
-    this.stranger = new Stranger({
-      scene: this,
-      key: IMAGES.STRANGER.KEY,
-      x: 750,
-      y: 340
-    })
-    this.stranger.setInteractive()
-    this.physics.add.collider(this.platforms, this.stranger)
-  }
-
   public preload() {
+    this.load.audio(AUDIO.FIRE.KEY, `/sound/${AUDIO.FIRE.FILE}`)
+    this.load.audio(AUDIO.STATIC.KEY, `/sound/${AUDIO.STATIC.FILE}`)
+    this.load.audio(AUDIO.DROP.KEY, `/sound/${AUDIO.DROP.FILE}`)
     this.load.image(IMAGES.BUILDING.KEY, `/images/${IMAGES.BUILDING.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
@@ -250,6 +206,10 @@ class BuildingScene extends BaseScene {
 
   public create() {
     this.initScene()
+
+    this.fireAudio = this.sound.add(AUDIO.FIRE.KEY)
+    this.staticAudio = this.sound.add(AUDIO.STATIC.KEY)
+    this.dropAudio = this.sound.add(AUDIO.DROP.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING.KEY).setOrigin(0)
 
@@ -341,7 +301,12 @@ class BuildingScene extends BaseScene {
       duration: 600,
       repeatDelay: 2000,
       repeat: -1, // infinity
-      yoyo: false
+      yoyo: false,
+      onRepeat: () => {
+        this.dropAudio.play({
+          volume: 0.5
+        })
+      }
     })
 
     this.buggy = new Buggy({
@@ -394,6 +359,55 @@ class BuildingScene extends BaseScene {
   public update() {
     this.physics.world.gravity.y = 800
     this.survivor.update()
+  }
+
+  private initCutscene() {
+    this.createDialog(
+      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
+    )
+  }
+
+  private initSurvivor() {
+    this.survivor = loadSurvivor(this, 300, 625)
+
+    this.physics.add.collider(
+      this.platforms,
+      this.survivor,
+      (survivor: Survivor, platform: Physics.Arcade.Sprite) => {
+        if (platform.y > 600 && this.isUpstairs) {
+          this.survivor.play('stand')
+          this.isUpstairs = false
+          this.sys.events.off(
+            this.interact.ladder.key,
+            this.interact.ladder.cb,
+            this,
+            false
+          )
+        } else if (survivor.body.y < 350 && !this.isUpstairs) {
+          this.survivor.play('stand')
+          this.isUpstairs = true
+          this.sys.events.off(
+            this.interact.ladder.key,
+            this.interact.ladder.cb,
+            this,
+            false
+          )
+        }
+      }
+    )
+
+    setupInput(this.survivor, this)
+  }
+
+  private initStranger() {
+    this.stranger = new Stranger({
+      scene: this,
+      key: IMAGES.STRANGER.KEY,
+      x: 750,
+      y: 340
+    })
+    this.stranger.setInteractive()
+    this.physics.add.collider(this.platforms, this.stranger)
   }
 
   private startEncounter() {
@@ -462,7 +476,7 @@ class BuildingScene extends BaseScene {
 
     this.strangerAttack().then(() => {
       setTimeout(() => {
-        // radio sound
+        this.staticAudio.play()
         this.survivor.play('getUp')
         this.tweens.add({
           targets: this.stranger,
@@ -551,7 +565,7 @@ class BuildingScene extends BaseScene {
       if (!this.hasFire) {
         this.survivor.stop()
         this.removeItem({ id: 'wood' })
-        // TODO: Add fire sprite
+        this.fireAudio.play({ loop: true })
         this.createDialog('Fire is burning!')
         this.hasFire = true
         this.pit.play('burning')

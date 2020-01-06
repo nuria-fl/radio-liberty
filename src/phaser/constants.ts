@@ -89,5 +89,17 @@ export const AUDIO = {
   WALK: {
     KEY: 'WALK',
     FILE: 'walk.mp3'
+  },
+  STATIC: {
+    KEY: 'STATIC',
+    FILE: 'radio-static.mp3'
+  },
+  FIRE: {
+    KEY: 'FIRE',
+    FILE: 'fireplace.mp3'
+  },
+  DROP: {
+    KEY: 'DROP',
+    FILE: 'dripping.mp3'
   }
 }
