@@ -101,5 +101,9 @@ export const AUDIO = {
   DROP: {
     KEY: 'DROP',
     FILE: 'dripping.mp3'
+  },
+  BANG: {
+    KEY: 'BANG',
+    FILE: 'bang.mp3'
   }
 }

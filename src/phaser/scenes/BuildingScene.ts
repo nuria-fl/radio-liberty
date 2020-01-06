@@ -170,6 +170,7 @@ class BuildingScene extends BaseScene {
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
+  private bangAudio: Phaser.Sound.BaseSound
   private timeout: number
 
   constructor() {
@@ -182,6 +183,7 @@ class BuildingScene extends BaseScene {
     this.load.audio(AUDIO.FIRE.KEY, `/sound/${AUDIO.FIRE.FILE}`)
     this.load.audio(AUDIO.STATIC.KEY, `/sound/${AUDIO.STATIC.FILE}`)
     this.load.audio(AUDIO.DROP.KEY, `/sound/${AUDIO.DROP.FILE}`)
+    this.load.audio(AUDIO.BANG.KEY, `/sound/${AUDIO.BANG.FILE}`)
     this.load.image(IMAGES.BUILDING.KEY, `/images/${IMAGES.BUILDING.FILE}`)
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
@@ -210,6 +212,7 @@ class BuildingScene extends BaseScene {
     this.fireAudio = this.sound.add(AUDIO.FIRE.KEY)
     this.staticAudio = this.sound.add(AUDIO.STATIC.KEY)
     this.dropAudio = this.sound.add(AUDIO.DROP.KEY)
+    this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING.KEY).setOrigin(0)
 
@@ -462,6 +465,7 @@ class BuildingScene extends BaseScene {
         x: 1000,
         duration: 10
       })
+      this.bangAudio.play()
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
           this.survivor.play('fight')
