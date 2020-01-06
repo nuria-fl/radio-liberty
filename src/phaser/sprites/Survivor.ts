@@ -118,7 +118,13 @@ export default class Survivor extends Phaser.GameObjects.Sprite {
     this.body.velocity.x = 0
     this.target = null
     this.walkSound.stop()
-    this.anims.play('stand')
+    const stoppableAnimations = ['walk', 'climbing']
+    if (
+      !this.anims.currentAnim ||
+      stoppableAnimations.includes(this.anims.currentAnim.key)
+    ) {
+      this.anims.play('stand')
+    }
   }
 
   public update() {
