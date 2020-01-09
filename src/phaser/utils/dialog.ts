@@ -166,7 +166,12 @@ export class DialogService {
   }
 }
 
-export const createDialogBox = (text: string, cb: any, scene: any) => {
+export const createDialogBox = (
+  text: string,
+  cb: any,
+  stopCutscene = true,
+  scene: any
+) => {
   if (scene.survivor) {
     scene.survivor.stop()
   }
@@ -177,7 +182,9 @@ export const createDialogBox = (text: string, cb: any, scene: any) => {
     scene.input.once('pointerup', () => {
       if (!scene.dialog.animating) {
         scene.dialog.toggleWindow()
-        scene.stopCutscene()
+        if (stopCutscene) {
+          scene.stopCutscene()
+        }
         if (cb) {
           cb()
         }

@@ -419,21 +419,22 @@ class BuildingScene extends BaseScene {
     this.encounterHappened = true
 
     this.survivor.moveTo(1000, 'left').then(() => {
-      const dialog1 = () => this.createDialog('Oh… Hello', dialog2)
+      const dialog1 = () => this.createDialog('Oh… Hello', dialog2, false)
       const dialog2 = () => {
         this.tweens.add({
           targets: this.stranger,
           x: 880,
           duration: 1000,
           onComplete: () => {
-            this.createDialog('* Growl *', dialog3)
+            this.createDialog('* Growl *', dialog3, false)
           }
         })
       }
       const dialog3 = () =>
         this.createDialog(
           "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
-          () => this.survivor.moveTo(1050, 'left').then(dialog4)
+          () => this.survivor.moveTo(1050, 'left').then(dialog4),
+          false
         )
 
       const dialog4 = () =>
@@ -452,7 +453,7 @@ class BuildingScene extends BaseScene {
         x: 820,
         duration: 1000,
         onComplete: () => {
-          this.createDialog('* Growl *', dialog1)
+          this.createDialog('* Growl *', dialog1, false)
         }
       })
     })
