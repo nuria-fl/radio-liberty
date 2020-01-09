@@ -416,6 +416,7 @@ class BuildingScene extends BaseScene {
   private startEncounter() {
     this.survivor.stop()
     this.startCutscene()
+    this.encounterHappened = true
 
     this.survivor.moveTo(1000, 'left').then(() => {
       const dialog1 = () => this.createDialog('Oh… Hello', dialog2)
@@ -438,7 +439,6 @@ class BuildingScene extends BaseScene {
       const dialog4 = () =>
         this.createDialog("I don't think I can reason with him.", () => {
           this.survivor.immobilize()
-          this.encounterHappened = true
 
           this.timeout = setTimeout(() => {
             this.strangerAttack().then(() => {
