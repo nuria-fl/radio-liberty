@@ -144,11 +144,9 @@ class RoadScene extends BaseScene {
       duration: 28000,
       yoyo: false,
       repeat: 0,
-      onComplete: () => {
-        const finishCutscene = () => {
-          this.initGame()
-        }
-        this.createDialog('What the…?\n\n(click to continue)', finishCutscene)
+      onComplete: async () => {
+        await this.createDialog('What the…?\n\n(click to continue)')
+        this.initGame()
       }
     })
   }
@@ -192,40 +190,7 @@ class RoadScene extends BaseScene {
     }
   }
 
-  private interactBuggy() {
-    const speech = [
-      'Hmm that\'s weird. Nothing seems to be wrong with the engine, it\'s just not getting any power, the battery is completely dead.',
-      'Uh, it doesn\'t look like something that I can fix today. It\'s getting late so I should find some place to rest anyway.',
-      'There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn\'t look too far'
-    ]
-
-    const startFinishCutscene = () => {
-      this.survivor.play('backwards')
-      this.createDialog(speech[0], dialog2)
-    }
-
-    const dialog2 = () => {
-      this.createDialog(speech[1], dialog3)
-    }
-
-    const dialog3 = () => {
-      this.createDialog(speech[2], finishCutscene)
-    }
-
-    const finishCutscene = () => {
-      this.survivor.moveTo(348, 'left').then(() => {
-        this.survivor.play('push')
-        this.survivor.body.setVelocityX(-200)
-        this.buggy.body.setVelocityX(-200)
-        this.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {
-          if (progress === 1) {
-            this.scene.add(SCENES.BUILDING, BuildingScene, false)
-            this.scene.start(SCENES.BUILDING)
-          }
-        })
-      })
-    }
-
+  private async interactBuggy() {
     if (!this.playingCutscene) {
       this.survivor.stop()
       this.sys.events.off(
@@ -238,7 +203,29 @@ class RoadScene extends BaseScene {
       this.survivor.body.setCollideWorldBounds(false)
       this.buggy.body.setCollideWorldBounds(false)
 
-      startFinishCutscene()
+      this.survivor.play('backwards')
+
+      await this.createDialog(
+        "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
+      )
+      await this.createDialog(
+        "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
+      )
+      await this.createDialog(
+        "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+      )
+
+      await this.survivor.moveTo(348, 'left')
+
+      this.survivor.play('push')
+      this.survivor.body.setVelocityX(-200)
+      this.buggy.body.setVelocityX(-200)
+      this.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {
+        if (progress === 1) {
+          this.scene.add(SCENES.BUILDING, BuildingScene, false)
+          this.scene.start(SCENES.BUILDING)
+        }
+      })
     }
   }
 

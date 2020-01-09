@@ -168,30 +168,29 @@ export class DialogService {
 
 export const createDialogBox = (
   text: string,
-  cb: any,
   stopCutscene = true,
   scene: any
 ) => {
-  if (scene.survivor) {
-    scene.survivor.stop()
-  }
-  scene.startCutscene()
-  scene.dialog.init()
-  scene.dialog.setText(text)
-  const addListener = () => {
-    scene.input.once('pointerup', () => {
-      if (!scene.dialog.animating) {
-        scene.dialog.toggleWindow()
-        if (stopCutscene) {
-          scene.stopCutscene()
+  return new Promise(resolve => {
+    if (scene.survivor) {
+      scene.survivor.stop()
+    }
+    scene.startCutscene()
+    scene.dialog.init()
+    scene.dialog.setText(text)
+    const addListener = () => {
+      scene.input.once('pointerup', () => {
+        if (!scene.dialog.animating) {
+          scene.dialog.toggleWindow()
+          if (stopCutscene) {
+            scene.stopCutscene()
+          }
+          resolve()
+        } else {
+          addListener()
         }
-        if (cb) {
-          cb()
-        }
-      } else {
-        addListener()
-      }
-    })
-  }
-  addListener()
+      })
+    }
+    addListener()
+  })
 }
