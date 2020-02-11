@@ -17,6 +17,16 @@ export default [
     description: 'Useful for crafting',
     action: 'scavenge',
     usesUntilBreakdown: 0
+  },
+  {
+    id: 'cloth',
+    name: 'Cloth',
+    description: "A piece of the stranger's labcoat"
+  },
+  {
+    id: 'idCard',
+    name: 'ID card',
+    description: "It was attached to that stranger's labcoat"
   }
   // {
   //   id: 'salt',

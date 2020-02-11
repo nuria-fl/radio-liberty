@@ -18,6 +18,32 @@ import Firepit from '../sprites/Firepit'
 class BuildingScene extends BaseScene {
   public use = {
     ...this.use,
+    survivor: {
+      setText: null,
+      name: 'Survivor',
+      use: () => {
+        // copied from base scene. should unify somewhere
+        this.interactingWithObject = true
+        if (this.currentObject.consumable) {
+          document.dispatchEvent(
+            new CustomEvent('consume', {
+              detail: { id: this.currentObject.id }
+            })
+          )
+          return this.createDialog('Ah… much better')
+        }
+
+        if (this.currentObject.id === 'taser') {
+          return this.createDialog('NO WAY!!')
+        }
+
+        if (this.currentObject.id === 'cloth') {
+          return this.createDialog('I should clean up the wound first.')
+        }
+
+        return this.createDialog(randomLine())
+      }
+    },
     buggy: {
       setText: null,
       name: 'Buggy',
@@ -142,6 +168,10 @@ class BuildingScene extends BaseScene {
     antennas: {
       key: 'interactAntennas',
       cb: this.interactAntennas
+    },
+    cloth: {
+      key: 'interactCloth',
+      cb: this.interactCloth
     }
   }
 
@@ -161,6 +191,7 @@ class BuildingScene extends BaseScene {
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
   private rock: Physics.Arcade.Image
+  private cloth: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
   private dropAnimation: Phaser.Tweens.Tween
   private isUpstairs = false
@@ -475,6 +506,12 @@ class BuildingScene extends BaseScene {
 
     this.strangerAttack().then(() => {
       setTimeout(() => {
+        this.cloth = this.physics.add
+          .staticImage(970, 392, IMAGES.CLOTH.KEY)
+          .refreshBody()
+          .setInteractive()
+        this.setupEvent('cloth')
+
         this.staticAudio.play()
         this.survivor.play('getUp')
         this.tweens.add({
@@ -627,6 +664,21 @@ class BuildingScene extends BaseScene {
 
   private interactRock() {
     this.createDialog("I don't want to carry a rock around.")
+  }
+
+  private interactCloth() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog(
+        "A piece of cloth from the stranger's labcoat. There's something attached to it."
+      )
+
+      pickUp('cloth')
+      pickUp('idCard')
+
+      this.cloth.destroy()
+    }
   }
 
   private getNuts() {
