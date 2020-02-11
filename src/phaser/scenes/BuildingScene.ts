@@ -419,40 +419,35 @@ class BuildingScene extends BaseScene {
     this.encounterHappened = true
 
     this.survivor.moveTo(1000, 'left').then(() => {
-      const dialog1 = () => this.createDialog('Oh… Hello', dialog2)
-      const dialog2 = () => {
-        this.tweens.add({
-          targets: this.stranger,
-          x: 880,
-          duration: 1000,
-          onComplete: () => {
-            this.createDialog('* Growl *', dialog3)
-          }
-        })
-      }
-      const dialog3 = () =>
-        this.createDialog(
-          "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
-          () => this.survivor.moveTo(1050, 'left').then(dialog4)
-        )
-
-      const dialog4 = () =>
-        this.createDialog("I don't think I can reason with him.", () => {
-          this.survivor.immobilize()
-
-          this.timeout = setTimeout(() => {
-            this.strangerAttack().then(() => {
-              this.endGame()
-            })
-          }, 10000)
-        })
-
       this.tweens.add({
         targets: this.stranger,
         x: 820,
         duration: 1000,
-        onComplete: () => {
-          this.createDialog('* Growl *', dialog1)
+        onComplete: async () => {
+          await this.createDialog('* Growl *', false)
+          await this.createDialog('Oh… Hello', false)
+
+          this.tweens.add({
+            targets: this.stranger,
+            x: 880,
+            duration: 1000,
+            onComplete: async () => {
+              await this.createDialog('* Growl *', false)
+              await this.createDialog(
+                "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
+                false
+              )
+              await this.survivor.moveTo(1050, 'left')
+              await this.createDialog("I don't think I can reason with him.")
+              this.survivor.immobilize()
+
+              this.timeout = setTimeout(() => {
+                this.strangerAttack().then(() => {
+                  this.endGame()
+                })
+              }, 10000)
+            }
+          })
         }
       })
     })
@@ -486,15 +481,14 @@ class BuildingScene extends BaseScene {
           targets: this.stranger,
           x: 0,
           duration: 1000,
-          onComplete: () => {
+          onComplete: async () => {
             this.stranger.destroy()
             document.dispatchEvent(new CustomEvent('getHurt'))
-            this.createDialog('... What did just happen?', () => {
-              this.survivor.recover()
-              this.createDialog(
-                "Ugh… No time to think about that, I'm losing a lot of blood."
-              )
-            })
+            await this.createDialog('... What did just happen?')
+            this.survivor.recover()
+            await this.createDialog(
+              "Ugh… No time to think about that, I'm losing a lot of blood."
+            )
           }
         })
       }, 3000)
@@ -602,28 +596,26 @@ class BuildingScene extends BaseScene {
   }
 
   private interactAntennas() {
-    const focusBack = () => {
-      this.cameras.main.pan(
-        this.survivor.x,
-        this.survivor.y,
-        1000,
-        'Linear',
-        false,
-        (_, progress) => {
-          if (progress === 1) {
-            this.cameras.main.startFollow(this.survivor)
-            this.stopCutscene()
-          }
-        }
-      )
-    }
     this.startCutscene()
     this.cameras.main.stopFollow()
-    this.cameras.main.pan(0, 0, 1000, 'Linear', false, (_, progress) => {
+    this.cameras.main.pan(0, 0, 1000, 'Linear', false, async (_, progress) => {
       if (progress === 1) {
-        this.createDialog(
-          'Hmm, looks like they are active. I wonder what they are for.',
-          focusBack
+        await this.createDialog(
+          'Hmm, looks like they are active. I wonder what they are for.'
+        )
+
+        this.cameras.main.pan(
+          this.survivor.x,
+          this.survivor.y,
+          1000,
+          'Linear',
+          false,
+          (_, progress) => {
+            if (progress === 1) {
+              this.cameras.main.startFollow(this.survivor)
+              this.stopCutscene()
+            }
+          }
         )
       }
     })

@@ -56,8 +56,8 @@ export class BaseScene extends Phaser.Scene {
     )
   }
 
-  public createDialog(text, cb = null) {
-    createDialogBox(text, cb, this)
+  public createDialog(text, stopCutscene = true) {
+    return createDialogBox(text, stopCutscene, this)
   }
 
   public setupEvent(key: string) {

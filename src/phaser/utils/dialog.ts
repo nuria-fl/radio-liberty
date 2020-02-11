@@ -166,25 +166,31 @@ export class DialogService {
   }
 }
 
-export const createDialogBox = (text: string, cb: any, scene: any) => {
-  if (scene.survivor) {
-    scene.survivor.stop()
-  }
-  scene.startCutscene()
-  scene.dialog.init()
-  scene.dialog.setText(text)
-  const addListener = () => {
-    scene.input.once('pointerup', () => {
-      if (!scene.dialog.animating) {
-        scene.dialog.toggleWindow()
-        scene.stopCutscene()
-        if (cb) {
-          cb()
+export const createDialogBox = (
+  text: string,
+  stopCutscene = true,
+  scene: any
+) => {
+  return new Promise(resolve => {
+    if (scene.survivor) {
+      scene.survivor.stop()
+    }
+    scene.startCutscene()
+    scene.dialog.init()
+    scene.dialog.setText(text)
+    const addListener = () => {
+      scene.input.once('pointerup', () => {
+        if (!scene.dialog.animating) {
+          scene.dialog.toggleWindow()
+          if (stopCutscene) {
+            scene.stopCutscene()
+          }
+          resolve()
+        } else {
+          addListener()
         }
-      } else {
-        addListener()
-      }
-    })
-  }
-  addListener()
+      })
+    }
+    addListener()
+  })
 }
