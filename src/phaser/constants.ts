@@ -78,6 +78,10 @@ export const IMAGES = {
   ROCK: {
     KEY: 'ROCK',
     FILE: 'rock.png'
+  },
+  METALBOX: {
+    KEY: 'METALBOX',
+    FILE: 'metal-box.png'
   }
 }
 

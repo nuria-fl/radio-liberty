@@ -172,6 +172,10 @@ class BuildingScene extends BaseScene {
     cloth: {
       key: 'interactCloth',
       cb: this.interactCloth
+    },
+    metalBox: {
+      key: 'interactBox',
+      cb: this.interactBox
     }
   }
 
@@ -192,11 +196,13 @@ class BuildingScene extends BaseScene {
   private antennas: Physics.Arcade.Image
   private rock: Physics.Arcade.Image
   private cloth: Physics.Arcade.Image
+  private metalBox: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
   private dropAnimation: Phaser.Tweens.Tween
   private isUpstairs = false
   private hasWaterCollector = false
   private hasFire = false
+  private hasCard = false
   private encounterHappened = false
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
@@ -224,6 +230,7 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
+    this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
     this.load.spritesheet(
       IMAGES.FIREPIT.KEY,
       `/images/${IMAGES.FIREPIT.FILE}`,
@@ -271,6 +278,11 @@ class BuildingScene extends BaseScene {
 
     this.ladder = this.physics.add
       .staticImage(1130, 532, IMAGES.LADDER.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.metalBox = this.physics.add
+      .staticImage(1030, 660, IMAGES.METALBOX.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -362,6 +374,7 @@ class BuildingScene extends BaseScene {
     this.setupEvent('antennas')
     this.setupEvent('buggy')
     this.setupEvent('rock')
+    this.setupEvent('metalBox')
 
     this.wood.on('pointerup', () => {
       if (!this.encounterHappened) {
@@ -676,8 +689,22 @@ class BuildingScene extends BaseScene {
 
       pickUp('cloth')
       pickUp('idCard')
+      this.hasCard = true
 
       this.cloth.destroy()
+    }
+  }
+
+  private async interactBox() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      if (this.hasCard) {
+        await this.createDialog("Let's see if I can figure this out")
+        // display code
+      } else {
+        this.createDialog("It's locked. I need a 3 digit code.")
+      }
     }
   }
 
