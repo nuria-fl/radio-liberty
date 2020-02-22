@@ -1,20 +1,26 @@
 <template>
-  <div class="overlay">
+  <section class="overlay">
     <button @click="close" class="overlay__close">&times;</button>
-    <div class="inventory-grid">
-      <InventoryItem @use="close" id="taser" name="Taser gun" />
-      <InventoryItem @use="close" id="notebook" name="Notebook" />
-      <InventoryItem @use="close" id="radio" name="Radio" />
-      <InventoryItem @use="close" v-for="item in inventory" :key="item.uid" :id="item.id" :name="item.name" :consumable="item.consumable" />
-    </div>
-  </div>
+    <section >
+      <label class="action" :class="{'action--checked': actionType === 'use' }">Use<input type="radio" name="action" value="use" v-model="actionType" /></label>
+      <label class="action" :class="{'action--checked': actionType === 'inspect' }">Inspect<input type="radio" name="action" value="inspect" v-model="actionType" /></label>
+    </section>
+    <section class="inventory-grid">
+      <InventoryItem @interact="interact" v-for="item in inventory" :key="item.uid" :item="item" />
+    </section>
+  </section>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import InventoryItem from '@/components/InventoryItem'
 
 export default {
+  data() {
+    return {
+      actionType: 'use'
+    }
+  },
   components: {
     InventoryItem
   },
@@ -26,36 +32,19 @@ export default {
     })
   },
   computed: {
-    ...mapState(['inventory']),
-    orderedList() {
-      return this.inventory
-        .reduce((accumulator, current) => {
-          const item = { ...current }
-          const alreadyExistingItem = accumulator.find(
-            accItem => accItem.id === item.id
-          )
-
-          if (alreadyExistingItem) {
-            alreadyExistingItem.amount++
-          } else {
-            item.amount = 1
-            accumulator.push(item)
-          }
-
-          return accumulator
-        }, [])
-        .sort((a, b) => {
-          if (a.id < b.id) {
-            return -1
-          }
-          if (a.id > b.id) {
-            return 1
-          }
-          return 0
-        })
-    }
+    ...mapState(['inventory'])
   },
   methods: {
+    ...mapMutations(['disable']),
+    interact(item) {
+      this.disable()
+      if (this.actionType === 'use') {
+        document.dispatchEvent(new CustomEvent('useItem', { detail: item }))
+      } else {
+        document.dispatchEvent(new CustomEvent('inspectItem', { detail: item }))
+      }
+      this.close()
+    },
     close() {
       this.$emit('close')
     }
@@ -91,5 +80,28 @@ export default {
   grid-template-columns: repeat(5, 1fr);
   grid-column-gap: 1rem;
   grid-row-gap: 1rem;
+}
+
+.action {
+  display: inline-block;
+  width: 7rem;
+  margin: 0 0 .5rem;
+  padding: .3rem;
+  cursor: pointer;
+  position: relative;
+  text-align: center;
+  background: #000;
+  color: #ddd;
+  &:hover {
+    color: #fff;
+  }
+  &--checked {
+    background: blue;
+    color: #fff;
+  }
+  input {
+    position: absolute;
+    visibility: hidden;
+  }
 }
 </style>

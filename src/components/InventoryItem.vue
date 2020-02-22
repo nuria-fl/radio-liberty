@@ -1,36 +1,20 @@
 <template>
-  <button @click="use" class="inventory-item">
-    {{ name }}
+  <button @click="interact" class="inventory-item">
+    {{ item.name }}
   </button>
 </template>
 
 <script>
-import { mapMutations } from 'vuex';
-
 export default {
   props: {
-    id: {
-      type: String,
+    item: {
+      type: Object,
       required: true
-    },
-    name: {
-      type: String,
-      required: true
-    },
-    consumable: {
-      type: Boolean,
-      default: false
     }
   },
   methods: {
-    ...mapMutations(['disable']),
-    use() {
-      this.$emit('use')
-      this.disable();
-
-      document.dispatchEvent(
-        new CustomEvent('useItem', { detail: { id: this.id, name: this.name, consumable: this.consumable} })
-      )
+    interact() {
+      this.$emit('interact', this.item)
     }
   }
 }

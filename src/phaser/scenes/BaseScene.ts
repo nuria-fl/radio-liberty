@@ -92,6 +92,7 @@ export class BaseScene extends Phaser.Scene {
     document.addEventListener('resumeScene', this.resumeScene.bind(this))
     document.addEventListener('gameOver', this.handleGameOver.bind(this))
     document.addEventListener('useItem', this.handleUseItem.bind(this))
+    document.addEventListener('inspectItem', this.handleInspectItem.bind(this))
   }
 
   private pauseScene() {
@@ -114,6 +115,16 @@ export class BaseScene extends Phaser.Scene {
       `Use ${ev.detail.name} with`
     )
     this.activateHovers(ev.detail)
+  }
+
+  private handleInspectItem(ev: CustomEvent) {
+    if (ev.detail.id === 'notebook') {
+      console.log('show notebook')
+    } else if (ev.detail.id === 'idCard') {
+      console.log('show id card')
+    } else {
+      this.createDialog(ev.detail.description)
+    }
   }
 
   private activateHovers(currentObject) {
