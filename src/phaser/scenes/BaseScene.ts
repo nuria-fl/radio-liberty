@@ -88,8 +88,18 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private addListeners() {
+    document.addEventListener('pauseScene', this.pauseScene.bind(this))
+    document.addEventListener('resumeScene', this.resumeScene.bind(this))
     document.addEventListener('gameOver', this.handleGameOver.bind(this))
     document.addEventListener('useItem', this.handleUseItem.bind(this))
+  }
+
+  private pauseScene() {
+    this.scene.pause()
+  }
+
+  private resumeScene() {
+    this.scene.resume()
   }
 
   private handleGameOver() {
