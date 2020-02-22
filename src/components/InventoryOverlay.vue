@@ -37,13 +37,22 @@ export default {
   methods: {
     ...mapMutations(['disable']),
     interact(item) {
-      this.disable()
       if (this.actionType === 'use') {
-        document.dispatchEvent(new CustomEvent('useItem', { detail: item }))
+        this.use(item)
       } else {
-        document.dispatchEvent(new CustomEvent('inspectItem', { detail: item }))
+        this.inspect(item)
       }
+    },
+    use(item) {
+      this.disable()
+      document.dispatchEvent(new CustomEvent('useItem', { detail: item }))
       this.close()
+    },
+    inspect(item) {
+      if (!item.zoomable) {
+        document.dispatchEvent(new CustomEvent('inspectItem', { detail: item }))
+        this.close()
+      }
     },
     close() {
       this.$emit('close')

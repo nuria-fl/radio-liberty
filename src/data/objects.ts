@@ -26,7 +26,8 @@ export default [
   {
     id: 'idCard',
     name: 'ID card',
-    description: "It was attached to that stranger's labcoat"
+    description: "It was attached to that stranger's labcoat",
+    zoomable: true
   }
   // {
   //   id: 'salt',

@@ -23,7 +23,8 @@ export default {
       id: 'notebook',
       name: 'Notebook',
       description: null,
-      consumable: false
+      consumable: false,
+      zoomable: true
     },
     {
       id: 'radio',

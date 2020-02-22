@@ -118,13 +118,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private handleInspectItem(ev: CustomEvent) {
-    if (ev.detail.id === 'notebook') {
-      console.log('show notebook')
-    } else if (ev.detail.id === 'idCard') {
-      console.log('show id card')
-    } else {
-      this.createDialog(ev.detail.description)
-    }
+    this.createDialog(ev.detail.description)
   }
 
   private activateHovers(currentObject) {
