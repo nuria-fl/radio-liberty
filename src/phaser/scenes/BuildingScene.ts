@@ -18,6 +18,43 @@ import Firepit from '../sprites/Firepit'
 class BuildingScene extends BaseScene {
   public use = {
     ...this.use,
+    survivor: {
+      setText: null,
+      name: 'Survivor',
+      use: () => {
+        // copied from base scene. should unify somewhere
+        this.interactingWithObject = true
+        if (this.currentObject.consumable) {
+          document.dispatchEvent(
+            new CustomEvent('consume', {
+              detail: { id: this.currentObject.id }
+            })
+          )
+          return this.createDialog('Ah… much better')
+        }
+
+        if (this.currentObject.id === 'taser') {
+          return this.createDialog('NO WAY!!')
+        }
+
+        if (this.currentObject.id === 'cloth') {
+          if (this.cleanWound) {
+            document.dispatchEvent(new CustomEvent('getCured'))
+            this.removeItem({ id: 'cloth' })
+            return this.createDialog('Good, that should stop the bleeding for now.')
+          }
+          return this.createDialog('I should clean up the wound first.')
+        }
+
+        if (this.currentObject.id === 'solution') {
+          this.cleanWound = true
+          this.removeItem({ id: 'solution' })
+          return this.createDialog('Wound is now clean, I should cover it as soon as possible')
+        }
+
+        return this.createDialog(randomLine())
+      }
+    },
     buggy: {
       setText: null,
       name: 'Buggy',
@@ -142,6 +179,14 @@ class BuildingScene extends BaseScene {
     antennas: {
       key: 'interactAntennas',
       cb: this.interactAntennas
+    },
+    cloth: {
+      key: 'interactCloth',
+      cb: this.interactCloth
+    },
+    metalBox: {
+      key: 'interactBox',
+      cb: this.interactBox
     }
   }
 
@@ -161,12 +206,17 @@ class BuildingScene extends BaseScene {
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
   private rock: Physics.Arcade.Image
+  private cloth: Physics.Arcade.Image
+  private metalBox: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
   private dropAnimation: Phaser.Tweens.Tween
   private isUpstairs = false
   private hasWaterCollector = false
   private hasFire = false
+  private hasCard = false
   private encounterHappened = false
+  private cleanWound = false
+  private boxOpen = false
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
@@ -193,6 +243,7 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
+    this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
     this.load.spritesheet(
       IMAGES.FIREPIT.KEY,
       `/images/${IMAGES.FIREPIT.FILE}`,
@@ -240,6 +291,11 @@ class BuildingScene extends BaseScene {
 
     this.ladder = this.physics.add
       .staticImage(1130, 532, IMAGES.LADDER.KEY)
+      .refreshBody()
+      .setInteractive()
+
+    this.metalBox = this.physics.add
+      .staticImage(1030, 660, IMAGES.METALBOX.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -331,6 +387,7 @@ class BuildingScene extends BaseScene {
     this.setupEvent('antennas')
     this.setupEvent('buggy')
     this.setupEvent('rock')
+    this.setupEvent('metalBox')
 
     this.wood.on('pointerup', () => {
       if (!this.encounterHappened) {
@@ -365,6 +422,7 @@ class BuildingScene extends BaseScene {
   }
 
   private initCutscene() {
+    document.addEventListener('unlock', this.handleUnlock.bind(this))
     this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
@@ -475,6 +533,12 @@ class BuildingScene extends BaseScene {
 
     this.strangerAttack().then(() => {
       setTimeout(() => {
+        this.cloth = this.physics.add
+          .staticImage(970, 392, IMAGES.CLOTH.KEY)
+          .refreshBody()
+          .setInteractive()
+        this.setupEvent('cloth')
+
         this.staticAudio.play()
         this.survivor.play('getUp')
         this.tweens.add({
@@ -629,6 +693,39 @@ class BuildingScene extends BaseScene {
     this.createDialog("I don't want to carry a rock around.")
   }
 
+  private interactCloth() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog(
+        "A piece of cloth from the stranger's labcoat. There's something attached to it."
+      )
+
+      pickUp('cloth')
+      pickUp('idCard')
+      this.hasCard = true
+
+      this.cloth.destroy()
+    }
+  }
+
+  private async interactBox() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      if (this.boxOpen) {
+        return this.createDialog("It's empty.")
+      }
+
+      if (this.hasCard) {
+        await this.createDialog("Let's see if I can figure this out")
+        document.dispatchEvent(new CustomEvent('showLock'))
+      } else {
+        this.createDialog("It's locked. I need a 4 digit code.")
+      }
+    }
+  }
+
   private getNuts() {
     this.startCutscene()
     this.survivor.setDestination(415)
@@ -647,6 +744,11 @@ class BuildingScene extends BaseScene {
     this.physics.add.overlap(this.survivor, this.rock, () => {
       this.sys.events.emit('crackNuts')
     })
+  }
+
+  private handleUnlock() {
+    this.boxOpen = true
+    this.createDialog("Yes! There's some solution to clean my wound. Also a small key.")
   }
 }
 

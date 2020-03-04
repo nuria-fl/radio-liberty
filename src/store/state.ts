@@ -12,6 +12,26 @@ export default {
     water: MAX,
     food: MAX
   },
-  inventory: [],
+  inventory: [
+    {
+      id: 'taser',
+      name: 'Taser gun',
+      description: 'In case I need to protect myself',
+      consumable: false
+    },
+    {
+      id: 'notebook',
+      name: 'Notebook',
+      description: null,
+      consumable: false,
+      zoomable: true
+    },
+    {
+      id: 'radio',
+      name: 'Radio',
+      description: "It's just picking static",
+      consumable: false
+    }
+  ],
   existingItems: items
 }

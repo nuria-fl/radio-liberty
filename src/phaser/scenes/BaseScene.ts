@@ -88,8 +88,19 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private addListeners() {
+    document.addEventListener('pauseScene', this.pauseScene.bind(this))
+    document.addEventListener('resumeScene', this.resumeScene.bind(this))
     document.addEventListener('gameOver', this.handleGameOver.bind(this))
     document.addEventListener('useItem', this.handleUseItem.bind(this))
+    document.addEventListener('inspectItem', this.handleInspectItem.bind(this))
+  }
+
+  private pauseScene() {
+    this.scene.pause()
+  }
+
+  private resumeScene() {
+    this.scene.resume()
   }
 
   private handleGameOver() {
@@ -104,6 +115,10 @@ export class BaseScene extends Phaser.Scene {
       `Use ${ev.detail.name} with`
     )
     this.activateHovers(ev.detail)
+  }
+
+  private handleInspectItem(ev: CustomEvent) {
+    this.createDialog(ev.detail.description)
   }
 
   private activateHovers(currentObject) {

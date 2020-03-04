@@ -23,9 +23,11 @@ export default {
     ...mapActions(['addToInventory', 'removeFromInventory', 'consume']),
     openInventory() {
       this.showInventory = true
+      document.dispatchEvent(new CustomEvent('pauseScene'))
     },
     closeInventory() {
       this.showInventory = false
+      document.dispatchEvent(new CustomEvent('resumeScene'))
     },
     handlePickUp({ detail }) {
       this.addToInventory(detail)
