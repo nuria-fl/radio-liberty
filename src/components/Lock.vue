@@ -24,10 +24,10 @@ export default {
   },
   computed: {
     valid() {
-      return this.input[0] == 1 &&
-        this.input[1] == 2 &&
-        this.input[2] == 3 &&
-        this.input[3] == 4
+      return this.input[0] == 3 &&
+        this.input[1] == 6 &&
+        this.input[2] == 1 &&
+        this.input[3] == 8
     }
   },
   methods: {
