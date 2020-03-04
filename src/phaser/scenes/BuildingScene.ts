@@ -40,6 +40,7 @@ class BuildingScene extends BaseScene {
         if (this.currentObject.id === 'cloth') {
           if (this.cleanWound) {
             document.dispatchEvent(new CustomEvent('getCured'))
+            this.removeItem({ id: 'cloth' })
             return this.createDialog('Good, that should stop the bleeding for now.')
           }
           return this.createDialog('I should clean up the wound first.')
@@ -47,6 +48,7 @@ class BuildingScene extends BaseScene {
 
         if (this.currentObject.id === 'solution') {
           this.cleanWound = true
+          this.removeItem({ id: 'solution' })
           return this.createDialog('Wound is now clean, I should cover it as soon as possible')
         }
 
