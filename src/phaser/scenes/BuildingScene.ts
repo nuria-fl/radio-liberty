@@ -38,7 +38,16 @@ class BuildingScene extends BaseScene {
         }
 
         if (this.currentObject.id === 'cloth') {
+          if (this.cleanWound) {
+            document.dispatchEvent(new CustomEvent('getCured'))
+            return this.createDialog('Good, that should stop the bleeding for now.')
+          }
           return this.createDialog('I should clean up the wound first.')
+        }
+
+        if (this.currentObject.id === 'solution') {
+          this.cleanWound = true
+          return this.createDialog('Wound is now clean, I should cover it as soon as possible')
         }
 
         return this.createDialog(randomLine())
@@ -204,6 +213,8 @@ class BuildingScene extends BaseScene {
   private hasFire = false
   private hasCard = false
   private encounterHappened = false
+  private cleanWound = false
+  private boxOpen = false
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
@@ -409,6 +420,7 @@ class BuildingScene extends BaseScene {
   }
 
   private initCutscene() {
+    document.addEventListener('unlock', this.handleUnlock.bind(this))
     this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
@@ -699,11 +711,15 @@ class BuildingScene extends BaseScene {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
+      if (this.boxOpen) {
+        return this.createDialog("It's empty.")
+      }
+
       if (this.hasCard) {
         await this.createDialog("Let's see if I can figure this out")
-        // display code
+        document.dispatchEvent(new CustomEvent('showLock'))
       } else {
-        this.createDialog("It's locked. I need a 3 digit code.")
+        this.createDialog("It's locked. I need a 4 digit code.")
       }
     }
   }
@@ -726,6 +742,11 @@ class BuildingScene extends BaseScene {
     this.physics.add.overlap(this.survivor, this.rock, () => {
       this.sys.events.emit('crackNuts')
     })
+  }
+
+  private handleUnlock() {
+    this.boxOpen = true
+    this.createDialog("Yes! There's some solution to clean my wound. Also a small key.")
   }
 }
 

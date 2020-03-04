@@ -28,6 +28,16 @@ export default [
     name: 'ID card',
     description: "It was attached to that stranger's labcoat",
     zoomable: true
+  },
+  {
+    id: 'solution',
+    name: 'Saline Solution',
+    description: 'Good for cleaning wounds'
+  },
+  {
+    id: 'smallKey',
+    name: 'Small key',
+    description: 'A small key I found in a box. Must belong to that crazy dude.'
   }
   // {
   //   id: 'salt',

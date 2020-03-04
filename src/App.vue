@@ -26,7 +26,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      showLock: true
+      showLock: false
     }
   },
   computed: {
@@ -37,6 +37,9 @@ export default Vue.extend({
     ...mapActions(['initInventory', 'decrease']),
     endGame() {
       this.decrease({ stat: 'health', amount: 100 })
+    },
+    displayLock() {
+      this.showLock = true
     }
   },
   mounted() {
@@ -45,15 +48,14 @@ export default Vue.extend({
     document.addEventListener('endGame', this.endGame)
     document.addEventListener('playCutscene', this.disable)
     document.addEventListener('stopCutscene', this.enable)
-    document.addEventListener('showLock', () => {
-      this.showLock = true
-    })
+    document.addEventListener('showLock', this.displayLock)
   },
   beforeDestroy() {
     document.removeEventListener('startGame', this.startGame)
     document.removeEventListener('endGame', this.endGame)
     document.removeEventListener('playCutscene', this.disable)
     document.removeEventListener('stopCutscene', this.enable)
+    document.removeEventListener('showLock', this.displayLock)
   }
 })
 </script>

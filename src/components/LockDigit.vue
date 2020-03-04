@@ -1,8 +1,8 @@
 <template>
   <div>
-    <button @click="next">more</button>
+    <button @click="next" :disabled="disabled">more</button>
     <input type="number" readonly v-model="number" />
-    <button @click="prev">less</button>
+    <button @click="prev" :disabled="disabled">less</button>
   </div>
 </template>
 
@@ -15,6 +15,12 @@ export default {
   data() {
     return {
       number: 0
+    }
+  },
+  props: {
+    disabled: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
