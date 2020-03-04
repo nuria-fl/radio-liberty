@@ -45,39 +45,4 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.inventory-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  grid-column-gap: 1rem;
-  grid-row-gap: 1rem;
-}
-
-.zoomed-image {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-.action {
-  display: inline-block;
-  width: 7rem;
-  margin: 0 0 .5rem;
-  padding: .3rem;
-  cursor: pointer;
-  position: relative;
-  text-align: center;
-  background: #000;
-  color: #ddd;
-  &:hover {
-    color: #fff;
-  }
-  &--checked {
-    background: blue;
-    color: #fff;
-  }
-  input {
-    position: absolute;
-    visibility: hidden;
-  }
-}
 </style>
