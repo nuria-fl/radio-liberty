@@ -1,6 +1,6 @@
 <template>
   <Modal @close="close">
-    <div>
+    <div class="lock">
       <LockDigit v-for="(digit, i) in input" :key="i" @update="update($event, i)" :disabled="disabled" />
     </div>
   </Modal>
@@ -52,5 +52,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.lock {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  padding: 9rem 10.8rem 11.3rem;
+  background: url('/images/lock.png');
+  background-size: cover;
+}
 </style>
