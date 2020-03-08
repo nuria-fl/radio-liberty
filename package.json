@@ -15,12 +15,12 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.2.2",
-    "@vue/cli-plugin-typescript": "^4.2.2",
+    "@vue/cli-plugin-typescript": "^4.2.3",
     "@vue/cli-service": "^4.2.2",
     "husky": "^4.2.3",
     "lint-staged": "^8.2.1",
     "node-sass": "^4.13.1",
-    "sass-loader": "^7.3.1",
+    "sass-loader": "^8.0.2",
     "typescript": "~3.7.5",
     "vue-template-compiler": "^2.6.11",
     "terser-webpack-plugin": "^2.3.5"
