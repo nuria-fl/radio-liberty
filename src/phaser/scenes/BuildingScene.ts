@@ -41,7 +41,9 @@ class BuildingScene extends BaseScene {
           if (this.cleanWound) {
             document.dispatchEvent(new CustomEvent('getCured'))
             this.removeItem({ id: 'cloth' })
-            return this.createDialog('Good, that should stop the bleeding for now.')
+            return this.createDialog(
+              'Good, that should stop the bleeding for now.'
+            )
           }
           return this.createDialog('I should clean up the wound first.')
         }
@@ -49,7 +51,9 @@ class BuildingScene extends BaseScene {
         if (this.currentObject.id === 'solution') {
           this.cleanWound = true
           this.removeItem({ id: 'solution' })
-          return this.createDialog('Wound is now clean, I should cover it as soon as possible')
+          return this.createDialog(
+            'Wound is now clean, I should cover it as soon as possible'
+          )
         }
 
         return this.createDialog(randomLine())
@@ -259,6 +263,7 @@ class BuildingScene extends BaseScene {
 
   public create() {
     this.initScene()
+    document.addEventListener('unlock', this.handleUnlock.bind(this))
 
     this.fireAudio = this.sound.add(AUDIO.FIRE.KEY)
     this.staticAudio = this.sound.add(AUDIO.STATIC.KEY)
@@ -422,10 +427,10 @@ class BuildingScene extends BaseScene {
   }
 
   private initCutscene() {
-    document.addEventListener('unlock', this.handleUnlock.bind(this))
     this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
+    this.startGame()
   }
 
   private initSurvivor() {
@@ -748,7 +753,10 @@ class BuildingScene extends BaseScene {
 
   private handleUnlock() {
     this.boxOpen = true
-    this.createDialog("Yes! There's some solution to clean my wound. Also a small key.")
+    this.createDialog(
+      "Yes! There's some solution to clean my wound. Also a small key."
+    )
+    document.removeEventListener('unlock', this.handleUnlock.bind(this))
   }
 }
 

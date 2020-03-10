@@ -87,8 +87,7 @@ class RoadScene extends BaseScene {
 
     this.platforms = this.physics.add.staticGroup()
 
-    const floor = this.platforms
-      .create(0, 570, IMAGES.FLOOR.KEY, null, false)
+    const floor = this.platforms.create(0, 570, IMAGES.FLOOR.KEY, null, false)
     floor.scaleX = 42
     floor.setOrigin(0)
     floor.refreshBody()
@@ -152,7 +151,7 @@ class RoadScene extends BaseScene {
   }
 
   private initGame() {
-    document.dispatchEvent(new CustomEvent('startGame'))
+    this.startGame()
     this.buggy.play('buggy-parked')
     this.initEngine()
     this.initSurvivor()

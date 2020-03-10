@@ -84,6 +84,9 @@ export default {
     border: none;
     text-indent: -9999em;
     cursor: pointer;
+    &:focus {
+      outline: none;
+    }
   }
 }
 </style>
