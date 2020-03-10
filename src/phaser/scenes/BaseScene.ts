@@ -113,11 +113,8 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private handleUseItem(ev: CustomEvent) {
-    this.useText = this.add.text(
-      this.cameras.main.worldView.x + 10,
-      this.cameras.main.worldView.y + 500,
-      `Use ${ev.detail.name} with`
-    )
+    this.useText = this.add.text(10, 500, `Use ${ev.detail.name} with`)
+    this.useText.setScrollFactor(0, 0)
     this.activateHovers(ev.detail)
   }
 
