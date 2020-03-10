@@ -74,6 +74,10 @@ export class BaseScene extends Phaser.Scene {
     })
   }
 
+  public startGame() {
+    document.dispatchEvent(new CustomEvent('startGame'))
+  }
+
   public endGame() {
     document.dispatchEvent(new CustomEvent('endGame'))
   }

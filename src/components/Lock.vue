@@ -24,10 +24,12 @@ export default {
   },
   computed: {
     valid() {
-      return this.input[0] == 3 &&
+      return (
+        this.input[0] == 3 &&
         this.input[1] == 6 &&
         this.input[2] == 1 &&
         this.input[3] == 8
+      )
     }
   },
   methods: {
@@ -41,7 +43,7 @@ export default {
           this.addToInventory('smallKey')
           this.close()
           document.dispatchEvent(new CustomEvent('unlock'))
-        }, 1000)
+        }, 600)
       }
     },
     close() {
