@@ -80,12 +80,8 @@ export class DialogService {
 
   // Calculates where to place the dialog window based on the game size
   private calculateWindowDimensions(width, height) {
-    const x = this.scene.cameras.main.worldView.x + this.config.padding
-    const y =
-      this.scene.cameras.main.worldView.y +
-      height -
-      this.config.windowHeight -
-      this.config.padding
+    const x = this.config.padding
+    const y = height - this.config.windowHeight - this.config.padding
     const rectWidth = width - this.config.padding * 2
     const rectHeight = this.config.windowHeight
     return {
@@ -116,6 +112,7 @@ export class DialogService {
     const gameWidth = this.getGameWidth()
     const dimensions = this.calculateWindowDimensions(gameWidth, gameHeight)
     this.graphics = this.scene.add.graphics()
+    this.graphics.setScrollFactor(0, 0)
 
     this.createOuterWindow(
       dimensions.x,
@@ -163,6 +160,7 @@ export class DialogService {
         wordWrap: { width: this.getGameWidth() - this.config.padding * 2 - 25 }
       }
     })
+    this.text.setScrollFactor(0, 0)
   }
 }
 
