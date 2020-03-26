@@ -14,6 +14,7 @@ import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
 import Stranger from '../sprites/Stranger'
 import Firepit from '../sprites/Firepit'
+import Antenna from '../sprites/Antenna'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -209,6 +210,7 @@ class BuildingScene extends BaseScene {
   private pit: Firepit
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
+  private antennasSprites: Physics.Arcade.Group
   private rock: Physics.Arcade.Image
   private cloth: Physics.Arcade.Image
   private metalBox: Physics.Arcade.Image
@@ -238,7 +240,14 @@ class BuildingScene extends BaseScene {
     this.load.audio(AUDIO.STATIC.KEY, `/sound/${AUDIO.STATIC.FILE}`)
     this.load.audio(AUDIO.DROP.KEY, `/sound/${AUDIO.DROP.FILE}`)
     this.load.audio(AUDIO.BANG.KEY, `/sound/${AUDIO.BANG.FILE}`)
-    this.load.image(IMAGES.BUILDING.KEY, `/images/${IMAGES.BUILDING.FILE}`)
+    this.load.image(
+      IMAGES.BUILDING_BG.KEY,
+      `/images/${IMAGES.BUILDING_BG.FILE}`
+    )
+    this.load.image(
+      IMAGES.BUILDING_BG_2.KEY,
+      `/images/${IMAGES.BUILDING_BG_2.FILE}`
+    )
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
     this.load.image(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`)
@@ -248,6 +257,14 @@ class BuildingScene extends BaseScene {
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
+    this.load.spritesheet(
+      IMAGES.ANTENNA.KEY,
+      `/images/${IMAGES.ANTENNA.FILE}`,
+      {
+        frameWidth: 160,
+        frameHeight: 504
+      }
+    )
     this.load.spritesheet(
       IMAGES.FIREPIT.KEY,
       `/images/${IMAGES.FIREPIT.FILE}`,
@@ -270,7 +287,37 @@ class BuildingScene extends BaseScene {
     this.dropAudio = this.sound.add(AUDIO.DROP.KEY)
     this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
 
-    const bg = this.add.image(0, 0, IMAGES.BUILDING.KEY).setOrigin(0)
+    const bg = this.add.image(0, 0, IMAGES.BUILDING_BG.KEY).setOrigin(0)
+
+    this.antennasSprites = this.physics.add.group({
+      immovable: true,
+      allowGravity: false
+    })
+
+    this.antennasSprites.addMultiple([
+      new Antenna({
+        scene: this,
+        x: 145,
+        y: 265,
+        key: IMAGES.ANTENNA.KEY
+      }),
+      new Antenna({
+        scene: this,
+        x: 10,
+        y: 335,
+        key: IMAGES.ANTENNA.KEY
+      }).setAlpha(0.5, 0.5, 0.5, 0.5),
+      new Antenna({
+        scene: this,
+        x: 280,
+        y: 323,
+        key: IMAGES.ANTENNA.KEY
+      }).setAlpha(0.5, 0.5, 0.5, 0.5)
+    ])
+
+    this.antennasSprites.playAnimation('antennaBlink')
+
+    this.add.image(0, 0, IMAGES.BUILDING_BG_2.KEY).setOrigin(0)
 
     this.physics.world.setBounds(0, 0, bg.width, bg.height)
 

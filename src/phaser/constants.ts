@@ -43,9 +43,13 @@ export const IMAGES = {
     KEY: 'PINECONE',
     FILE: 'pine-cone.png'
   },
-  BUILDING: {
-    KEY: 'BUILDING',
+  BUILDING_BG: {
+    KEY: 'BUILDING_BG',
     FILE: 'building.png'
+  },
+  BUILDING_BG_2: {
+    KEY: 'BUILDING_BG_1',
+    FILE: 'building-layer2.png'
   },
   FIREPIT: {
     KEY: 'FIREPIT',
@@ -82,6 +86,10 @@ export const IMAGES = {
   METALBOX: {
     KEY: 'METALBOX',
     FILE: 'metal-box.png'
+  },
+  ANTENNA: {
+    KEY: 'ANTENNA',
+    FILE: 'antenna.png'
   }
 }
 
