@@ -1,7 +1,7 @@
 <template>
   <ul class="Stats">
     <li
-      v-for="(stat, key) in stats"
+      v-for="(stat, key) in roundedStats"
       :key="key"
       class="Stats__item">
       <span class="Stats__icon">{{ icons[key] }}</span>
@@ -23,7 +23,6 @@ import eventBus from '@/utils/eventBus'
 export default {
   data() {
     return {
-      loop: null,
       icons: {
         health: '❤️',
         water: '💧',
@@ -32,63 +31,30 @@ export default {
     }
   },
   mounted() {
-    document.addEventListener('gameStatusChange', this.handleGameStatusChange)
     document.addEventListener('getHurt', this.handleHurt)
-    document.addEventListener('getCured', this.handleCure)
-    this.startGameLoop()
+    document.addEventListener('getCured', this.getCured())
+    this.decreaseStats()
   },
   beforeDestroy() {
-    this.resetGameLoop()
-    document.removeEventListener(
-      'gameStatusChange',
-      this.handleGameStatusChange
-    )
     document.removeEventListener('getHurt', this.handleHurt)
-    document.removeEventListener('getCured', this.handleCure)
+    document.removeEventListener('getCured', this.getCured())
   },
   computed: {
-    ...mapState(['stats', 'gameOver', 'paused', 'isSick']),
-    isActive() {
-      return this.gameOver === false && this.paused === false
+    ...mapState(['stats']),
+    roundedStats() {
+      return {
+        health: Math.floor(this.stats.health),
+        water: Math.floor(this.stats.water),
+        food: Math.floor(this.stats.food)
+      }
     }
   },
   methods: {
     ...mapMutations(['getCured', 'getSick']),
-    ...mapActions(['decrease']),
-    startGameLoop() {
-      this.decreaseStats()
-    },
-    resetGameLoop() {
-      clearTimeout(this.loop)
-      this.loop = null
-    },
-    handleGameStatusChange({ isPaused: detail }) {
-      if (isPaused) {
-        this.resetGameLoop()
-      } else {
-        this.startGameLoop()
-      }
-    },
+    ...mapActions(['decrease', 'decreaseStats']),
     handleHurt() {
       this.decrease({ stat: 'health', amount: 20 })
       this.getSick()
-    },
-    handleCure() {
-      this.getCured()
-    },
-    decreaseStats() {
-      const decreaseInterval = 12 * 1000
-      this.loop = setTimeout(() => {
-        if (this.isActive) {
-          this.decrease({ stat: 'water', amount: 3 })
-          this.decrease({ stat: 'food', amount: 2 })
-          if (this.isSick) {
-            this.decrease({ stat: 'health', amount: 10 })
-          }
-
-          this.decreaseStats()
-        }
-      }, decreaseInterval)
     }
   }
 }
