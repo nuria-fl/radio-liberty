@@ -23,15 +23,14 @@ class GameScene extends Phaser.Scene {
   }
 
   private chooseScene() {
-    if (process.env.NODE_ENV === 'development') {
-      // on dev mode allow to load all scenes
-      this.scene.add(SCENES.ROAD, RoadScene, false)
-      this.scene.add(SCENES.BUILDING, BuildingScene, false)
-      if (window.location.search) {
-        const scene = window.location.search.split('?scene=')
-        return scene[1].toUpperCase()
+    if (process.env.NODE_ENV === 'development' && window.location.search) {
+      const scenes = {
+        ROAD: RoadScene,
+        BUILDING: BuildingScene
       }
-      return SCENES.ROAD
+      const scene = window.location.search.split('?scene=')[1].toUpperCase()
+      this.scene.add(scene, scenes[scene], false)
+      return scene
     } else {
       this.scene.add(SCENES.ROAD, RoadScene, false)
       return SCENES.ROAD
