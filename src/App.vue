@@ -1,6 +1,7 @@
 <template>
   <div class="game-overlay" v-if="started">
-    <GameOver v-if="gameOver"/>
+    <Credits v-if="gameComplete" />
+    <GameOver v-else-if="gameOver"/>
     <template v-else>
       <Stats/>
       <Inventory v-show="enabled" />
@@ -13,6 +14,7 @@
 import Vue from 'vue'
 import { mapState, mapMutations, mapActions } from 'vuex'
 import GameOver from '@/components/GameOver.vue'
+import Credits from '@/components/Credits.vue'
 import Stats from '@/components/Stats.vue'
 import Inventory from '@/components/Inventory.vue'
 import Lock from '@/components/Lock.vue'
@@ -20,13 +22,15 @@ import Lock from '@/components/Lock.vue'
 export default Vue.extend({
   components: {
     GameOver,
+    Credits,
     Stats,
     Inventory,
     Lock
   },
   data() {
     return {
-      showLock: false
+      showLock: false,
+      gameComplete: false
     }
   },
   computed: {
@@ -38,6 +42,10 @@ export default Vue.extend({
     endGame() {
       this.decrease({ stat: 'health', amount: 100 })
     },
+    completeGame() {
+      this.disable()
+      this.gameComplete = true
+    },
     displayLock() {
       this.showLock = true
     }
@@ -46,6 +54,7 @@ export default Vue.extend({
     this.initInventory()
     document.addEventListener('startGame', this.startGame)
     document.addEventListener('endGame', this.endGame)
+    document.addEventListener('completeGame', this.completeGame)
     document.addEventListener('playCutscene', this.disable)
     document.addEventListener('stopCutscene', this.enable)
     document.addEventListener('showLock', this.displayLock)
@@ -53,6 +62,7 @@ export default Vue.extend({
   beforeDestroy() {
     document.removeEventListener('startGame', this.startGame)
     document.removeEventListener('endGame', this.endGame)
+    document.removeEventListener('completeGame', this.completeGame)
     document.removeEventListener('playCutscene', this.disable)
     document.removeEventListener('stopCutscene', this.enable)
     document.removeEventListener('showLock', this.displayLock)

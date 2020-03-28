@@ -48,6 +48,10 @@ export class BaseScene extends Phaser.Scene {
     document.dispatchEvent(new Event('stopCutscene'))
   }
 
+  public pickUp(item) {
+    document.dispatchEvent(new CustomEvent('pickUp', { detail: item }))
+  }
+
   public removeItem(object) {
     document.dispatchEvent(
       new CustomEvent('removeItem', {
