@@ -20,14 +20,20 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['addToInventory', 'removeFromInventory', 'consume']),
+    ...mapActions([
+      'addToInventory',
+      'removeFromInventory',
+      'consume',
+      'pauseScene',
+      'resumeScene'
+    ]),
     openInventory() {
       this.showInventory = true
-      document.dispatchEvent(new CustomEvent('pauseScene'))
+      this.pauseScene()
     },
     closeInventory() {
       this.showInventory = false
-      document.dispatchEvent(new CustomEvent('resumeScene'))
+      this.resumeScene()
     },
     handlePickUp({ detail }) {
       this.addToInventory(detail)
