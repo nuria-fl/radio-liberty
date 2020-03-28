@@ -47,5 +47,8 @@ export default {
   getCured(state) {
     state.isSick = false
     state.stats.health = MAX
+  },
+  setLoop(state, loop) {
+    state.loop = loop
   }
 }

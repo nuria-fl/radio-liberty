@@ -1,15 +1,19 @@
 import { MAX } from '@/data/constants'
 
 export default {
-  gameOver({ commit }) {
+  gameOver({ state, commit }) {
     commit('pauseGame')
     commit('gameOver')
+    commit('setLoop', null)
+    clearTimeout(state.loop)
     document.dispatchEvent(new Event('gameOver'))
   },
-  pauseScene() {
+  pauseScene({ commit }) {
+    commit('pauseGame')
     document.dispatchEvent(new CustomEvent('pauseScene'))
   },
-  resumeScene() {
+  resumeScene({ commit }) {
+    commit('playGame')
     document.dispatchEvent(new CustomEvent('resumeScene'))
   },
   decrease({ state, commit, dispatch }, { stat, amount }) {
@@ -26,6 +30,20 @@ export default {
     }
     const newAmount = state.stats[stat] + amount
     commit('setStat', { stat, amount: newAmount > MAX ? MAX : newAmount })
+  },
+  decreaseStats({ state, commit, dispatch }) {
+    const decreaseInterval = 1000
+    const loop = setTimeout(() => {
+      if (state.enabled && !state.gameOver && !state.paused) {
+        dispatch('decrease', { stat: 'water', amount: 0.3 })
+        dispatch('decrease', { stat: 'food', amount: 0.2 })
+        if (state.isSick) {
+          dispatch('decrease', { stat: 'health', amount: 1 })
+        }
+      }
+      dispatch('decreaseStats')
+    }, decreaseInterval)
+    commit('setLoop', loop)
   },
   initInventory({ dispatch }) {
     dispatch('addToInventory', 'water-clean')

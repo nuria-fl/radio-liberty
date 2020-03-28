@@ -7,6 +7,7 @@ export default {
   paused: false,
   enabled: false,
   isSick: false,
+  loop: null,
   stats: {
     health: MAX,
     water: MAX,
