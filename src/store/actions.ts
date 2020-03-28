@@ -6,6 +6,12 @@ export default {
     commit('gameOver')
     document.dispatchEvent(new Event('gameOver'))
   },
+  pauseScene() {
+    document.dispatchEvent(new CustomEvent('pauseScene'))
+  },
+  resumeScene() {
+    document.dispatchEvent(new CustomEvent('resumeScene'))
+  },
   decrease({ state, commit, dispatch }, { stat, amount }) {
     const newAmount = state.stats[stat] - amount
     const isOver = newAmount <= 0

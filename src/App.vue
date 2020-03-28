@@ -5,7 +5,7 @@
     <template v-else>
       <Stats/>
       <Inventory v-show="enabled" />
-      <Lock v-if="showLock" @close="showLock = false" />
+      <Lock v-if="showLock" @close="hideLock" />
     </template>
   </div>
 </template>
@@ -38,7 +38,7 @@ export default Vue.extend({
   },
   methods: {
     ...mapMutations(['enable', 'disable', 'startGame']),
-    ...mapActions(['initInventory', 'decrease']),
+    ...mapActions(['initInventory', 'decrease', 'pauseScene', 'resumeScene']),
     endGame() {
       this.decrease({ stat: 'health', amount: 100 })
     },
@@ -48,6 +48,11 @@ export default Vue.extend({
     },
     displayLock() {
       this.showLock = true
+      this.pauseScene()
+    },
+    hideLock() {
+      this.showLock = false
+      this.resumeScene()
     }
   },
   mounted() {
