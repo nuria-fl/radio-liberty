@@ -1,7 +1,6 @@
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
-import { pickUp } from '../utils/inventory'
 import {
   loadSurvivor,
   setupInput,
@@ -617,7 +616,7 @@ class BuildingScene extends BaseScene {
 
       this.createDialog('A bucket. Convenient.')
 
-      pickUp('bucket')
+      this.pickUp('bucket')
 
       this.bucket.destroy()
     }
@@ -629,7 +628,7 @@ class BuildingScene extends BaseScene {
 
       this.createDialog('Dry wood, lucky me!')
 
-      pickUp('wood')
+      this.pickUp('wood')
 
       this.wood.destroy()
     }
@@ -753,8 +752,8 @@ class BuildingScene extends BaseScene {
         "A piece of cloth from the stranger's labcoat. There's something attached to it."
       )
 
-      pickUp('cloth')
-      pickUp('idCard')
+      this.pickUp('cloth')
+      this.pickUp('idCard')
       this.hasCard = true
 
       this.cloth.destroy()
@@ -786,7 +785,7 @@ class BuildingScene extends BaseScene {
     const crackNuts = () => {
       this.survivor.stop()
       this.removeItem({ id: 'pinecone' })
-      pickUp('nuts')
+      this.pickUp('nuts')
       this.createDialog('Yes! Delicious pine nuts')
 
       this.sys.events.off('crackNuts', crackNuts, this, false)

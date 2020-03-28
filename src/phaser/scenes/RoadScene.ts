@@ -7,7 +7,6 @@ import {
   preloadBuggy
 } from '../utils/load'
 import { randomLine } from '../default-lines'
-import { pickUp } from '../utils/inventory'
 import { SCENES, IMAGES, AUDIO } from '../constants'
 import Buggy from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
@@ -236,7 +235,7 @@ class RoadScene extends BaseScene {
         'Oh, a pine cone! I can get some pine nuts out of that. Will need something to crack open the shell though...'
       )
 
-      pickUp('pinecone')
+      this.pickUp('pinecone')
 
       this.pinecone.destroy()
 
