@@ -8,6 +8,7 @@ import {
   preloadSurvivor,
   preloadStranger
 } from '../utils/load'
+import { cameraFade, cameraPan } from '../utils/promisify'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
@@ -43,7 +44,10 @@ class BuildingScene extends BaseScene {
             this.removeItem({ id: 'cloth' })
             return this.createDialog(
               'Good, that should stop the bleeding for now.'
-            )
+            ).then(() => {
+              this.isCured = true
+              return this.checkIfFinished()
+            })
           }
           return this.createDialog('I should clean up the wound first.')
         }
@@ -221,6 +225,7 @@ class BuildingScene extends BaseScene {
   private hasCard = false
   private encounterHappened = false
   private cleanWound = false
+  private isCured = false
   private boxOpen = false
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
@@ -447,23 +452,13 @@ class BuildingScene extends BaseScene {
     })
 
     this.cameras.main.setBounds(0, 0, 1280, 800)
-    this.cameras.main.fadeIn()
+    cameraFade(this, 'fadeIn')
 
-    setTimeout(() => {
-      this.cameras.main.pan(
-        this.survivor.x,
-        this.survivor.y,
-        4000,
-        'Linear',
-        false,
-        (_, progress) => {
-          if (progress === 1) {
-            this.cameras.main.startFollow(this.survivor)
+    setTimeout(async () => {
+      await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+      this.cameras.main.startFollow(this.survivor)
 
-            this.initCutscene()
-          }
-        }
-      )
+      this.initCutscene()
     }, 700)
   }
 
@@ -656,34 +651,34 @@ class BuildingScene extends BaseScene {
     }
   }
 
-  private setUpWaterCollector() {
+  private async setUpWaterCollector() {
     this.startCutscene()
-    this.survivor.moveTo(650, 'left').then(() => {
-      if (!this.hasWaterCollector) {
-        this.survivor.stop()
-        this.removeItem({ id: 'bucket' })
-        this.waterCollector = this.physics.add
-          .staticImage(605, 665, IMAGES.BUCKET.KEY)
-          .refreshBody()
-          .setInteractive()
-        this.createDialog('Water collector set!')
-        this.hasWaterCollector = true
-      }
-    })
+    await this.survivor.moveTo(650, 'left')
+    if (!this.hasWaterCollector) {
+      this.survivor.stop()
+      this.removeItem({ id: 'bucket' })
+      this.waterCollector = this.physics.add
+        .staticImage(605, 665, IMAGES.BUCKET.KEY)
+        .refreshBody()
+        .setInteractive()
+      await this.createDialog('Water collector set!')
+      this.hasWaterCollector = true
+      this.checkIfFinished()
+    }
   }
 
-  private setUpFire() {
+  private async setUpFire() {
     this.startCutscene()
-    this.survivor.moveTo(885, 'left').then(() => {
-      if (!this.hasFire) {
-        this.survivor.stop()
-        this.removeItem({ id: 'wood' })
-        this.fireAudio.play({ loop: true })
-        this.createDialog('Fire is burning!')
-        this.hasFire = true
-        this.pit.play('burning')
-      }
-    })
+    await this.survivor.moveTo(885, 'left')
+    if (!this.hasFire) {
+      this.survivor.stop()
+      this.removeItem({ id: 'wood' })
+      this.fireAudio.play({ loop: true })
+      this.pit.play('burning')
+      await this.createDialog('Fire is burning!')
+      this.hasFire = true
+      this.checkIfFinished()
+    }
   }
 
   private interactPuddle() {
@@ -710,30 +705,16 @@ class BuildingScene extends BaseScene {
     }
   }
 
-  private interactAntennas() {
+  private async interactAntennas() {
     this.startCutscene()
     this.cameras.main.stopFollow()
-    this.cameras.main.pan(0, 0, 1000, 'Linear', false, async (_, progress) => {
-      if (progress === 1) {
-        await this.createDialog(
-          'Hmm, looks like they are active. I wonder what they are for.'
-        )
-
-        this.cameras.main.pan(
-          this.survivor.x,
-          this.survivor.y,
-          1000,
-          'Linear',
-          false,
-          (_, progress) => {
-            if (progress === 1) {
-              this.cameras.main.startFollow(this.survivor)
-              this.stopCutscene()
-            }
-          }
-        )
-      }
-    })
+    await cameraPan(this, 0, 0, 1000)
+    await this.createDialog(
+      'Hmm, looks like they are active. I wonder what they are for.'
+    )
+    await cameraPan(this, this.survivor.x, this.survivor.y, 1000)
+    this.cameras.main.startFollow(this.survivor)
+    this.stopCutscene()
   }
 
   private interactBuggy() {
@@ -803,6 +784,39 @@ class BuildingScene extends BaseScene {
       "Yes! There's some solution to clean my wound. Also a small key."
     )
     document.removeEventListener('unlock', this.handleUnlock.bind(this))
+  }
+
+  private checkIfFinished() {
+    const isFinished = this.hasFire && this.hasWaterCollector && this.isCured
+
+    if (isFinished) {
+      this.initEndCutscene()
+    }
+  }
+
+  private async initEndCutscene() {
+    this.startCutscene()
+    await cameraFade(this, 'fadeOut')
+    this.tweens.add({
+      targets: this.survivor,
+      x: 950,
+      duration: 10
+    })
+    this.survivor.faceLeft()
+    this.cameras.main.stopFollow()
+    await cameraPan(this, 0, 0, 10)
+    await cameraFade(this, 'fadeIn')
+    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+    await this.createDialog(
+      "How strange, to see northern lights so far down south. I wonder if there is some electromagnetic anomaly around here… could explain why the buggy's electrical system died.",
+      false
+    )
+    await this.createDialog(
+      "Anyway… I should get some rest now. Tomorrow I'll head into town and see if I can find out what the hell is going on.",
+      false
+    )
+    await cameraFade(this, 'fadeOut')
+    document.dispatchEvent(new CustomEvent('completeGame'))
   }
 }
 
