@@ -1,13 +1,12 @@
 <template>
   <div>
-    <button @click="openInventory" class="inventory-btn">Inventory</button>
-    <InventoryOverlay v-if="showInventory" @close="closeInventory"/>
+    <button class="inventory-btn" @click="openInventory">Inventory</button>
+    <InventoryOverlay v-if="showInventory" @close="closeInventory" />
   </div>
 </template>
 
 <script lang="ts">
 import { mapActions } from 'vuex'
-import Stats from '@/components/Stats.vue'
 import InventoryOverlay from '@/components/InventoryOverlay.vue'
 
 export default {

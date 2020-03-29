@@ -1,15 +1,32 @@
 <template>
   <Modal @close="close">
     <template v-if="zoomedItem">
-      <img :src="`/images/${zoomedItem}.png`" class="zoomed-image" alt="">
+      <img :src="`/images/${zoomedItem}.png`" class="zoomed-image" alt="" />
     </template>
     <template v-else>
       <section>
-        <label class="action" :class="{'action--checked': actionType === 'use' }">Use<input type="radio" name="action" value="use" v-model="actionType" /></label>
-        <label class="action" :class="{'action--checked': actionType === 'inspect' }">Inspect<input type="radio" name="action" value="inspect" v-model="actionType" /></label>
+        <label
+          class="action"
+          :class="{ 'action--checked': actionType === 'use' }"
+          >Use<input v-model="actionType" type="radio" name="action" value="use"
+        /></label>
+        <label
+          class="action"
+          :class="{ 'action--checked': actionType === 'inspect' }"
+          >Inspect<input
+            v-model="actionType"
+            type="radio"
+            name="action"
+            value="inspect"
+        /></label>
       </section>
       <section class="inventory-grid">
-        <InventoryItem @interact="interact" v-for="item in inventory" :key="item.uid" :item="item" />
+        <InventoryItem
+          v-for="item in inventory"
+          :key="item.uid"
+          :item="item"
+          @interact="interact"
+        />
       </section>
     </template>
   </Modal>
@@ -21,15 +38,18 @@ import InventoryItem from '@/components/InventoryItem'
 import Modal from '@/components/Modal'
 
 export default {
+  components: {
+    InventoryItem,
+    Modal
+  },
   data() {
     return {
       actionType: 'use',
       zoomedItem: null
     }
   },
-  components: {
-    InventoryItem,
-    Modal
+  computed: {
+    ...mapState(['inventory'])
   },
   mounted() {
     document.addEventListener('keyup', e => {
@@ -37,9 +57,6 @@ export default {
         this.close()
       }
     })
-  },
-  computed: {
-    ...mapState(['inventory'])
   },
   methods: {
     ...mapMutations(['disable']),
@@ -91,8 +108,8 @@ export default {
 .action {
   display: inline-block;
   width: 7rem;
-  margin: 0 0 .5rem;
-  padding: .3rem;
+  margin: 0 0 0.5rem;
+  padding: 0.3rem;
   cursor: pointer;
   position: relative;
   text-align: center;
