@@ -18,6 +18,15 @@ export default {
       showInventory: false
     }
   },
+  mounted() {
+    document.addEventListener('pickUp', this.handlePickUp)
+    document.addEventListener('removeItem', this.handleRemove)
+    document.addEventListener('consume', this.handleConsume)
+  },
+  beforeDestroy() {
+    document.removeEventListener('pickUp', this.handlePickUp)
+    document.removeEventListener('removeItem', this.handleRemove)
+  },
   methods: {
     ...mapActions([
       'addToInventory',
@@ -43,15 +52,6 @@ export default {
     handleConsume({ detail }) {
       this.consume(detail.id)
     }
-  },
-  mounted() {
-    document.addEventListener('pickUp', this.handlePickUp)
-    document.addEventListener('removeItem', this.handleRemove)
-    document.addEventListener('consume', this.handleConsume)
-  },
-  beforeDestroy() {
-    document.removeEventListener('pickUp', this.handlePickUp)
-    document.removeEventListener('removeItem', this.handleRemove)
   }
 }
 </script>
