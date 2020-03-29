@@ -1,15 +1,13 @@
 <template>
   <ul class="Stats">
-    <li
-      v-for="(stat, key) in roundedStats"
-      :key="key"
-      class="Stats__item">
+    <li v-for="(stat, key) in roundedStats" :key="key" class="Stats__item">
       <span class="Stats__icon">{{ icons[key] }}</span>
       <strong
         :class="{
           warning: stat < 50,
           danger: stat < 20
-      }">
+        }"
+      >
         {{ stat }}
       </strong>
     </li>
@@ -18,7 +16,6 @@
 
 <script>
 import { mapState, mapActions, mapMutations } from 'vuex'
-import eventBus from '@/utils/eventBus'
 
 export default {
   data() {
@@ -30,15 +27,6 @@ export default {
       }
     }
   },
-  mounted() {
-    document.addEventListener('getHurt', this.handleHurt)
-    document.addEventListener('getCured', this.getCured())
-    this.decreaseStats()
-  },
-  beforeDestroy() {
-    document.removeEventListener('getHurt', this.handleHurt)
-    document.removeEventListener('getCured', this.getCured())
-  },
   computed: {
     ...mapState(['stats']),
     roundedStats() {
@@ -48,6 +36,15 @@ export default {
         food: Math.floor(this.stats.food)
       }
     }
+  },
+  mounted() {
+    document.addEventListener('getHurt', this.handleHurt)
+    document.addEventListener('getCured', this.getCured())
+    this.decreaseStats()
+  },
+  beforeDestroy() {
+    document.removeEventListener('getHurt', this.handleHurt)
+    document.removeEventListener('getCured', this.getCured())
   },
   methods: {
     ...mapMutations(['getCured', 'getSick']),
@@ -61,32 +58,32 @@ export default {
 </script>
 
 <style lang="scss">
-  .Stats {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
+.Stats {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  &__item {
     margin: 0;
-    padding: 0;
-    list-style: none;
-    &__item {
-      margin: 0;
-      white-space: nowrap;
-      padding: .1em 1em .1em 0;
-      color: #fff;
-      @media screen and (min-width: 680px) {
-        margin: 1em 0;
-        padding-left: 1em;
-      }
-    }
-    &__icon {
-      filter: grayscale(50%);
+    white-space: nowrap;
+    padding: 0.1em 1em 0.1em 0;
+    color: #fff;
+    @media screen and (min-width: 680px) {
+      margin: 1em 0;
+      padding-left: 1em;
     }
   }
-  .warning {
-    color: #fa0;
+  &__icon {
+    filter: grayscale(50%);
   }
-  .danger {
-    color: #c00;
-  }
+}
+.warning {
+  color: #fa0;
+}
+.danger {
+  color: #c00;
+}
 </style>

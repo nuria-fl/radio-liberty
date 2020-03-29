@@ -1,5 +1,5 @@
 <template>
-  <button @click="interact" class="inventory-item">
+  <button class="inventory-item" @click="interact">
     {{ item.name }}
   </button>
 </template>
@@ -27,7 +27,7 @@ export default {
   align-items: center;
   justify-content: center;
   padding: 0;
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   border: none;
   color: #fff;
   cursor: pointer;

@@ -1,7 +1,12 @@
 <template>
   <Modal @close="close">
     <div class="lock">
-      <LockDigit v-for="(digit, i) in input" :key="i" @update="update($event, i)" :disabled="disabled" />
+      <LockDigit
+        v-for="(digit, i) in input"
+        :key="i"
+        :disabled="disabled"
+        @update="update($event, i)"
+      />
     </div>
   </Modal>
 </template>
@@ -12,15 +17,15 @@ import LockDigit from '@/components/LockDigit'
 import Modal from '@/components/Modal'
 
 export default {
+  components: {
+    LockDigit,
+    Modal
+  },
   data() {
     return {
       input: [0, 0, 0, 0],
       disabled: false
     }
-  },
-  components: {
-    LockDigit,
-    Modal
   },
   computed: {
     valid() {

@@ -1,9 +1,9 @@
 <template>
-  <div class="game-overlay" v-if="started">
+  <div v-if="started" class="game-overlay">
     <Credits v-if="gameComplete" />
-    <GameOver v-else-if="gameOver"/>
+    <GameOver v-else-if="gameOver" />
     <template v-else>
-      <Stats/>
+      <Stats />
       <Inventory v-show="enabled" />
       <Lock v-if="showLock" @close="hideLock" />
     </template>
@@ -36,6 +36,23 @@ export default Vue.extend({
   computed: {
     ...mapState(['gameOver', 'enabled', 'started'])
   },
+  mounted() {
+    this.initInventory()
+    document.addEventListener('startGame', this.startGame)
+    document.addEventListener('endGame', this.endGame)
+    document.addEventListener('completeGame', this.completeGame)
+    document.addEventListener('playCutscene', this.disable)
+    document.addEventListener('stopCutscene', this.enable)
+    document.addEventListener('showLock', this.displayLock)
+  },
+  beforeDestroy() {
+    document.removeEventListener('startGame', this.startGame)
+    document.removeEventListener('endGame', this.endGame)
+    document.removeEventListener('completeGame', this.completeGame)
+    document.removeEventListener('playCutscene', this.disable)
+    document.removeEventListener('stopCutscene', this.enable)
+    document.removeEventListener('showLock', this.displayLock)
+  },
   methods: {
     ...mapMutations(['enable', 'disable', 'startGame']),
     ...mapActions(['initInventory', 'decrease', 'pauseScene', 'resumeScene']),
@@ -54,29 +71,14 @@ export default Vue.extend({
       this.showLock = false
       this.resumeScene()
     }
-  },
-  mounted() {
-    this.initInventory()
-    document.addEventListener('startGame', this.startGame)
-    document.addEventListener('endGame', this.endGame)
-    document.addEventListener('completeGame', this.completeGame)
-    document.addEventListener('playCutscene', this.disable)
-    document.addEventListener('stopCutscene', this.enable)
-    document.addEventListener('showLock', this.displayLock)
-  },
-  beforeDestroy() {
-    document.removeEventListener('startGame', this.startGame)
-    document.removeEventListener('endGame', this.endGame)
-    document.removeEventListener('completeGame', this.completeGame)
-    document.removeEventListener('playCutscene', this.disable)
-    document.removeEventListener('stopCutscene', this.enable)
-    document.removeEventListener('showLock', this.displayLock)
   }
 })
 </script>
 
 <style lang="scss">
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
 }
 

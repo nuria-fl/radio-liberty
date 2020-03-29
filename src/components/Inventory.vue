@@ -1,13 +1,12 @@
 <template>
   <div>
-    <button @click="openInventory" class="inventory-btn">Inventory</button>
-    <InventoryOverlay v-if="showInventory" @close="closeInventory"/>
+    <button class="inventory-btn" @click="openInventory">Inventory</button>
+    <InventoryOverlay v-if="showInventory" @close="closeInventory" />
   </div>
 </template>
 
 <script lang="ts">
 import { mapActions } from 'vuex'
-import Stats from '@/components/Stats.vue'
 import InventoryOverlay from '@/components/InventoryOverlay.vue'
 
 export default {
@@ -18,6 +17,15 @@ export default {
     return {
       showInventory: false
     }
+  },
+  mounted() {
+    document.addEventListener('pickUp', this.handlePickUp)
+    document.addEventListener('removeItem', this.handleRemove)
+    document.addEventListener('consume', this.handleConsume)
+  },
+  beforeDestroy() {
+    document.removeEventListener('pickUp', this.handlePickUp)
+    document.removeEventListener('removeItem', this.handleRemove)
   },
   methods: {
     ...mapActions([
@@ -44,15 +52,6 @@ export default {
     handleConsume({ detail }) {
       this.consume(detail.id)
     }
-  },
-  mounted() {
-    document.addEventListener('pickUp', this.handlePickUp)
-    document.addEventListener('removeItem', this.handleRemove)
-    document.addEventListener('consume', this.handleConsume)
-  },
-  beforeDestroy() {
-    document.removeEventListener('pickUp', this.handlePickUp)
-    document.removeEventListener('removeItem', this.handleRemove)
   }
 }
 </script>

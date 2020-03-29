@@ -1,25 +1,21 @@
 <template>
   <div :class="`digit digit--${number}`">
-    <input type="number" readonly v-model="number" />
-    <button @click="next" :disabled="disabled">more</button>
+    <input v-model="number" type="number" readonly />
+    <button :disabled="disabled" @click="next">more</button>
   </div>
 </template>
 
 <script>
-import { mapState, mapMutations } from 'vuex'
-import InventoryItem from '@/components/InventoryItem'
-import Modal from '@/components/Modal'
-
 export default {
-  data() {
-    return {
-      number: 0
-    }
-  },
   props: {
     disabled: {
       type: Boolean,
       default: false
+    }
+  },
+  data() {
+    return {
+      number: 0
     }
   },
   methods: {

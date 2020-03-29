@@ -18,4 +18,4 @@ const config = {
   scene: [LoadScene]
 }
 
-const game = new Phaser.Game(config)
+new Phaser.Game(config)

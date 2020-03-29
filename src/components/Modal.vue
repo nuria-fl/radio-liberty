@@ -1,6 +1,6 @@
 <template>
   <section class="overlay">
-    <button @click="close" class="overlay__close">&times;</button>
+    <button class="overlay__close" @click="close">&times;</button>
     <slot></slot>
   </section>
 </template>
@@ -23,12 +23,12 @@ export default {
   top: 0;
   left: 0;
   padding: 2rem;
-  background: rgba(0,0,0,.7);
+  background: rgba(0, 0, 0, 0.7);
   color: #fff;
   &__close {
     position: absolute;
-    top: .3rem;
-    right: .3rem;
+    top: 0.3rem;
+    right: 0.3rem;
     margin: 0;
     padding: 0 0.5rem;
     background: transparent;
