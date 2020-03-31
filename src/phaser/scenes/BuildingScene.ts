@@ -153,47 +153,58 @@ class BuildingScene extends BaseScene {
   public interact = {
     buggy: {
       key: 'interactBuggy',
+      text: 'Look at buggy',
       cb: this.interactBuggy
     },
     bucket: {
       key: 'interactBucket',
+      text: 'Pick up bucket',
       cb: this.interactBucket
     },
     ladder: {
       key: 'interactLadder',
+      text: 'Use ladder',
       cb: this.interactLadder,
       permanent: true
     },
     wood: {
       key: 'interactWood',
+      text: 'Pick up wood',
       cb: this.interactWood
     },
     rock: {
       key: 'interactRock',
+      text: 'Pick up rock',
       cb: this.interactRock
     },
     puddle: {
       key: 'interactPuddle',
+      text: 'Look at puddle',
       cb: this.interactPuddle
     },
     wall: {
       key: 'interactWall',
+      text: 'Look at wall',
       cb: this.interactWall
     },
     pit: {
       key: 'interactPit',
+      text: 'Look at pit',
       cb: this.interactPit
     },
     antennas: {
       key: 'interactAntennas',
+      text: 'Look at antennas',
       cb: this.interactAntennas
     },
     cloth: {
       key: 'interactCloth',
+      text: 'Pick up cloth',
       cb: this.interactCloth
     },
     metalBox: {
       key: 'interactBox',
+      text: 'Look at box',
       cb: this.interactBox
     }
   }
@@ -434,19 +445,21 @@ class BuildingScene extends BaseScene {
     this.physics.add.collider(this.platforms, this.buggy)
     this.buggy.setInteractive()
 
-    this.setupEvent('bucket')
-    this.setupEvent('ladder')
-    this.setupEvent('wood')
-    this.setupEvent('puddle')
-    this.setupEvent('wall')
-    this.setupEvent('pit')
-    this.setupEvent('antennas')
-    this.setupEvent('buggy')
-    this.setupEvent('rock')
-    this.setupEvent('metalBox')
+    this.setInteractions([
+      'bucket',
+      'ladder',
+      'wood',
+      'puddle',
+      'wall',
+      'pit',
+      'antennas',
+      'buggy',
+      'rock',
+      'metalBox'
+    ])
 
     this.wood.on('pointerup', () => {
-      if (!this.encounterHappened) {
+      if (!this.encounterHappened && this.isUpstairs) {
         this.startEncounter()
       }
     })
