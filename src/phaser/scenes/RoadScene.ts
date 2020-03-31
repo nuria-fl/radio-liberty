@@ -15,14 +15,17 @@ class RoadScene extends BaseScene {
   public interact = {
     roadsign: {
       key: 'lookSign',
+      text: 'Look at road sign',
       cb: this.interactSign
     },
     buggy: {
       key: 'lookBuggy',
+      text: 'Look at buggy',
       cb: this.interactBuggy
     },
     pinecone: {
       key: 'lookPinecone',
+      text: 'Pick up pinecone',
       cb: this.interactPinecone
     }
   }
@@ -154,9 +157,7 @@ class RoadScene extends BaseScene {
     this.buggy.play('buggy-parked')
     this.initEngine()
     this.initSurvivor()
-    this.setupEvent('roadsign')
-    this.setupEvent('pinecone')
-    this.setupEvent('buggy')
+    this.setInteractions(['roadsign', 'pinecone', 'buggy'])
     this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
     this.stopCutscene()
   }

@@ -7,6 +7,7 @@ export class BaseScene extends Phaser.Scene {
   public playingCutscene = true
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
+  public interactText: Phaser.GameObjects.Text
   public currentObject: { id: string; name: string; consumable: boolean } = null
   public interactingWithObject = false
   public use = {
@@ -64,11 +65,26 @@ export class BaseScene extends Phaser.Scene {
     return createDialogBox(text, stopCutscene, this)
   }
 
+  public setInteractions(keys: string[]) {
+    keys.forEach(key => this.setupEvent(key))
+    this.interactText = this.add.text(10, 500, '')
+    this.interactText.setScrollFactor(0, 0)
+  }
+
   public setupEvent(key: string) {
     this[key].on('pointerup', () => {
       if (!this.playingCutscene) {
+        this.interactText.setText('')
         this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
       }
+    })
+    this[key].on('pointerover', () => {
+      if (!this.playingCutscene) {
+        this.interactText.setText(this.interact[key].text)
+      }
+    })
+    this[key].on('pointerout', () => {
+      this.interactText.setText('')
     })
     this.physics.add.overlap(this.survivor, this[key], () => {
       this.sys.events.emit(this.interact[key].key)
