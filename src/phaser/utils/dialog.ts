@@ -2,8 +2,9 @@ import Phaser from 'phaser'
 
 export class DialogService {
   public scene: Phaser.Scene
-  public timedEvent
-  public text
+  public timedEvent: Phaser.Time.TimerEvent
+  public text: Phaser.GameObjects.Text
+  public graphics: Phaser.GameObjects.Graphics
   public config = {
     borderAlpha: 1,
     borderColor: 0x101010,
@@ -12,12 +13,10 @@ export class DialogService {
     windowColor: 0x303030,
     windowHeight: 100,
     padding: 15,
-    dialogSpeed: 4
+    dialogSpeed: 30
   }
-  public eventCounter
-  public visible
-  public dialog
-  public graphics
+  public eventCounter: number
+  public dialog: string[]
   public animating = false
 
   constructor(scene) {
@@ -31,25 +30,18 @@ export class DialogService {
 
     // used for animating the text
     this.eventCounter = 0
-    // if the dialog window is shown
-    this.visible = true
 
     // Create the dialog window
     this.createWindow()
   }
 
-  public toggleWindow() {
-    this.visible = !this.visible
-    if (this.text) {
-      this.text.visible = this.visible
-    }
-    if (this.graphics) {
-      this.graphics.visible = this.visible
-    }
+  public closeDialog() {
+    this.graphics.destroy()
+    this.text.destroy()
   }
 
   // Sets the text for the dialog window
-  public setText(text) {
+  public setText(text: string) {
     // Reset the dialog
     this.eventCounter = 0
     this.dialog = text.split('')
@@ -61,7 +53,7 @@ export class DialogService {
 
     this.animating = true
     this.timedEvent = this.scene.time.addEvent({
-      delay: 150 - this.config.dialogSpeed * 30,
+      delay: this.config.dialogSpeed,
       callback: this.animateText,
       callbackScope: this,
       loop: true
@@ -179,7 +171,7 @@ export const createDialogBox = (
     const addListener = () => {
       scene.input.once('pointerup', () => {
         if (!scene.dialog.animating) {
-          scene.dialog.toggleWindow()
+          scene.dialog.closeDialog()
           if (stopCutscene) {
             scene.stopCutscene()
           }
