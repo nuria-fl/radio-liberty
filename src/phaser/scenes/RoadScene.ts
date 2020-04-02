@@ -137,6 +137,9 @@ class RoadScene extends BaseScene {
 
   private initCutscene() {
     this.buggy.play('buggy-driving')
+    let dialog1 = false
+    let dialog2 = false
+    let dialog3 = false
 
     this.tweens.add({
       targets: this.buggy,
@@ -145,8 +148,53 @@ class RoadScene extends BaseScene {
       duration: 28000,
       yoyo: false,
       repeat: 0,
+      onUpdate: ({ progress }) => {
+        if (progress > 0.05 && !dialog1) {
+          dialog1 = true
+          this.createDialog(
+            "It's been a few hundred years since the end of the world. Climate change caused floods, draughts, hurricanes. Economy collapsed, along with gover⍰ments and people's faith on huma̶nity. All was lₒst.",
+            false
+          )
+        }
+        if (progress > 0.25 && progress < 0.26) {
+          this.cameras.main.flash(100)
+        }
+        if (progress > 0.3 && !dialog2) {
+          dialog2 = true
+          this.dialog.closeDialog()
+          this.createDialog(
+            'People alw̴ays find a wa̶y of staying alive, ̷t̶h̴o̴u̸gh. Some people suΓvive scavenging for supₚlies. Oth■rs, stealiₚg and killiⁿg t̶hem.',
+            false
+          )
+        }
+        if (progress > 0.4 && progress < 0.407) {
+          this.cameras.main.flash(100)
+        }
+        if (progress > 0.49 && !dialog3) {
+          dialog3 = true
+          this.dialog.closeDialog()
+          this.createDialog(
+            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ ⚆ჰõυནhპᵣῆ cₚქₚt ☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ☃︎ ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱̩̲̪̘ꑛκh◉ქ  ◗ₚ⌇⍺⍰ ⚆ ⚀℆✁ ✝︎☗⚆ₚ 🀰◎❖☒␡✦・ₚ✢⍰ꑛκ⍰✝︎⎍',
+            false
+          )
+        }
+        if (progress > 0.6 && progress < 0.61) {
+          this.cameras.main.flash(100)
+          this.cameras.main.shake(150, 0.02)
+        }
+
+        if (progress > 0.68 && progress < 0.69) {
+          this.cameras.main.flash(50)
+          this.cameras.main.shake(100, 0.02)
+        }
+
+        if (progress > 0.75 && this.dialog.text) {
+          this.dialog.closeDialog()
+        }
+      },
       onComplete: async () => {
-        await this.createDialog('What the…?\n\n(click to continue)')
+        this.dialog.closeDialog()
+        await this.createDialog('What the…?')
         this.initGame()
       }
     })
