@@ -152,9 +152,12 @@ class RoadScene extends BaseScene {
         if (progress > 0.05 && !dialog1) {
           dialog1 = true
           this.createDialog(
-            "It's been a few hundred years since the end of the world. Climate change caused floods, draughts, hurricanes. Economy collapsed, along with governments and people's faith on huma̶nity. All was lₒst.",
+            "It's been a few hundred years since the end of the world. Climate change caused floods, draughts, hurricanes. Economy collapsed, along with gover⍰ments and people's faith on huma̶nity. All was lₒst.",
             false
           )
+        }
+        if (progress > 0.25 && progress < 0.26) {
+          this.cameras.main.flash(100)
         }
         if (progress > 0.3 && !dialog2) {
           dialog2 = true
@@ -171,7 +174,7 @@ class RoadScene extends BaseScene {
           dialog3 = true
           this.dialog.closeDialog()
           this.createDialog(
-            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ ☢︎ჰõυནhპᵣῆ cₚქₚt ☓⚛︎⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ☃︎ ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱̩̲̪̘ꑛκh◉ქ  ◗ₚ⌇⍺⍰ ☢︎ ⚀℆✁ ✝︎☗⚆ₚ 🀰◎❖☒␡✦・ₚ✢⍰ꑛκ⍰✝︎⎍',
+            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ ⚆ჰõυནhპᵣῆ cₚქₚt ☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ☃︎ ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱̩̲̪̘ꑛκh◉ქ  ◗ₚ⌇⍺⍰ ⚆ ⚀℆✁ ✝︎☗⚆ₚ 🀰◎❖☒␡✦・ₚ✢⍰ꑛκ⍰✝︎⎍',
             false
           )
         }
@@ -191,7 +194,7 @@ class RoadScene extends BaseScene {
       },
       onComplete: async () => {
         this.dialog.closeDialog()
-        await this.createDialog('What the…?\n\n(click to continue)')
+        await this.createDialog('What the…?')
         this.initGame()
       }
     })
