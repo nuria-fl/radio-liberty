@@ -51,6 +51,14 @@ export const IMAGES = {
     KEY: 'BUILDING_BG_1',
     FILE: 'building-layer2.png'
   },
+  BUILDING_NIGHT_BG: {
+    KEY: 'BUILDING_NIGHT_BG',
+    FILE: 'building-night.png'
+  },
+  BUILDING_NIGHT_BG_2: {
+    KEY: 'BUILDING_NIGHT_BG_1',
+    FILE: 'building-night-layer2.png'
+  },
   FIREPIT: {
     KEY: 'FIREPIT',
     FILE: 'fireplace.png'

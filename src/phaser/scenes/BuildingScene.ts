@@ -212,6 +212,8 @@ class BuildingScene extends BaseScene {
   public survivor: Survivor
   private buggy: Buggy
   private stranger: Stranger
+  private nightBackground: Phaser.GameObjects.Image
+  private nightForeground: Phaser.GameObjects.Image
   private platforms: Physics.Arcade.StaticGroup
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
@@ -263,6 +265,14 @@ class BuildingScene extends BaseScene {
       IMAGES.BUILDING_BG_2.KEY,
       `/images/${IMAGES.BUILDING_BG_2.FILE}`
     )
+    this.load.image(
+      IMAGES.BUILDING_NIGHT_BG.KEY,
+      `/images/${IMAGES.BUILDING_NIGHT_BG.FILE}`
+    )
+    this.load.image(
+      IMAGES.BUILDING_NIGHT_BG_2.KEY,
+      `/images/${IMAGES.BUILDING_NIGHT_BG_2.FILE}`
+    )
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
     this.load.image(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`)
@@ -303,6 +313,10 @@ class BuildingScene extends BaseScene {
     this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING_BG.KEY).setOrigin(0)
+    this.nightBackground = this.add
+      .image(0, 0, IMAGES.BUILDING_NIGHT_BG.KEY)
+      .setOrigin(0)
+      .setAlpha(0, 0, 0, 0)
 
     this.antennasSprites = this.physics.add.group({
       immovable: true,
@@ -333,6 +347,10 @@ class BuildingScene extends BaseScene {
     this.antennasSprites.playAnimation('antennaBlink')
 
     this.add.image(0, 0, IMAGES.BUILDING_BG_2.KEY).setOrigin(0)
+    this.nightForeground = this.add
+      .image(0, 0, IMAGES.BUILDING_NIGHT_BG_2.KEY)
+      .setOrigin(0)
+      .setAlpha(0, 0, 0, 0)
 
     this.physics.world.setBounds(0, 0, bg.width, bg.height)
 
@@ -810,6 +828,8 @@ class BuildingScene extends BaseScene {
   private async initEndCutscene() {
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
+    this.nightBackground.setAlpha(1, 1, 1, 1)
+    this.nightForeground.setAlpha(1, 1, 1, 1)
     this.tweens.add({
       targets: this.survivor,
       x: 950,
