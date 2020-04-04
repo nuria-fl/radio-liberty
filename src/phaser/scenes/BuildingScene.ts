@@ -16,6 +16,7 @@ import Stranger from '../sprites/Stranger'
 import Firepit from '../sprites/Firepit'
 import Antenna from '../sprites/Antenna'
 import Boxes from '../sprites/Boxes'
+import Bucket from '../sprites/Bucket'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -219,9 +220,8 @@ class BuildingScene extends BaseScene {
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
   private ladder: Physics.Arcade.Image
-  private bucket: Physics.Arcade.Image
+  private bucket: Bucket
   private boxes: Boxes
-  private waterCollector: Physics.Arcade.Image
   private wood: Physics.Arcade.Image
   private puddle: Physics.Arcade.Image
   private pit: Firepit
@@ -276,12 +276,15 @@ class BuildingScene extends BaseScene {
     )
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
-    this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
+    this.load.spritesheet(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`, {
+      frameWidth: 28,
+      frameHeight: 48
+    })
     this.load.spritesheet(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`, {
       frameWidth: 128,
       frameHeight: 148
@@ -388,11 +391,6 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.bucket = this.physics.add
-      .staticImage(1200, 660, IMAGES.BUCKET.KEY)
-      .refreshBody()
-      .setInteractive()
-
     this.rock = this.physics.add
       .staticImage(415, 625, IMAGES.ROCK.KEY)
       .refreshBody()
@@ -462,6 +460,16 @@ class BuildingScene extends BaseScene {
         })
       }
     })
+
+    this.bucket = new Bucket({
+      scene: this,
+      x: 1200,
+      y: 660,
+      key: IMAGES.BUCKET.KEY
+    })
+    this.physics.add.collider(this.platforms, this.bucket)
+    this.bucket.play('bucketDay')
+    this.bucket.setInteractive()
 
     this.buggy = new Buggy({
       scene: this,
@@ -652,7 +660,7 @@ class BuildingScene extends BaseScene {
 
       this.pickUp('bucket')
 
-      this.bucket.destroy()
+      this.bucket.setVisible(false)
     }
   }
 
@@ -696,10 +704,8 @@ class BuildingScene extends BaseScene {
     if (!this.hasWaterCollector) {
       this.survivor.stop()
       this.removeItem({ id: 'bucket' })
-      this.waterCollector = this.physics.add
-        .staticImage(605, 665, IMAGES.BUCKET.KEY)
-        .refreshBody()
-        .setInteractive()
+      this.bucket.setPosition(605, 660)
+      this.bucket.setVisible(true)
       await this.createDialog('Water collector set!')
       this.hasWaterCollector = true
       this.checkIfFinished()
@@ -843,6 +849,7 @@ class BuildingScene extends BaseScene {
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
     this.boxes.play('boxesNight')
+    this.bucket.play('bucketNight')
     this.tweens.add({
       targets: this.survivor,
       x: 950,
