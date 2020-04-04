@@ -8,7 +8,7 @@ import {
   preloadSurvivor,
   preloadStranger
 } from '../utils/load'
-import { cameraFade, cameraPan } from '../utils/promisify'
+import { cameraFade, cameraPan, timer } from '../utils/promisify'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import Buggy from '../sprites/Buggy'
@@ -217,7 +217,6 @@ class BuildingScene extends BaseScene {
   private platforms: Physics.Arcade.StaticGroup
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
-  private engine: any
   private ladder: Physics.Arcade.Image
   private bucket: Physics.Arcade.Image
   private waterCollector: Physics.Arcade.Image
@@ -303,7 +302,7 @@ class BuildingScene extends BaseScene {
     preloadStranger(this)
   }
 
-  public create() {
+  public async create() {
     this.initScene()
     document.addEventListener('unlock', this.handleUnlock.bind(this))
 
@@ -485,12 +484,11 @@ class BuildingScene extends BaseScene {
     this.cameras.main.setBounds(0, 0, 1280, 800)
     cameraFade(this, 'fadeIn')
 
-    setTimeout(async () => {
-      await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
-      this.cameras.main.startFollow(this.survivor)
+    await timer(this, 700)
+    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+    this.cameras.main.startFollow(this.survivor)
 
-      this.initCutscene()
-    }, 700)
+    this.initCutscene()
   }
 
   public update() {
@@ -608,31 +606,30 @@ class BuildingScene extends BaseScene {
   private finishEncounter() {
     clearTimeout(this.timeout)
 
-    this.strangerAttack().then(() => {
-      setTimeout(() => {
-        this.cloth = this.physics.add
-          .staticImage(970, 392, IMAGES.CLOTH.KEY)
-          .refreshBody()
-          .setInteractive()
-        this.setupEvent('cloth')
+    this.strangerAttack().then(async () => {
+      await timer(this, 3000)
+      this.cloth = this.physics.add
+        .staticImage(970, 392, IMAGES.CLOTH.KEY)
+        .refreshBody()
+        .setInteractive()
+      this.setupEvent('cloth')
 
-        this.staticAudio.play()
-        this.survivor.play('getUp')
-        this.tweens.add({
-          targets: this.stranger,
-          x: 0,
-          duration: 1000,
-          onComplete: async () => {
-            this.stranger.destroy()
-            document.dispatchEvent(new CustomEvent('getHurt'))
-            await this.createDialog('... What did just happen?')
-            this.survivor.recover()
-            await this.createDialog(
-              "Ugh… No time to think about that, I'm losing a lot of blood."
-            )
-          }
-        })
-      }, 3000)
+      this.staticAudio.play()
+      this.survivor.play('getUp')
+      this.tweens.add({
+        targets: this.stranger,
+        x: 0,
+        duration: 1000,
+        onComplete: async () => {
+          this.stranger.destroy()
+          document.dispatchEvent(new CustomEvent('getHurt'))
+          await this.createDialog('... What did just happen?')
+          this.survivor.recover()
+          await this.createDialog(
+            "Ugh… No time to think about that, I'm losing a lot of blood."
+          )
+        }
+      })
     })
   }
 
@@ -826,6 +823,10 @@ class BuildingScene extends BaseScene {
   }
 
   private async initEndCutscene() {
+    await this.createDialog(
+      'Ok, I have everything ready to spend the night now, should be safe.',
+      false
+    )
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
     this.nightBackground.setAlpha(1, 1, 1, 1)
@@ -836,19 +837,20 @@ class BuildingScene extends BaseScene {
       duration: 10
     })
     this.survivor.faceLeft()
-    this.cameras.main.stopFollow()
-    await cameraPan(this, 0, 0, 10)
     await cameraFade(this, 'fadeIn')
-    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+    await timer(this, 700)
+    this.cameras.main.stopFollow()
+    await cameraPan(this, 0, 0, 4000)
     await this.createDialog(
       "How strange, to see northern lights so far down south. I wonder if there is some electromagnetic anomaly around here… could explain why the buggy's electrical system died.",
       false
     )
+    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
     await this.createDialog(
       "Anyway… I should get some rest now. Tomorrow I'll head into town and see if I can find out what the hell is going on.",
       false
     )
-    await cameraFade(this, 'fadeOut')
+    await cameraFade(this, 'fadeOut', 2000)
     document.dispatchEvent(new CustomEvent('completeGame'))
   }
 }
