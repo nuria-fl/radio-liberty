@@ -15,6 +15,7 @@ import Buggy from '../sprites/Buggy'
 import Stranger from '../sprites/Stranger'
 import Firepit from '../sprites/Firepit'
 import Antenna from '../sprites/Antenna'
+import Boxes from '../sprites/Boxes'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -219,6 +220,7 @@ class BuildingScene extends BaseScene {
   private floor: Physics.Arcade.Sprite
   private ladder: Physics.Arcade.Image
   private bucket: Physics.Arcade.Image
+  private boxes: Boxes
   private waterCollector: Physics.Arcade.Image
   private wood: Physics.Arcade.Image
   private puddle: Physics.Arcade.Image
@@ -274,13 +276,16 @@ class BuildingScene extends BaseScene {
     )
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
     this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
-    this.load.image(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`)
     this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
+    this.load.spritesheet(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`, {
+      frameWidth: 128,
+      frameHeight: 148
+    })
     this.load.spritesheet(
       IMAGES.ANTENNA.KEY,
       `/images/${IMAGES.ANTENNA.FILE}`,
@@ -433,7 +438,13 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.physics.add.staticImage(771, 322, IMAGES.BOXES.KEY)
+    this.boxes = new Boxes({
+      scene: this,
+      x: 771,
+      y: 322,
+      key: IMAGES.BOXES.KEY
+    })
+    this.boxes.play('boxesDay')
 
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
@@ -831,6 +842,7 @@ class BuildingScene extends BaseScene {
     await cameraFade(this, 'fadeOut')
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
+    this.boxes.play('boxesNight')
     this.tweens.add({
       targets: this.survivor,
       x: 950,
