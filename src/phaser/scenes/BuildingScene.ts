@@ -17,6 +17,7 @@ import Firepit from '../sprites/Firepit'
 import Antenna from '../sprites/Antenna'
 import Boxes from '../sprites/Boxes'
 import Bucket from '../sprites/Bucket'
+import Ladder from '../sprites/Ladder'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -219,7 +220,7 @@ class BuildingScene extends BaseScene {
   private platforms: Physics.Arcade.StaticGroup
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
-  private ladder: Physics.Arcade.Image
+  private ladder: Ladder
   private bucket: Bucket
   private boxes: Boxes
   private wood: Physics.Arcade.Image
@@ -275,12 +276,15 @@ class BuildingScene extends BaseScene {
       `/images/${IMAGES.BUILDING_NIGHT_BG_2.FILE}`
     )
     this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
     this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
     this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
     this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
     this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
     this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
+    this.load.spritesheet(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`, {
+      frameWidth: 56,
+      frameHeight: 304
+    })
     this.load.spritesheet(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`, {
       frameWidth: 28,
       frameHeight: 48
@@ -381,10 +385,15 @@ class BuildingScene extends BaseScene {
 
     this.upstairsFloor.body.checkCollision.down = false
 
-    this.ladder = this.physics.add
-      .staticImage(1130, 532, IMAGES.LADDER.KEY)
-      .refreshBody()
-      .setInteractive()
+    this.ladder = new Ladder({
+      scene: this,
+      x: 1130,
+      y: 532,
+      key: IMAGES.LADDER.KEY
+    })
+    this.physics.add.collider(this.platforms, this.ladder)
+    this.ladder.setInteractive()
+    this.ladder.play('ladderDay')
 
     this.metalBox = this.physics.add
       .staticImage(1030, 660, IMAGES.METALBOX.KEY)
@@ -839,6 +848,14 @@ class BuildingScene extends BaseScene {
     }
   }
 
+  private setNightMode() {
+    this.nightBackground.setAlpha(1, 1, 1, 1)
+    this.nightForeground.setAlpha(1, 1, 1, 1)
+    this.boxes.play('boxesNight')
+    this.bucket.play('bucketNight')
+    this.ladder.play('ladderNight')
+  }
+
   private async initEndCutscene() {
     await this.createDialog(
       'Ok, I have everything ready to spend the night now, should be safe.',
@@ -846,10 +863,7 @@ class BuildingScene extends BaseScene {
     )
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
-    this.nightBackground.setAlpha(1, 1, 1, 1)
-    this.nightForeground.setAlpha(1, 1, 1, 1)
-    this.boxes.play('boxesNight')
-    this.bucket.play('bucketNight')
+    this.setNightMode()
     this.tweens.add({
       targets: this.survivor,
       x: 950,
