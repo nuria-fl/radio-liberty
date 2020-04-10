@@ -1,26 +1,17 @@
-import { IMAGES } from '../constants'
+import { SPRITES } from '../constants'
+import { BaseScene } from '../scenes/BaseScene'
 
-export default class Bucket extends Phaser.GameObjects.Sprite {
+export class Bucket extends Phaser.GameObjects.Sprite {
   public body: Phaser.Physics.Arcade.Body
 
-  constructor({
-    scene,
-    x,
-    y,
-    key
-  }: {
-    scene: Phaser.Scene
-    x: number
-    y: number
-    key: string
-  }) {
-    super(scene, x, y, key)
+  constructor({ scene, x, y }: { scene: BaseScene; x: number; y: number }) {
+    super(scene, x, y, SPRITES.BUCKET.KEY)
     scene.physics.world.enable(this)
     scene.add.existing(this)
 
     scene.anims.create({
       key: 'bucketDay',
-      frames: scene.anims.generateFrameNames(IMAGES.BUCKET.KEY, {
+      frames: scene.anims.generateFrameNames(SPRITES.BUCKET.KEY, {
         start: 0,
         end: 0
       }),
@@ -29,7 +20,7 @@ export default class Bucket extends Phaser.GameObjects.Sprite {
 
     scene.anims.create({
       key: 'bucketNight',
-      frames: scene.anims.generateFrameNames(IMAGES.BUCKET.KEY, {
+      frames: scene.anims.generateFrameNames(SPRITES.BUCKET.KEY, {
         start: 1,
         end: 1
       }),

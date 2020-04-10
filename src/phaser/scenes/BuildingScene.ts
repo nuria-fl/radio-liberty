@@ -1,23 +1,16 @@
-import { SCENES, IMAGES, AUDIO } from '../constants'
-import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
-import {
-  loadSurvivor,
-  setupInput,
-  preloadBuggy,
-  preloadSurvivor,
-  preloadStranger
-} from '../utils/load'
+import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
+import { Survivor } from '../sprites/Survivor'
+import { Buggy } from '../sprites/Buggy'
+import { Stranger } from '../sprites/Stranger'
+import { Firepit } from '../sprites/Firepit'
+import { Antenna } from '../sprites/Antenna'
+import { Boxes } from '../sprites/Boxes'
+import { Bucket } from '../sprites/Bucket'
+import { Ladder } from '../sprites/Ladder'
 import { cameraFade, cameraPan, timer } from '../utils/promisify'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
-import Buggy from '../sprites/Buggy'
-import Stranger from '../sprites/Stranger'
-import Firepit from '../sprites/Firepit'
-import Antenna from '../sprites/Antenna'
-import Boxes from '../sprites/Boxes'
-import Bucket from '../sprites/Bucket'
-import Ladder from '../sprites/Ladder'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -255,63 +248,35 @@ class BuildingScene extends BaseScene {
   }
 
   public preload() {
-    this.load.audio(AUDIO.FIRE.KEY, `/sound/${AUDIO.FIRE.FILE}`)
-    this.load.audio(AUDIO.STATIC.KEY, `/sound/${AUDIO.STATIC.FILE}`)
-    this.load.audio(AUDIO.DROP.KEY, `/sound/${AUDIO.DROP.FILE}`)
-    this.load.audio(AUDIO.BANG.KEY, `/sound/${AUDIO.BANG.FILE}`)
-    this.load.image(
-      IMAGES.BUILDING_BG.KEY,
-      `/images/${IMAGES.BUILDING_BG.FILE}`
-    )
-    this.load.image(
-      IMAGES.BUILDING_BG_2.KEY,
-      `/images/${IMAGES.BUILDING_BG_2.FILE}`
-    )
-    this.load.image(
-      IMAGES.BUILDING_NIGHT_BG.KEY,
-      `/images/${IMAGES.BUILDING_NIGHT_BG.FILE}`
-    )
-    this.load.image(
-      IMAGES.BUILDING_NIGHT_BG_2.KEY,
-      `/images/${IMAGES.BUILDING_NIGHT_BG_2.FILE}`
-    )
-    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
-    this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
-    this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
-    this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
-    this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
-    this.load.spritesheet(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`, {
-      frameWidth: 56,
-      frameHeight: 304
-    })
-    this.load.spritesheet(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`, {
-      frameWidth: 28,
-      frameHeight: 48
-    })
-    this.load.spritesheet(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`, {
-      frameWidth: 128,
-      frameHeight: 148
-    })
-    this.load.spritesheet(
-      IMAGES.ANTENNA.KEY,
-      `/images/${IMAGES.ANTENNA.FILE}`,
-      {
-        frameWidth: 160,
-        frameHeight: 504
-      }
-    )
-    this.load.spritesheet(
-      IMAGES.FIREPIT.KEY,
-      `/images/${IMAGES.FIREPIT.FILE}`,
-      {
-        frameWidth: 84,
-        frameHeight: 60
-      }
-    )
-    preloadBuggy(this)
-    preloadSurvivor(this)
-    preloadStranger(this)
+    // Load common assets
+    this.commonPreload()
+
+    // Preload audio
+    this.loadAudio(AUDIO.FIRE)
+    this.loadAudio(AUDIO.STATIC)
+    this.loadAudio(AUDIO.DROP)
+    this.loadAudio(AUDIO.BANG)
+
+    // Preload images
+    this.loadImage(IMAGES.BUILDING_BG)
+    this.loadImage(IMAGES.BUILDING_BG_2)
+    this.loadImage(IMAGES.BUILDING_NIGHT_BG)
+    this.loadImage(IMAGES.BUILDING_NIGHT_BG_2)
+    this.loadImage(IMAGES.FLOOR)
+    this.loadImage(IMAGES.WOOD)
+    this.loadImage(IMAGES.CLOTH)
+    this.loadImage(IMAGES.DROP)
+    this.loadImage(IMAGES.ROCK)
+    this.loadImage(IMAGES.METALBOX)
+
+    // Preload sprites
+    this.loadSprite(SPRITES.LADDER)
+    this.loadSprite(SPRITES.BUCKET)
+    this.loadSprite(SPRITES.BOXES)
+    this.loadSprite(SPRITES.ANTENNA)
+    this.loadSprite(SPRITES.FIREPIT)
+    this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.STRANGER)
   }
 
   public async create() {
@@ -338,20 +303,17 @@ class BuildingScene extends BaseScene {
       new Antenna({
         scene: this,
         x: 145,
-        y: 265,
-        key: IMAGES.ANTENNA.KEY
+        y: 265
       }),
       new Antenna({
         scene: this,
         x: 10,
-        y: 335,
-        key: IMAGES.ANTENNA.KEY
+        y: 335
       }).setAlpha(0.5, 0.5, 0.5, 0.5),
       new Antenna({
         scene: this,
         x: 280,
-        y: 323,
-        key: IMAGES.ANTENNA.KEY
+        y: 323
       }).setAlpha(0.5, 0.5, 0.5, 0.5)
     ])
 
@@ -388,8 +350,7 @@ class BuildingScene extends BaseScene {
     this.ladder = new Ladder({
       scene: this,
       x: 1130,
-      y: 532,
-      key: IMAGES.LADDER.KEY
+      y: 532
     })
     this.physics.add.collider(this.platforms, this.ladder)
     this.ladder.setInteractive()
@@ -415,8 +376,7 @@ class BuildingScene extends BaseScene {
     this.pit = new Firepit({
       scene: this,
       x: 880,
-      y: 653,
-      key: IMAGES.FIREPIT.KEY
+      y: 653
     })
     this.physics.add.collider(this.platforms, this.pit)
     this.pit.play('default')
@@ -448,8 +408,7 @@ class BuildingScene extends BaseScene {
     this.boxes = new Boxes({
       scene: this,
       x: 771,
-      y: 322,
-      key: IMAGES.BOXES.KEY
+      y: 322
     })
     this.boxes.play('boxesDay')
 
@@ -473,8 +432,7 @@ class BuildingScene extends BaseScene {
     this.bucket = new Bucket({
       scene: this,
       x: 1200,
-      y: 660,
-      key: IMAGES.BUCKET.KEY
+      y: 660
     })
     this.physics.add.collider(this.platforms, this.bucket)
     this.bucket.play('bucketDay')
@@ -482,7 +440,6 @@ class BuildingScene extends BaseScene {
 
     this.buggy = new Buggy({
       scene: this,
-      key: IMAGES.BUGGY.KEY,
       x: 100,
       y: 600
     })
@@ -532,7 +489,11 @@ class BuildingScene extends BaseScene {
   }
 
   private initSurvivor() {
-    this.survivor = loadSurvivor(this, 300, 625)
+    this.survivor = new Survivor({
+      scene: this,
+      x: 300,
+      y: 625
+    })
 
     this.physics.add.collider(
       this.platforms,
@@ -560,13 +521,12 @@ class BuildingScene extends BaseScene {
       }
     )
 
-    setupInput(this.survivor, this)
+    this.setupInput()
   }
 
   private initStranger() {
     this.stranger = new Stranger({
       scene: this,
-      key: IMAGES.STRANGER.KEY,
       x: 750,
       y: 340
     })

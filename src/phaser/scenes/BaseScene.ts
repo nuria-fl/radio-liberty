@@ -1,6 +1,19 @@
 import { DialogService, createDialogBox } from '../utils/dialog'
-import Survivor from '../sprites/Survivor'
+import { Survivor } from '../sprites/Survivor'
 import { randomLine } from '../default-lines'
+import { SPRITES, AUDIO } from '../constants'
+
+interface Asset {
+  KEY: string
+  FILE: string
+}
+
+interface SpriteAsset {
+  KEY: string
+  FILE: string
+  WIDTH: number
+  HEIGHT: number
+}
 
 export class BaseScene extends Phaser.Scene {
   public survivor: Survivor
@@ -34,6 +47,26 @@ export class BaseScene extends Phaser.Scene {
   }
   public interact = {}
 
+  public loadImage(IMAGE: Asset) {
+    this.load.image(IMAGE.KEY, `/images/${IMAGE.FILE}`)
+  }
+
+  public loadAudio(AUDIO: Asset) {
+    this.load.audio(AUDIO.KEY, `/sound/${AUDIO.FILE}`)
+  }
+
+  public loadSprite(SPRITE: SpriteAsset) {
+    this.load.spritesheet(SPRITE.KEY, `/images/${SPRITE.FILE}`, {
+      frameWidth: SPRITE.WIDTH,
+      frameHeight: SPRITE.HEIGHT
+    })
+  }
+
+  public commonPreload() {
+    this.loadSprite(SPRITES.SURVIVOR)
+    this.loadAudio(AUDIO.WALK)
+  }
+
   public initScene() {
     this.addListeners()
     this.dialog = new DialogService(this)
@@ -63,6 +96,25 @@ export class BaseScene extends Phaser.Scene {
 
   public createDialog(text, stopCutscene = true) {
     return createDialogBox(text, stopCutscene, this)
+  }
+
+  public setupInput() {
+    this.input.on('pointerdown', pointer => {
+      if (this.playingCutscene === false && !this.survivor.isDown) {
+        // remove all interactions
+        Object.keys(this.interact).forEach(k => {
+          this.sys.events.off(
+            this.interact[k].key,
+            this.interact[k].cb,
+            this,
+            false
+          )
+        })
+
+        this.survivor.setDestination(pointer.worldX)
+        this.physics.moveTo(this.survivor, pointer.worldX, this.survivor.y, 100)
+      }
+    })
   }
 
   public setInteractions(keys: string[]) {
