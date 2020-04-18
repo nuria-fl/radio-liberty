@@ -6,13 +6,6 @@ export const SCENES = {
   BUILDING: 'BUILDING'
 }
 
-interface Asset {
-  [key: string]: {
-    KEY: string
-    FILE: string
-  }
-}
-
 export const SPRITES = {
   SURVIVOR: {
     KEY: 'SURVIVOR',
@@ -73,7 +66,6 @@ export const IMAGES = {
     KEY: 'FLOOR',
     FILE: 'floor.png'
   },
-
   ROADSIGN: {
     KEY: 'ROADSIGN',
     FILE: 'road-sign.png'

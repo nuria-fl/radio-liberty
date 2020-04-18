@@ -309,12 +309,26 @@ class BuildingScene extends BaseScene {
         scene: this,
         x: 10,
         y: 335
-      }).setAlpha(0.5, 0.5, 0.5, 0.5),
+      }),
+      new Antenna({
+        scene: this,
+        x: 10,
+        y: 335
+      })
+        .setTintFill(0x9fb9b4)
+        .setAlpha(0.3),
       new Antenna({
         scene: this,
         x: 280,
         y: 323
-      }).setAlpha(0.5, 0.5, 0.5, 0.5)
+      }),
+      new Antenna({
+        scene: this,
+        x: 280,
+        y: 323
+      })
+        .setTintFill(0x9fb9b4)
+        .setAlpha(0.5)
     ])
 
     this.antennasSprites.playAnimation('antennaBlink')
