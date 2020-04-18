@@ -373,6 +373,7 @@ class BuildingScene extends BaseScene {
 
     this.metalBox = new MetalBox({ scene: this, x: 1030, y: 660 })
     this.metalBox.play('metalBoxDay')
+    this.metalBox.setInteractive()
 
     this.rock = this.physics.add
       .staticImage(415, 625, IMAGES.ROCK.KEY)
