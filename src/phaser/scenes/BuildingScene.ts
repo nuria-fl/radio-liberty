@@ -372,6 +372,7 @@ class BuildingScene extends BaseScene {
     this.ladder.play('ladderDay')
 
     this.metalBox = new MetalBox({ scene: this, x: 1030, y: 660 })
+    this.physics.add.collider(this.platforms, this.metalBox)
     this.metalBox.play('metalBoxDay')
     this.metalBox.setInteractive()
 

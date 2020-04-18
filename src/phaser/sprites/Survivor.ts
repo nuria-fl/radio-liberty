@@ -1,5 +1,6 @@
 import { SPRITES, AUDIO } from '../constants'
 import { BaseScene } from '../scenes/BaseScene'
+const SPRITE = SPRITES.SURVIVOR
 
 export class Survivor extends Phaser.GameObjects.Sprite {
   public target = null
@@ -7,11 +8,11 @@ export class Survivor extends Phaser.GameObjects.Sprite {
   public isDown = false
   public acceleration = 600
   public body: Phaser.Physics.Arcade.Body
-  public walkSound
+  public walkSound: Phaser.Sound.BaseSound
   public scene: BaseScene
 
   constructor({ scene, x, y }: { scene: BaseScene; x: number; y: number }) {
-    super(scene, x, y, SPRITES.SURVIVOR.KEY)
+    super(scene, x, y, SPRITE.KEY)
     scene.physics.world.enable(this)
     scene.add.existing(this)
 
@@ -19,7 +20,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'walk',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 0,
         end: 3
       }),
@@ -29,7 +30,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'stand',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 0,
         end: 0
       }),
@@ -38,7 +39,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'dead',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 4,
         end: 4
       }),
@@ -47,7 +48,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'push',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 5,
         end: 6
       }),
@@ -57,7 +58,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'fight',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 7,
         end: 8
       }),
@@ -67,7 +68,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'getUp',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 9,
         end: 9
       }),
@@ -76,7 +77,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'backwards',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 10,
         end: 10
       }),
@@ -85,7 +86,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
 
     this.scene.anims.create({
       key: 'climbing',
-      frames: this.scene.anims.generateFrameNumbers(SPRITES.SURVIVOR.KEY, {
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 11,
         end: 12
       }),
@@ -94,9 +95,8 @@ export class Survivor extends Phaser.GameObjects.Sprite {
     })
 
     this.target = null
-    this.body.setSize(40, 120)
+    this.body.setSize(40, SPRITE.HEIGHT)
     this.body.setCollideWorldBounds(true)
-    // this.body.stopVelocityOnCollide = true
     this.walkSound = this.scene.sound.add(AUDIO.WALK.KEY)
   }
 
