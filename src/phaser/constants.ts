@@ -54,6 +54,12 @@ export const SPRITES = {
     FILE: 'antenna.png',
     WIDTH: 160,
     HEIGHT: 504
+  },
+  METALBOX: {
+    KEY: 'METALBOX',
+    FILE: 'metal-box.png',
+    WIDTH: 92,
+    HEIGHT: 52
   }
 }
 
@@ -114,10 +120,6 @@ export const IMAGES = {
   ROCK: {
     KEY: 'ROCK',
     FILE: 'rock.png'
-  },
-  METALBOX: {
-    KEY: 'METALBOX',
-    FILE: 'metal-box.png'
   }
 }
 

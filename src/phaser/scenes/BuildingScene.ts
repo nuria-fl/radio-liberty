@@ -6,6 +6,7 @@ import { Stranger } from '../sprites/Stranger'
 import { Firepit } from '../sprites/Firepit'
 import { Antenna } from '../sprites/Antenna'
 import { Boxes } from '../sprites/Boxes'
+import { MetalBox } from '../sprites/MetalBox'
 import { Bucket } from '../sprites/Bucket'
 import { Ladder } from '../sprites/Ladder'
 import { cameraFade, cameraPan, timer } from '../utils/promisify'
@@ -208,25 +209,29 @@ class BuildingScene extends BaseScene {
   public survivor: Survivor
   private buggy: Buggy
   private stranger: Stranger
-  private nightBackground: Phaser.GameObjects.Image
-  private nightForeground: Phaser.GameObjects.Image
-  private platforms: Physics.Arcade.StaticGroup
-  private upstairsFloor: Physics.Arcade.Sprite
-  private floor: Physics.Arcade.Sprite
   private ladder: Ladder
   private bucket: Bucket
   private boxes: Boxes
+  private metalBox: MetalBox
+  private pit: Firepit
+  private upstairsFloor: Physics.Arcade.Sprite
+  private floor: Physics.Arcade.Sprite
+  private platforms: Physics.Arcade.StaticGroup
+  private antennasSprites: Physics.Arcade.Group
+  private dropAnimation: Phaser.Tweens.Tween
+  private nightBackground: Phaser.GameObjects.Image
+  private nightForeground: Phaser.GameObjects.Image
   private wood: Physics.Arcade.Image
   private puddle: Physics.Arcade.Image
-  private pit: Firepit
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
-  private antennasSprites: Physics.Arcade.Group
   private rock: Physics.Arcade.Image
   private cloth: Physics.Arcade.Image
-  private metalBox: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
-  private dropAnimation: Phaser.Tweens.Tween
+  private fireAudio: Phaser.Sound.BaseSound
+  private staticAudio: Phaser.Sound.BaseSound
+  private dropAudio: Phaser.Sound.BaseSound
+  private bangAudio: Phaser.Sound.BaseSound
   private isUpstairs = false
   private hasWaterCollector = false
   private hasFire = false
@@ -235,10 +240,6 @@ class BuildingScene extends BaseScene {
   private cleanWound = false
   private isCured = false
   private boxOpen = false
-  private fireAudio: Phaser.Sound.BaseSound
-  private staticAudio: Phaser.Sound.BaseSound
-  private dropAudio: Phaser.Sound.BaseSound
-  private bangAudio: Phaser.Sound.BaseSound
   private timeout: number
 
   constructor() {
@@ -267,9 +268,9 @@ class BuildingScene extends BaseScene {
     this.loadImage(IMAGES.CLOTH)
     this.loadImage(IMAGES.DROP)
     this.loadImage(IMAGES.ROCK)
-    this.loadImage(IMAGES.METALBOX)
 
     // Preload sprites
+    this.loadSprite(SPRITES.METALBOX)
     this.loadSprite(SPRITES.LADDER)
     this.loadSprite(SPRITES.BUCKET)
     this.loadSprite(SPRITES.BOXES)
@@ -370,10 +371,8 @@ class BuildingScene extends BaseScene {
     this.ladder.setInteractive()
     this.ladder.play('ladderDay')
 
-    this.metalBox = this.physics.add
-      .staticImage(1030, 660, IMAGES.METALBOX.KEY)
-      .refreshBody()
-      .setInteractive()
+    this.metalBox = new MetalBox({ scene: this, x: 1030, y: 660 })
+    this.metalBox.play('metalBoxDay')
 
     this.rock = this.physics.add
       .staticImage(415, 625, IMAGES.ROCK.KEY)
@@ -825,6 +824,11 @@ class BuildingScene extends BaseScene {
   private setNightMode() {
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
+    this.antennasSprites.playAnimation('antennaNightBlink')
+    const antennas = this.antennasSprites.getChildren() as Antenna[]
+    antennas[2].setTintFill(0x222034)
+    antennas[4].setTintFill(0x222034)
+    this.metalBox.play('metalBoxNight')
     this.boxes.play('boxesNight')
     this.bucket.play('bucketNight')
     this.ladder.play('ladderNight')
