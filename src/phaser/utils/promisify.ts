@@ -1,3 +1,6 @@
+export const timer = (scene: Phaser.Scene, delay = 1000) =>
+  new Promise(resolve => scene.time.delayedCall(delay, resolve))
+
 export const cameraFade = (
   scene: Phaser.Scene,
   direction: 'fadeIn' | 'fadeOut',

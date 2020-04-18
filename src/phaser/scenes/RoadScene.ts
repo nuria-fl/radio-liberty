@@ -1,14 +1,9 @@
 import { Physics } from 'phaser'
 import { BaseScene } from './BaseScene'
-import {
-  loadSurvivor,
-  setupInput,
-  preloadSurvivor,
-  preloadBuggy
-} from '../utils/load'
 import { randomLine } from '../default-lines'
-import { SCENES, IMAGES, AUDIO } from '../constants'
-import Buggy from '../sprites/Buggy'
+import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
+import { Survivor } from '../sprites/Survivor'
+import { Buggy } from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
 
 class RoadScene extends BaseScene {
@@ -71,16 +66,22 @@ class RoadScene extends BaseScene {
   }
 
   public preload() {
-    this.load.audio(AUDIO.INTRO.KEY, `/sound/${AUDIO.INTRO.FILE}`)
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.ROAD.KEY, `/images/${IMAGES.ROAD.FILE}`)
-    this.load.image(IMAGES.ROAD_LONG.KEY, `/images/${IMAGES.ROAD_LONG.FILE}`)
-    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.ROADSIGN.KEY, `/images/${IMAGES.ROADSIGN.FILE}`)
-    this.load.image(IMAGES.PINECONE.KEY, `/images/${IMAGES.PINECONE.FILE}`)
+    // Load common assets
+    this.commonPreload()
 
-    preloadBuggy(this)
-    preloadSurvivor(this)
+    // Preload audio
+    this.loadAudio(AUDIO.INTRO)
+
+    // Preload images
+    this.loadImage(IMAGES.ROADSIGN)
+    this.loadImage(IMAGES.ROAD)
+    this.loadImage(IMAGES.ROAD_LONG)
+    this.loadImage(IMAGES.FLOOR)
+    this.loadImage(IMAGES.ROAD)
+    this.loadImage(IMAGES.PINECONE)
+
+    // Preload sprites
+    this.loadSprite(SPRITES.BUGGY)
   }
 
   public create() {
@@ -114,7 +115,6 @@ class RoadScene extends BaseScene {
 
     this.buggy = new Buggy({
       scene: this,
-      key: IMAGES.BUGGY.KEY,
       x: 2500,
       y: 520
     })
@@ -211,11 +211,11 @@ class RoadScene extends BaseScene {
   }
 
   private initSurvivor() {
-    this.survivor = loadSurvivor(this)
+    this.survivor = new Survivor({ scene: this, x: 100, y: 510 })
 
     this.physics.add.collider(this.platforms, this.survivor)
 
-    setupInput(this.survivor, this)
+    this.setupInput()
   }
 
   private initEngine() {

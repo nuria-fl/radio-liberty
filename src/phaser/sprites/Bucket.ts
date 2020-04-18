@@ -1,8 +1,8 @@
 import { SPRITES } from '../constants'
 import { BaseScene } from '../scenes/BaseScene'
-const SPRITE = SPRITES.STRANGER
+const SPRITE = SPRITES.BUCKET
 
-export class Stranger extends Phaser.GameObjects.Sprite {
+export class Bucket extends Phaser.GameObjects.Sprite {
   public body: Phaser.Physics.Arcade.Body
 
   constructor({ scene, x, y }: { scene: BaseScene; x: number; y: number }) {
@@ -11,7 +11,7 @@ export class Stranger extends Phaser.GameObjects.Sprite {
     scene.add.existing(this)
 
     scene.anims.create({
-      key: 'standing',
+      key: 'bucketDay',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
         end: 0
@@ -19,7 +19,15 @@ export class Stranger extends Phaser.GameObjects.Sprite {
       repeat: -1
     })
 
+    scene.anims.create({
+      key: 'bucketNight',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 1,
+        end: 1
+      }),
+      repeat: -1
+    })
+
     this.body.setSize(SPRITE.WIDTH, SPRITE.HEIGHT)
-    this.body.setCollideWorldBounds(true)
   }
 }

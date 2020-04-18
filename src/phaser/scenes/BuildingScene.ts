@@ -1,20 +1,17 @@
-import { SCENES, IMAGES, AUDIO } from '../constants'
-import Survivor from '../sprites/Survivor'
 import { Physics } from 'phaser'
-import {
-  loadSurvivor,
-  setupInput,
-  preloadBuggy,
-  preloadSurvivor,
-  preloadStranger
-} from '../utils/load'
-import { cameraFade, cameraPan } from '../utils/promisify'
+import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
+import { Survivor } from '../sprites/Survivor'
+import { Buggy } from '../sprites/Buggy'
+import { Stranger } from '../sprites/Stranger'
+import { Firepit } from '../sprites/Firepit'
+import { Antenna } from '../sprites/Antenna'
+import { Boxes } from '../sprites/Boxes'
+import { MetalBox } from '../sprites/MetalBox'
+import { Bucket } from '../sprites/Bucket'
+import { Ladder } from '../sprites/Ladder'
+import { cameraFade, cameraPan, timer } from '../utils/promisify'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
-import Buggy from '../sprites/Buggy'
-import Stranger from '../sprites/Stranger'
-import Firepit from '../sprites/Firepit'
-import Antenna from '../sprites/Antenna'
 
 class BuildingScene extends BaseScene {
   public use = {
@@ -212,24 +209,29 @@ class BuildingScene extends BaseScene {
   public survivor: Survivor
   private buggy: Buggy
   private stranger: Stranger
-  private platforms: Physics.Arcade.StaticGroup
+  private ladder: Ladder
+  private bucket: Bucket
+  private boxes: Boxes
+  private metalBox: MetalBox
+  private pit: Firepit
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
-  private engine: any
-  private ladder: Physics.Arcade.Image
-  private bucket: Physics.Arcade.Image
-  private waterCollector: Physics.Arcade.Image
+  private platforms: Physics.Arcade.StaticGroup
+  private antennasSprites: Physics.Arcade.Group
+  private dropAnimation: Phaser.Tweens.Tween
+  private nightBackground: Phaser.GameObjects.Image
+  private nightForeground: Phaser.GameObjects.Image
   private wood: Physics.Arcade.Image
   private puddle: Physics.Arcade.Image
-  private pit: Firepit
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
-  private antennasSprites: Physics.Arcade.Group
   private rock: Physics.Arcade.Image
   private cloth: Physics.Arcade.Image
-  private metalBox: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
-  private dropAnimation: Phaser.Tweens.Tween
+  private fireAudio: Phaser.Sound.BaseSound
+  private staticAudio: Phaser.Sound.BaseSound
+  private dropAudio: Phaser.Sound.BaseSound
+  private bangAudio: Phaser.Sound.BaseSound
   private isUpstairs = false
   private hasWaterCollector = false
   private hasFire = false
@@ -238,10 +240,6 @@ class BuildingScene extends BaseScene {
   private cleanWound = false
   private isCured = false
   private boxOpen = false
-  private fireAudio: Phaser.Sound.BaseSound
-  private staticAudio: Phaser.Sound.BaseSound
-  private dropAudio: Phaser.Sound.BaseSound
-  private bangAudio: Phaser.Sound.BaseSound
   private timeout: number
 
   constructor() {
@@ -251,49 +249,38 @@ class BuildingScene extends BaseScene {
   }
 
   public preload() {
-    this.load.audio(AUDIO.FIRE.KEY, `/sound/${AUDIO.FIRE.FILE}`)
-    this.load.audio(AUDIO.STATIC.KEY, `/sound/${AUDIO.STATIC.FILE}`)
-    this.load.audio(AUDIO.DROP.KEY, `/sound/${AUDIO.DROP.FILE}`)
-    this.load.audio(AUDIO.BANG.KEY, `/sound/${AUDIO.BANG.FILE}`)
-    this.load.image(
-      IMAGES.BUILDING_BG.KEY,
-      `/images/${IMAGES.BUILDING_BG.FILE}`
-    )
-    this.load.image(
-      IMAGES.BUILDING_BG_2.KEY,
-      `/images/${IMAGES.BUILDING_BG_2.FILE}`
-    )
-    this.load.image(IMAGES.FLOOR.KEY, `/images/${IMAGES.FLOOR.FILE}`)
-    this.load.image(IMAGES.LADDER.KEY, `/images/${IMAGES.LADDER.FILE}`)
-    this.load.image(IMAGES.BOXES.KEY, `/images/${IMAGES.BOXES.FILE}`)
-    this.load.image(IMAGES.BUCKET.KEY, `/images/${IMAGES.BUCKET.FILE}`)
-    this.load.image(IMAGES.WOOD.KEY, `/images/${IMAGES.WOOD.FILE}`)
-    this.load.image(IMAGES.CLOTH.KEY, `/images/${IMAGES.CLOTH.FILE}`)
-    this.load.image(IMAGES.DROP.KEY, `/images/${IMAGES.DROP.FILE}`)
-    this.load.image(IMAGES.ROCK.KEY, `/images/${IMAGES.ROCK.FILE}`)
-    this.load.image(IMAGES.METALBOX.KEY, `/images/${IMAGES.METALBOX.FILE}`)
-    this.load.spritesheet(
-      IMAGES.ANTENNA.KEY,
-      `/images/${IMAGES.ANTENNA.FILE}`,
-      {
-        frameWidth: 160,
-        frameHeight: 504
-      }
-    )
-    this.load.spritesheet(
-      IMAGES.FIREPIT.KEY,
-      `/images/${IMAGES.FIREPIT.FILE}`,
-      {
-        frameWidth: 84,
-        frameHeight: 60
-      }
-    )
-    preloadBuggy(this)
-    preloadSurvivor(this)
-    preloadStranger(this)
+    // Load common assets
+    this.commonPreload()
+
+    // Preload audio
+    this.loadAudio(AUDIO.FIRE)
+    this.loadAudio(AUDIO.STATIC)
+    this.loadAudio(AUDIO.DROP)
+    this.loadAudio(AUDIO.BANG)
+
+    // Preload images
+    this.loadImage(IMAGES.BUILDING_BG)
+    this.loadImage(IMAGES.BUILDING_BG_2)
+    this.loadImage(IMAGES.BUILDING_NIGHT_BG)
+    this.loadImage(IMAGES.BUILDING_NIGHT_BG_2)
+    this.loadImage(IMAGES.FLOOR)
+    this.loadImage(IMAGES.WOOD)
+    this.loadImage(IMAGES.CLOTH)
+    this.loadImage(IMAGES.DROP)
+    this.loadImage(IMAGES.ROCK)
+
+    // Preload sprites
+    this.loadSprite(SPRITES.METALBOX)
+    this.loadSprite(SPRITES.LADDER)
+    this.loadSprite(SPRITES.BUCKET)
+    this.loadSprite(SPRITES.BOXES)
+    this.loadSprite(SPRITES.ANTENNA)
+    this.loadSprite(SPRITES.FIREPIT)
+    this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.STRANGER)
   }
 
-  public create() {
+  public async create() {
     this.initScene()
     document.addEventListener('unlock', this.handleUnlock.bind(this))
 
@@ -303,6 +290,10 @@ class BuildingScene extends BaseScene {
     this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING_BG.KEY).setOrigin(0)
+    this.nightBackground = this.add
+      .image(0, 0, IMAGES.BUILDING_NIGHT_BG.KEY)
+      .setOrigin(0)
+      .setAlpha(0, 0, 0, 0)
 
     this.antennasSprites = this.physics.add.group({
       immovable: true,
@@ -313,26 +304,41 @@ class BuildingScene extends BaseScene {
       new Antenna({
         scene: this,
         x: 145,
-        y: 265,
-        key: IMAGES.ANTENNA.KEY
+        y: 265
       }),
       new Antenna({
         scene: this,
         x: 10,
-        y: 335,
-        key: IMAGES.ANTENNA.KEY
-      }).setAlpha(0.5, 0.5, 0.5, 0.5),
+        y: 335
+      }),
+      new Antenna({
+        scene: this,
+        x: 10,
+        y: 335
+      })
+        .setTintFill(0x9fb9b4)
+        .setAlpha(0.3),
       new Antenna({
         scene: this,
         x: 280,
-        y: 323,
-        key: IMAGES.ANTENNA.KEY
-      }).setAlpha(0.5, 0.5, 0.5, 0.5)
+        y: 323
+      }),
+      new Antenna({
+        scene: this,
+        x: 280,
+        y: 323
+      })
+        .setTintFill(0x9fb9b4)
+        .setAlpha(0.5)
     ])
 
     this.antennasSprites.playAnimation('antennaBlink')
 
     this.add.image(0, 0, IMAGES.BUILDING_BG_2.KEY).setOrigin(0)
+    this.nightForeground = this.add
+      .image(0, 0, IMAGES.BUILDING_NIGHT_BG_2.KEY)
+      .setOrigin(0)
+      .setAlpha(0, 0, 0, 0)
 
     this.physics.world.setBounds(0, 0, bg.width, bg.height)
 
@@ -356,20 +362,19 @@ class BuildingScene extends BaseScene {
 
     this.upstairsFloor.body.checkCollision.down = false
 
-    this.ladder = this.physics.add
-      .staticImage(1130, 532, IMAGES.LADDER.KEY)
-      .refreshBody()
-      .setInteractive()
+    this.ladder = new Ladder({
+      scene: this,
+      x: 1130,
+      y: 532
+    })
+    this.physics.add.collider(this.platforms, this.ladder)
+    this.ladder.setInteractive()
+    this.ladder.play('ladderDay')
 
-    this.metalBox = this.physics.add
-      .staticImage(1030, 660, IMAGES.METALBOX.KEY)
-      .refreshBody()
-      .setInteractive()
-
-    this.bucket = this.physics.add
-      .staticImage(1200, 660, IMAGES.BUCKET.KEY)
-      .refreshBody()
-      .setInteractive()
+    this.metalBox = new MetalBox({ scene: this, x: 1030, y: 660 })
+    this.physics.add.collider(this.platforms, this.metalBox)
+    this.metalBox.play('metalBoxDay')
+    this.metalBox.setInteractive()
 
     this.rock = this.physics.add
       .staticImage(415, 625, IMAGES.ROCK.KEY)
@@ -386,8 +391,7 @@ class BuildingScene extends BaseScene {
     this.pit = new Firepit({
       scene: this,
       x: 880,
-      y: 653,
-      key: IMAGES.FIREPIT.KEY
+      y: 653
     })
     this.physics.add.collider(this.platforms, this.pit)
     this.pit.play('default')
@@ -416,7 +420,12 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
-    this.physics.add.staticImage(771, 322, IMAGES.BOXES.KEY)
+    this.boxes = new Boxes({
+      scene: this,
+      x: 771,
+      y: 322
+    })
+    this.boxes.play('boxesDay')
 
     this.drop = this.add.image(600, 428, IMAGES.DROP.KEY).setOrigin(0)
 
@@ -435,9 +444,17 @@ class BuildingScene extends BaseScene {
       }
     })
 
+    this.bucket = new Bucket({
+      scene: this,
+      x: 1200,
+      y: 660
+    })
+    this.physics.add.collider(this.platforms, this.bucket)
+    this.bucket.play('bucketDay')
+    this.bucket.setInteractive()
+
     this.buggy = new Buggy({
       scene: this,
-      key: IMAGES.BUGGY.KEY,
       x: 100,
       y: 600
     })
@@ -467,12 +484,11 @@ class BuildingScene extends BaseScene {
     this.cameras.main.setBounds(0, 0, 1280, 800)
     cameraFade(this, 'fadeIn')
 
-    setTimeout(async () => {
-      await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
-      this.cameras.main.startFollow(this.survivor)
+    await timer(this, 700)
+    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+    this.cameras.main.startFollow(this.survivor)
 
-      this.initCutscene()
-    }, 700)
+    this.initCutscene()
   }
 
   public update() {
@@ -488,7 +504,11 @@ class BuildingScene extends BaseScene {
   }
 
   private initSurvivor() {
-    this.survivor = loadSurvivor(this, 300, 625)
+    this.survivor = new Survivor({
+      scene: this,
+      x: 300,
+      y: 625
+    })
 
     this.physics.add.collider(
       this.platforms,
@@ -516,13 +536,12 @@ class BuildingScene extends BaseScene {
       }
     )
 
-    setupInput(this.survivor, this)
+    this.setupInput()
   }
 
   private initStranger() {
     this.stranger = new Stranger({
       scene: this,
-      key: IMAGES.STRANGER.KEY,
       x: 750,
       y: 340
     })
@@ -590,31 +609,30 @@ class BuildingScene extends BaseScene {
   private finishEncounter() {
     clearTimeout(this.timeout)
 
-    this.strangerAttack().then(() => {
-      setTimeout(() => {
-        this.cloth = this.physics.add
-          .staticImage(970, 392, IMAGES.CLOTH.KEY)
-          .refreshBody()
-          .setInteractive()
-        this.setupEvent('cloth')
+    this.strangerAttack().then(async () => {
+      await timer(this, 3000)
+      this.cloth = this.physics.add
+        .staticImage(970, 392, IMAGES.CLOTH.KEY)
+        .refreshBody()
+        .setInteractive()
+      this.setupEvent('cloth')
 
-        this.staticAudio.play()
-        this.survivor.play('getUp')
-        this.tweens.add({
-          targets: this.stranger,
-          x: 0,
-          duration: 1000,
-          onComplete: async () => {
-            this.stranger.destroy()
-            document.dispatchEvent(new CustomEvent('getHurt'))
-            await this.createDialog('... What did just happen?')
-            this.survivor.recover()
-            await this.createDialog(
-              "Ugh… No time to think about that, I'm losing a lot of blood."
-            )
-          }
-        })
-      }, 3000)
+      this.staticAudio.play()
+      this.survivor.play('getUp')
+      this.tweens.add({
+        targets: this.stranger,
+        x: 0,
+        duration: 1000,
+        onComplete: async () => {
+          this.stranger.destroy()
+          document.dispatchEvent(new CustomEvent('getHurt'))
+          await this.createDialog('... What did just happen?')
+          this.survivor.recover()
+          await this.createDialog(
+            "Ugh… No time to think about that, I'm losing a lot of blood."
+          )
+        }
+      })
     })
   }
 
@@ -626,7 +644,7 @@ class BuildingScene extends BaseScene {
 
       this.pickUp('bucket')
 
-      this.bucket.destroy()
+      this.bucket.setVisible(false)
     }
   }
 
@@ -670,10 +688,8 @@ class BuildingScene extends BaseScene {
     if (!this.hasWaterCollector) {
       this.survivor.stop()
       this.removeItem({ id: 'bucket' })
-      this.waterCollector = this.physics.add
-        .staticImage(605, 665, IMAGES.BUCKET.KEY)
-        .refreshBody()
-        .setInteractive()
+      this.bucket.setPosition(605, 660)
+      this.bucket.setVisible(true)
       await this.createDialog('Water collector set!')
       this.hasWaterCollector = true
       this.checkIfFinished()
@@ -807,28 +823,47 @@ class BuildingScene extends BaseScene {
     }
   }
 
+  private setNightMode() {
+    this.nightBackground.setAlpha(1, 1, 1, 1)
+    this.nightForeground.setAlpha(1, 1, 1, 1)
+    this.antennasSprites.playAnimation('antennaNightBlink')
+    const antennas = this.antennasSprites.getChildren() as Antenna[]
+    antennas[2].setTintFill(0x222034)
+    antennas[4].setTintFill(0x222034)
+    this.metalBox.play('metalBoxNight')
+    this.boxes.play('boxesNight')
+    this.bucket.play('bucketNight')
+    this.ladder.play('ladderNight')
+  }
+
   private async initEndCutscene() {
+    await this.createDialog(
+      'Ok, I have everything ready to spend the night now, should be safe.',
+      false
+    )
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
+    this.setNightMode()
     this.tweens.add({
       targets: this.survivor,
       x: 950,
       duration: 10
     })
     this.survivor.faceLeft()
-    this.cameras.main.stopFollow()
-    await cameraPan(this, 0, 0, 10)
     await cameraFade(this, 'fadeIn')
-    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
+    await timer(this, 700)
+    this.cameras.main.stopFollow()
+    await cameraPan(this, 0, 0, 4000)
     await this.createDialog(
       "How strange, to see northern lights so far down south. I wonder if there is some electromagnetic anomaly around here… could explain why the buggy's electrical system died.",
       false
     )
+    await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
     await this.createDialog(
       "Anyway… I should get some rest now. Tomorrow I'll head into town and see if I can find out what the hell is going on.",
       false
     )
-    await cameraFade(this, 'fadeOut')
+    await cameraFade(this, 'fadeOut', 2000)
     document.dispatchEvent(new CustomEvent('completeGame'))
   }
 }

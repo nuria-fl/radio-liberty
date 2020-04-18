@@ -6,6 +6,63 @@ export const SCENES = {
   BUILDING: 'BUILDING'
 }
 
+export const SPRITES = {
+  SURVIVOR: {
+    KEY: 'SURVIVOR',
+    FILE: 'survivor.png',
+    WIDTH: 132,
+    HEIGHT: 120
+  },
+  STRANGER: {
+    KEY: 'STRANGER',
+    FILE: 'stranger.png',
+    WIDTH: 32,
+    HEIGHT: 100
+  },
+  BUGGY: {
+    KEY: 'BUGGY',
+    FILE: 'buggy.png',
+    WIDTH: 208,
+    HEIGHT: 108
+  },
+  FIREPIT: {
+    KEY: 'FIREPIT',
+    FILE: 'fireplace.png',
+    WIDTH: 84,
+    HEIGHT: 60
+  },
+  LADDER: {
+    KEY: 'LADDER',
+    FILE: 'ladder.png',
+    WIDTH: 56,
+    HEIGHT: 304
+  },
+  BOXES: {
+    KEY: 'BOXES',
+    FILE: 'boxes.png',
+    WIDTH: 128,
+    HEIGHT: 148
+  },
+  BUCKET: {
+    KEY: 'BUCKET',
+    FILE: 'bucket.png',
+    WIDTH: 28,
+    HEIGHT: 48
+  },
+  ANTENNA: {
+    KEY: 'ANTENNA',
+    FILE: 'antenna.png',
+    WIDTH: 160,
+    HEIGHT: 504
+  },
+  METALBOX: {
+    KEY: 'METALBOX',
+    FILE: 'metal-box.png',
+    WIDTH: 92,
+    HEIGHT: 52
+  }
+}
+
 export const IMAGES = {
   PLACEHOLDER: {
     KEY: 'PLACEHOLDER',
@@ -14,18 +71,6 @@ export const IMAGES = {
   FLOOR: {
     KEY: 'FLOOR',
     FILE: 'floor.png'
-  },
-  SURVIVOR: {
-    KEY: 'SURVIVOR',
-    FILE: 'survivor.png'
-  },
-  STRANGER: {
-    KEY: 'STRANGER',
-    FILE: 'stranger.png'
-  },
-  BUGGY: {
-    KEY: 'BUGGY',
-    FILE: 'buggy.png'
   },
   ROADSIGN: {
     KEY: 'ROADSIGN',
@@ -51,22 +96,15 @@ export const IMAGES = {
     KEY: 'BUILDING_BG_1',
     FILE: 'building-layer2.png'
   },
-  FIREPIT: {
-    KEY: 'FIREPIT',
-    FILE: 'fireplace.png'
+  BUILDING_NIGHT_BG: {
+    KEY: 'BUILDING_NIGHT_BG',
+    FILE: 'building-night.png'
   },
-  LADDER: {
-    KEY: 'LADDER',
-    FILE: 'ladder.png'
+  BUILDING_NIGHT_BG_2: {
+    KEY: 'BUILDING_NIGHT_BG_1',
+    FILE: 'building-night-layer2.png'
   },
-  BOXES: {
-    KEY: 'BOXES',
-    FILE: 'boxes.png'
-  },
-  BUCKET: {
-    KEY: 'BUCKET',
-    FILE: 'bucket.png'
-  },
+
   WOOD: {
     KEY: 'WOOD',
     FILE: 'wood.png'
@@ -82,14 +120,6 @@ export const IMAGES = {
   ROCK: {
     KEY: 'ROCK',
     FILE: 'rock.png'
-  },
-  METALBOX: {
-    KEY: 'METALBOX',
-    FILE: 'metal-box.png'
-  },
-  ANTENNA: {
-    KEY: 'ANTENNA',
-    FILE: 'antenna.png'
   }
 }
 
