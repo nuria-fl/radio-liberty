@@ -10,12 +10,12 @@ export default {
   props: {
     disabled: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
-      number: 0
+      number: 0,
     }
   },
   methods: {
@@ -26,8 +26,8 @@ export default {
         this.number++
       }
       this.$emit('update', this.number)
-    }
-  }
+    },
+  },
 }
 </script>
 

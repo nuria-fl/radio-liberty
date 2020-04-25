@@ -2,7 +2,7 @@ import utils from '@/utils/utils'
 import { MAX, MAXINVENTORY } from '@/data/constants'
 
 const findIndexById = (uid, collection) => {
-  return collection.findIndex(item => item.uid === uid)
+  return collection.findIndex((item) => item.uid === uid)
 }
 
 export default {
@@ -50,5 +50,5 @@ export default {
   },
   setLoop(state, loop) {
     state.loop = loop
-  }
+  },
 }

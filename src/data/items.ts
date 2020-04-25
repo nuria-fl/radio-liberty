@@ -6,22 +6,22 @@ const base = {
     health: 0,
     food: 0,
     water: 0,
-    energy: 0
+    energy: 0,
   },
   risk: 0,
   daysToPerish: 0,
-  usesUntilBreakdown: 0
+  usesUntilBreakdown: 0,
 }
 
-const consumableItems = consumables.map(item => ({
+const consumableItems = consumables.map((item) => ({
   ...item,
-  consumable: true
+  consumable: true,
 }))
 
-const items = [...objects, ...consumableItems].map(item => {
+const items = [...objects, ...consumableItems].map((item) => {
   return {
     ...base,
-    ...item
+    ...item,
   }
 })
 

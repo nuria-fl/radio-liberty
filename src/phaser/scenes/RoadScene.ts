@@ -11,18 +11,18 @@ class RoadScene extends BaseScene {
     roadsign: {
       key: 'lookSign',
       text: 'Look at road sign',
-      cb: this.interactSign
+      cb: this.interactSign,
     },
     buggy: {
       key: 'lookBuggy',
       text: 'Look at buggy',
-      cb: this.interactBuggy
+      cb: this.interactBuggy,
     },
     pinecone: {
       key: 'lookPinecone',
       text: 'Pick up pinecone',
-      cb: this.interactPinecone
-    }
+      cb: this.interactPinecone,
+    },
   }
   public use = {
     ...this.use,
@@ -32,7 +32,7 @@ class RoadScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     buggy: {
       setText: null,
@@ -40,7 +40,7 @@ class RoadScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     pinecone: {
       setText: null,
@@ -48,8 +48,8 @@ class RoadScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
-    }
+      },
+    },
   }
 
   private buggy: Buggy
@@ -61,7 +61,7 @@ class RoadScene extends BaseScene {
 
   constructor() {
     super({
-      key: SCENES.ROAD
+      key: SCENES.ROAD,
     })
   }
 
@@ -116,7 +116,7 @@ class RoadScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       x: 2500,
-      y: 520
+      y: 520,
     })
     this.physics.add.collider(this.platforms, this.buggy)
 
@@ -196,7 +196,7 @@ class RoadScene extends BaseScene {
         this.dialog.closeDialog()
         await this.createDialog('What the…?')
         this.initGame()
-      }
+      },
     })
   }
 

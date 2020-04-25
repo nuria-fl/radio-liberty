@@ -11,8 +11,8 @@ export default {
   methods: {
     restart() {
       window.location.reload()
-    }
-  }
+    },
+  },
 }
 </script>
 

@@ -4,15 +4,15 @@ export default [
     name: 'Fire',
     description: 'Will allow you to cook items',
     itemsNeeded: ['wood', 'flint'],
-    toolsNeeded: []
+    toolsNeeded: [],
   },
   {
     id: 'water-collector',
     name: 'Water collector',
     description: 'Collects rain water',
     itemsNeeded: ['plastic', 'rope', 'bottle'],
-    toolsNeeded: []
-  }
+    toolsNeeded: [],
+  },
   // {
   //   id: 'backpack-upgrade',
   //   name: 'Backpack upgrade',

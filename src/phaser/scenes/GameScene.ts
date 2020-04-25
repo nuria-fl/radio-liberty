@@ -5,7 +5,7 @@ import BuildingScene from './BuildingScene'
 class GameScene extends Phaser.Scene {
   constructor() {
     super({
-      key: SCENES.GAME
+      key: SCENES.GAME,
     })
   }
 
@@ -14,7 +14,7 @@ class GameScene extends Phaser.Scene {
     this.add
       .text(342, 284, 'Start Game', {
         fontSize: 24,
-        color: '#fff'
+        color: '#fff',
       })
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', () => {
@@ -26,7 +26,7 @@ class GameScene extends Phaser.Scene {
     if (process.env.NODE_ENV === 'development' && window.location.search) {
       const scenes = {
         ROAD: RoadScene,
-        BUILDING: BuildingScene
+        BUILDING: BuildingScene,
       }
       const scene = window.location.search.split('?scene=')[1].toUpperCase()
       this.scene.add(scene, scenes[scene], false)

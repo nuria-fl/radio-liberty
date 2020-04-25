@@ -28,13 +28,8 @@ const utils = {
     return arr
   },
   generateId() {
-    return (
-      '_' +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    )
-  }
+    return '_' + Math.random().toString(36).substr(2, 9)
+  },
 }
 
 export default utils

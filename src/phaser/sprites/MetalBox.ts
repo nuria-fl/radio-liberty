@@ -14,18 +14,18 @@ export class MetalBox extends Phaser.GameObjects.Sprite {
       key: 'metalBoxDay',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
-        end: 0
+        end: 0,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     scene.anims.create({
       key: 'metalBoxNight',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 1,
-        end: 1
+        end: 1,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.body.setSize(SPRITE.WIDTH, SPRITE.HEIGHT)

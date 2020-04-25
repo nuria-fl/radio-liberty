@@ -25,16 +25,16 @@ export default Vue.extend({
     Credits,
     Stats,
     Inventory,
-    Lock
+    Lock,
   },
   data() {
     return {
       showLock: false,
-      gameComplete: false
+      gameComplete: false,
     }
   },
   computed: {
-    ...mapState(['gameOver', 'enabled', 'started'])
+    ...mapState(['gameOver', 'enabled', 'started']),
   },
   mounted() {
     this.initInventory()
@@ -70,8 +70,8 @@ export default Vue.extend({
     hideLock() {
       this.showLock = false
       this.resumeScene()
-    }
-  }
+    },
+  },
 })
 </script>
 

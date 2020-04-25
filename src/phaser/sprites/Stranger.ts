@@ -14,9 +14,9 @@ export class Stranger extends Phaser.GameObjects.Sprite {
       key: 'standing',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
-        end: 0
+        end: 0,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.body.setSize(SPRITE.WIDTH, SPRITE.HEIGHT)

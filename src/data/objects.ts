@@ -4,41 +4,42 @@ export default [
     name: 'Pine cone',
     description: 'Can get some pine nuts out of there',
     action: 'scavenge',
-    usesUntilBreakdown: 0
+    usesUntilBreakdown: 0,
   },
   {
     id: 'bucket',
     name: 'Bucket',
-    description: 'Can store any liquid'
+    description: 'Can store any liquid',
   },
   {
     id: 'wood',
     name: 'Wood',
     description: 'Useful for crafting',
     action: 'scavenge',
-    usesUntilBreakdown: 0
+    usesUntilBreakdown: 0,
   },
   {
     id: 'cloth',
     name: 'Cloth',
-    description: "A piece of the stranger's labcoat"
+    description: "A piece of the stranger's labcoat",
   },
   {
     id: 'idCard',
     name: 'ID card',
     description: "It was attached to that stranger's labcoat",
-    zoomable: true
+    zoomable: true,
   },
   {
     id: 'solution',
     name: 'Saline Solution',
-    description: 'Good for cleaning wounds'
+    description: 'Good for cleaning wounds',
   },
   {
     id: 'smallKey',
     name: 'Small key',
-    description: 'A small key I found in a box. Must belong to that crazy dude.'
-  }
+    description:
+      'A small key I found in a box. Must belong to that crazy dude.',
+  },
   // {
   //   id: 'salt',
   //   name: 'Salt',

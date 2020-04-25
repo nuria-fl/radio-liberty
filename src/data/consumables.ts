@@ -8,10 +8,10 @@ export default [
       health: 0,
       food: 3,
       water: 3,
-      energy: 0
+      energy: 0,
     },
     risk: 0,
-    daysToPerish: 5
+    daysToPerish: 5,
   },
   {
     id: 'nuts',
@@ -22,10 +22,10 @@ export default [
       health: 0,
       food: 10,
       water: 0,
-      energy: 5
+      energy: 5,
     },
     risk: 0,
-    daysToPerish: 5
+    daysToPerish: 5,
   },
   {
     id: 'meat',
@@ -36,10 +36,10 @@ export default [
       health: 0,
       food: 20,
       water: 0,
-      energy: 0
+      energy: 0,
     },
     risk: 6,
-    daysToPerish: 3
+    daysToPerish: 3,
   },
   {
     id: 'water-dirty',
@@ -50,10 +50,10 @@ export default [
       health: 0,
       food: 0,
       water: 20,
-      energy: 0
+      energy: 0,
     },
     risk: 6,
-    daysToPerish: 0
+    daysToPerish: 0,
   },
   {
     id: 'jerky',
@@ -64,10 +64,10 @@ export default [
       health: 0,
       food: 20,
       water: 0,
-      energy: 0
+      energy: 0,
     },
     risk: 0,
-    daysToPerish: 0
+    daysToPerish: 0,
   },
   {
     id: 'medicinal-tea',
@@ -78,10 +78,10 @@ export default [
       health: 50,
       food: 0,
       water: 20,
-      energy: 0
+      energy: 0,
     },
     risk: 0,
-    daysToPerish: 0
+    daysToPerish: 0,
   },
   {
     id: 'meat-cooked',
@@ -92,10 +92,10 @@ export default [
       health: 0,
       food: 20,
       water: 0,
-      energy: 0
+      energy: 0,
     },
     risk: 0,
-    daysToPerish: 10
+    daysToPerish: 10,
   },
   {
     id: 'water-clean',
@@ -106,9 +106,9 @@ export default [
       health: 0,
       food: 0,
       water: 20,
-      energy: 0
+      energy: 0,
     },
     risk: 0,
-    daysToPerish: 0
-  }
+    daysToPerish: 0,
+  },
 ]

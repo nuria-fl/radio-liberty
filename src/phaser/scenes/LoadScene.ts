@@ -4,18 +4,18 @@ import GameScene from './GameScene'
 class LoadScene extends Phaser.Scene {
   constructor() {
     super({
-      key: SCENES.LOAD
+      key: SCENES.LOAD,
     })
   }
 
   public preload() {
     const loadingBar = this.add.graphics({
       fillStyle: {
-        color: 0xffffff
-      }
+        color: 0xffffff,
+      },
     })
 
-    this.load.on('progress', percentage => {
+    this.load.on('progress', (percentage) => {
       loadingBar.fillRect(
         this.game.renderer.width / 2,
         0,

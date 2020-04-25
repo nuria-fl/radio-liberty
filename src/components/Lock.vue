@@ -19,12 +19,12 @@ import Modal from '@/components/Modal'
 export default {
   components: {
     LockDigit,
-    Modal
+    Modal,
   },
   data() {
     return {
       input: [0, 0, 0, 0],
-      disabled: false
+      disabled: false,
     }
   },
   computed: {
@@ -35,7 +35,7 @@ export default {
         this.input[2] == 1 &&
         this.input[3] == 8
       )
-    }
+    },
   },
   methods: {
     ...mapActions(['addToInventory']),
@@ -53,8 +53,8 @@ export default {
     },
     close() {
       this.$emit('close')
-    }
-  }
+    },
+  },
 }
 </script>
 

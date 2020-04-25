@@ -8,7 +8,11 @@
         <label
           class="action"
           :class="{ 'action--checked': actionType === 'use' }"
-          >Use<input v-model="actionType" type="radio" name="action" value="use"
+          >Use<input
+            v-model="actionType"
+            type="radio"
+            name="action"
+            value="use"
         /></label>
         <label
           class="action"
@@ -40,19 +44,19 @@ import Modal from '@/components/Modal'
 export default {
   components: {
     InventoryItem,
-    Modal
+    Modal,
   },
   data() {
     return {
       actionType: 'use',
-      zoomedItem: null
+      zoomedItem: null,
     }
   },
   computed: {
-    ...mapState(['inventory'])
+    ...mapState(['inventory']),
   },
   mounted() {
-    document.addEventListener('keyup', e => {
+    document.addEventListener('keyup', (e) => {
       if (e.key === 'Escape') {
         this.close()
       }
@@ -86,8 +90,8 @@ export default {
     close() {
       this.zoomedItem = null
       this.$emit('close')
-    }
-  }
+    },
+  },
 }
 </script>
 

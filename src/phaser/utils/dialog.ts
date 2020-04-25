@@ -13,7 +13,7 @@ export class DialogService {
     windowColor: 0x303030,
     windowHeight: 100,
     padding: 15,
-    dialogSpeed: 30
+    dialogSpeed: 30,
   }
   public eventCounter: number
   public dialog: string[]
@@ -56,7 +56,7 @@ export class DialogService {
       delay: this.config.dialogSpeed,
       callback: this.animateText,
       callbackScope: this,
-      loop: true
+      loop: true,
     })
   }
 
@@ -80,7 +80,7 @@ export class DialogService {
       x,
       y,
       rectWidth,
-      rectHeight
+      rectHeight,
     }
   }
   // Creates the inner dialog window (where the text is displayed)
@@ -149,8 +149,8 @@ export class DialogService {
       y,
       text,
       style: {
-        wordWrap: { width: this.getGameWidth() - this.config.padding * 2 - 25 }
-      }
+        wordWrap: { width: this.getGameWidth() - this.config.padding * 2 - 25 },
+      },
     })
     this.text.setScrollFactor(0, 0)
   }
@@ -161,7 +161,7 @@ export const createDialogBox = (
   stopCutscene = true,
   scene: any
 ) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if (scene.survivor) {
       scene.survivor.stop()
     }
