@@ -13,19 +13,19 @@ export class Antenna extends Phaser.GameObjects.Sprite {
       key: 'antennaBlink',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
-        end: 1
+        end: 1,
       }),
       frameRate: 1,
-      repeat: -1
+      repeat: -1,
     })
     scene.anims.create({
       key: 'antennaNightBlink',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 2,
-        end: 3
+        end: 3,
       }),
       frameRate: 1,
-      repeat: -1
+      repeat: -1,
     })
   }
 }

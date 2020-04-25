@@ -32,7 +32,7 @@ export class BaseScene extends Phaser.Scene {
         if (this.currentObject.consumable) {
           document.dispatchEvent(
             new CustomEvent('consume', {
-              detail: { id: this.currentObject.id }
+              detail: { id: this.currentObject.id },
             })
           )
           return this.createDialog('Ah… much better')
@@ -42,8 +42,8 @@ export class BaseScene extends Phaser.Scene {
           return this.createDialog('NO WAY!!')
         }
         return this.createDialog(randomLine())
-      }
-    }
+      },
+    },
   }
   public interact = {}
 
@@ -58,7 +58,7 @@ export class BaseScene extends Phaser.Scene {
   public loadSprite(SPRITE: SpriteAsset) {
     this.load.spritesheet(SPRITE.KEY, `/images/${SPRITE.FILE}`, {
       frameWidth: SPRITE.WIDTH,
-      frameHeight: SPRITE.HEIGHT
+      frameHeight: SPRITE.HEIGHT,
     })
   }
 
@@ -89,7 +89,7 @@ export class BaseScene extends Phaser.Scene {
   public removeItem(object) {
     document.dispatchEvent(
       new CustomEvent('removeItem', {
-        detail: { id: object.id }
+        detail: { id: object.id },
       })
     )
   }
@@ -99,10 +99,10 @@ export class BaseScene extends Phaser.Scene {
   }
 
   public setupInput() {
-    this.input.on('pointerdown', pointer => {
+    this.input.on('pointerdown', (pointer) => {
       if (this.playingCutscene === false && !this.survivor.isDown) {
         // remove all interactions
-        Object.keys(this.interact).forEach(k => {
+        Object.keys(this.interact).forEach((k) => {
           this.sys.events.off(
             this.interact[k].key,
             this.interact[k].cb,
@@ -118,7 +118,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   public setInteractions(keys: string[]) {
-    keys.forEach(key => this.setupEvent(key))
+    keys.forEach((key) => this.setupEvent(key))
     this.interactText = this.add.text(10, 500, '')
     this.interactText.setScrollFactor(0, 0)
   }
@@ -214,7 +214,7 @@ export class BaseScene extends Phaser.Scene {
 
     const reset = () => setText(baseText)
 
-    Object.keys(this.use).forEach(key => {
+    Object.keys(this.use).forEach((key) => {
       this.use[key].setText = () => {
         setText(`${baseText} ${this.use[key].name}`)
       }
@@ -225,7 +225,7 @@ export class BaseScene extends Phaser.Scene {
     })
 
     this.input.on('pointerdown', () => {
-      Object.keys(this.use).forEach(key => {
+      Object.keys(this.use).forEach((key) => {
         this[key].off('pointerover', this.use[key].setText)
         this[key].off('pointerdown', this.use[key].use)
         this[key].off('pointerout', reset)

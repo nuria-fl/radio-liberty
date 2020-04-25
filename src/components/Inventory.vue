@@ -11,11 +11,11 @@ import InventoryOverlay from '@/components/InventoryOverlay.vue'
 
 export default {
   components: {
-    InventoryOverlay
+    InventoryOverlay,
   },
   data() {
     return {
-      showInventory: false
+      showInventory: false,
     }
   },
   mounted() {
@@ -33,7 +33,7 @@ export default {
       'removeFromInventory',
       'consume',
       'pauseScene',
-      'resumeScene'
+      'resumeScene',
     ]),
     openInventory() {
       this.showInventory = true
@@ -51,8 +51,8 @@ export default {
     },
     handleConsume({ detail }) {
       this.consume(detail.id)
-    }
-  }
+    },
+  },
 }
 </script>
 

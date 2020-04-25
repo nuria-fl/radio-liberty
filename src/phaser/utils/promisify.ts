@@ -1,5 +1,5 @@
 export const timer = (scene: Phaser.Scene, delay = 1000) =>
-  new Promise(resolve => scene.time.delayedCall(delay, resolve))
+  new Promise((resolve) => scene.time.delayedCall(delay, resolve))
 
 export const cameraFade = (
   scene: Phaser.Scene,
@@ -7,7 +7,7 @@ export const cameraFade = (
   time = 1000,
   colors = { red: 0, green: 0, blue: 0 }
 ) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     scene.cameras.main[direction](
       time,
       colors.red,
@@ -28,7 +28,7 @@ export const cameraPan = (
   y: number,
   time = 1000
 ) => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     scene.cameras.main.pan(x, y, time, 'Linear', false, (_, progress) => {
       if (progress === 1) {
         resolve()

@@ -22,76 +22,76 @@ export class Survivor extends Phaser.GameObjects.Sprite {
       key: 'walk',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 0,
-        end: 3
+        end: 3,
       }),
       frameRate: 7,
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'stand',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 0,
-        end: 0
+        end: 0,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'dead',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 4,
-        end: 4
+        end: 4,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'push',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 5,
-        end: 6
+        end: 6,
       }),
       frameRate: 4,
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'fight',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 7,
-        end: 8
+        end: 8,
       }),
       frameRate: 4,
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'getUp',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 9,
-        end: 9
+        end: 9,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'backwards',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 10,
-        end: 10
+        end: 10,
       }),
-      repeat: -1
+      repeat: -1,
     })
 
     this.scene.anims.create({
       key: 'climbing',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 11,
-        end: 12
+        end: 12,
       }),
       frameRate: 4,
-      repeat: -1
+      repeat: -1,
     })
 
     this.target = null
@@ -136,7 +136,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
         this.anims.play('walk')
         this.walkSound.play('', {
           loop: true,
-          volume: 0.1
+          volume: 0.1,
         })
       }
       if (movingRight) {
@@ -163,7 +163,7 @@ export class Survivor extends Phaser.GameObjects.Sprite {
   }
 
   public moveTo(x: number, face: 'right' | 'left') {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.setDestination(x)
       this.scene.physics.moveTo(
         this.scene.survivor,

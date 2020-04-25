@@ -5,7 +5,7 @@
       <strong
         :class="{
           warning: stat < 50,
-          danger: stat < 20
+          danger: stat < 20,
         }"
       >
         {{ stat }}
@@ -23,8 +23,8 @@ export default {
       icons: {
         health: '❤️',
         water: '💧',
-        food: '🍗'
-      }
+        food: '🍗',
+      },
     }
   },
   computed: {
@@ -33,9 +33,9 @@ export default {
       return {
         health: Math.floor(this.stats.health),
         water: Math.floor(this.stats.water),
-        food: Math.floor(this.stats.food)
+        food: Math.floor(this.stats.food),
       }
-    }
+    },
   },
   mounted() {
     document.addEventListener('getHurt', this.handleHurt)
@@ -52,8 +52,8 @@ export default {
     handleHurt() {
       this.decrease({ stat: 'health', amount: 20 })
       this.getSick()
-    }
-  }
+    },
+  },
 }
 </script>
 

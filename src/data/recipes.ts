@@ -6,7 +6,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: [],
     result: ['rope'],
-    category: 'tool'
+    category: 'tool',
   },
   {
     name: 'Bow',
@@ -15,7 +15,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: [],
     result: ['bow'],
-    category: 'weapon'
+    category: 'weapon',
   },
   {
     name: 'Knife',
@@ -24,7 +24,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: [],
     result: ['knife'],
-    category: 'tool'
+    category: 'tool',
   },
   {
     name: 'Jerky',
@@ -33,7 +33,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: [],
     result: ['jerky'],
-    category: 'consumable'
+    category: 'consumable',
   },
   {
     name: 'Medicinal tea',
@@ -42,7 +42,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: [],
     result: ['medicinal-tea'],
-    category: 'medicine'
+    category: 'medicine',
   },
   {
     name: 'Cooked meat',
@@ -51,7 +51,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: ['fire'],
     result: ['meat-cooked'],
-    category: 'consumable'
+    category: 'consumable',
   },
   {
     name: 'Clean water',
@@ -60,7 +60,7 @@ export default [
     toolsNeeded: [],
     upgradesNeeded: ['fire'],
     result: ['water-clean'],
-    category: 'consumable'
+    category: 'consumable',
   },
   {
     name: 'Skinned rabbit',
@@ -69,6 +69,6 @@ export default [
     toolsNeeded: ['knife'],
     upgradesNeeded: [],
     result: ['meat', 'rabbit-pelt'],
-    category: 'other'
-  }
+    category: 'other',
+  },
 ]

@@ -12,10 +12,10 @@ const config = {
     default: 'arcade',
     arcade: {
       gravity: { y: 800 },
-      debug: process.env.NODE_ENV === 'development'
-    }
+      debug: process.env.NODE_ENV === 'development',
+    },
   },
-  scene: [LoadScene]
+  scene: [LoadScene],
 }
 
 new Phaser.Game(config)

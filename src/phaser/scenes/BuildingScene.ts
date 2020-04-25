@@ -25,7 +25,7 @@ class BuildingScene extends BaseScene {
         if (this.currentObject.consumable) {
           document.dispatchEvent(
             new CustomEvent('consume', {
-              detail: { id: this.currentObject.id }
+              detail: { id: this.currentObject.id },
             })
           )
           return this.createDialog('Ah… much better')
@@ -58,7 +58,7 @@ class BuildingScene extends BaseScene {
         }
 
         return this.createDialog(randomLine())
-      }
+      },
     },
     buggy: {
       setText: null,
@@ -66,7 +66,7 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     ladder: {
       setText: null,
@@ -74,7 +74,7 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     bucket: {
       setText: null,
@@ -82,7 +82,7 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     puddle: {
       setText: null,
@@ -93,7 +93,7 @@ class BuildingScene extends BaseScene {
           return this.setUpWaterCollector()
         }
         return this.createDialog(randomLine())
-      }
+      },
     },
     wall: {
       setText: null,
@@ -101,7 +101,7 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     pit: {
       setText: null,
@@ -112,7 +112,7 @@ class BuildingScene extends BaseScene {
           return this.setUpFire()
         }
         return this.createDialog(randomLine())
-      }
+      },
     },
     wood: {
       setText: null,
@@ -120,7 +120,7 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         return this.createDialog(randomLine())
-      }
+      },
     },
     rock: {
       setText: null,
@@ -131,7 +131,7 @@ class BuildingScene extends BaseScene {
           return this.getNuts()
         }
         return this.createDialog(randomLine())
-      }
+      },
     },
     stranger: {
       setText: null,
@@ -143,67 +143,67 @@ class BuildingScene extends BaseScene {
           return this.finishEncounter()
         }
         return this.createDialog(randomLine())
-      }
-    }
+      },
+    },
   }
 
   public interact = {
     buggy: {
       key: 'interactBuggy',
       text: 'Look at buggy',
-      cb: this.interactBuggy
+      cb: this.interactBuggy,
     },
     bucket: {
       key: 'interactBucket',
       text: 'Pick up bucket',
-      cb: this.interactBucket
+      cb: this.interactBucket,
     },
     ladder: {
       key: 'interactLadder',
       text: 'Use ladder',
       cb: this.interactLadder,
-      permanent: true
+      permanent: true,
     },
     wood: {
       key: 'interactWood',
       text: 'Pick up wood',
-      cb: this.interactWood
+      cb: this.interactWood,
     },
     rock: {
       key: 'interactRock',
       text: 'Pick up rock',
-      cb: this.interactRock
+      cb: this.interactRock,
     },
     puddle: {
       key: 'interactPuddle',
       text: 'Look at puddle',
-      cb: this.interactPuddle
+      cb: this.interactPuddle,
     },
     wall: {
       key: 'interactWall',
       text: 'Look at wall',
-      cb: this.interactWall
+      cb: this.interactWall,
     },
     pit: {
       key: 'interactPit',
       text: 'Look at pit',
-      cb: this.interactPit
+      cb: this.interactPit,
     },
     antennas: {
       key: 'interactAntennas',
       text: 'Look at antennas',
-      cb: this.interactAntennas
+      cb: this.interactAntennas,
     },
     cloth: {
       key: 'interactCloth',
       text: 'Pick up cloth',
-      cb: this.interactCloth
+      cb: this.interactCloth,
     },
     metalBox: {
       key: 'interactBox',
       text: 'Look at box',
-      cb: this.interactBox
-    }
+      cb: this.interactBox,
+    },
   }
 
   public survivor: Survivor
@@ -244,7 +244,7 @@ class BuildingScene extends BaseScene {
 
   constructor() {
     super({
-      key: SCENES.BUILDING
+      key: SCENES.BUILDING,
     })
   }
 
@@ -297,39 +297,39 @@ class BuildingScene extends BaseScene {
 
     this.antennasSprites = this.physics.add.group({
       immovable: true,
-      allowGravity: false
+      allowGravity: false,
     })
 
     this.antennasSprites.addMultiple([
       new Antenna({
         scene: this,
         x: 145,
-        y: 265
+        y: 265,
       }),
       new Antenna({
         scene: this,
         x: 10,
-        y: 335
+        y: 335,
       }),
       new Antenna({
         scene: this,
         x: 10,
-        y: 335
+        y: 335,
       })
         .setTintFill(0x9fb9b4)
         .setAlpha(0.3),
       new Antenna({
         scene: this,
         x: 280,
-        y: 323
+        y: 323,
       }),
       new Antenna({
         scene: this,
         x: 280,
-        y: 323
+        y: 323,
       })
         .setTintFill(0x9fb9b4)
-        .setAlpha(0.5)
+        .setAlpha(0.5),
     ])
 
     this.antennasSprites.playAnimation('antennaBlink')
@@ -365,7 +365,7 @@ class BuildingScene extends BaseScene {
     this.ladder = new Ladder({
       scene: this,
       x: 1130,
-      y: 532
+      y: 532,
     })
     this.physics.add.collider(this.platforms, this.ladder)
     this.ladder.setInteractive()
@@ -391,7 +391,7 @@ class BuildingScene extends BaseScene {
     this.pit = new Firepit({
       scene: this,
       x: 880,
-      y: 653
+      y: 653,
     })
     this.physics.add.collider(this.platforms, this.pit)
     this.pit.play('default')
@@ -423,7 +423,7 @@ class BuildingScene extends BaseScene {
     this.boxes = new Boxes({
       scene: this,
       x: 771,
-      y: 322
+      y: 322,
     })
     this.boxes.play('boxesDay')
 
@@ -439,15 +439,15 @@ class BuildingScene extends BaseScene {
       yoyo: false,
       onRepeat: () => {
         this.dropAudio.play({
-          volume: 0.5
+          volume: 0.5,
         })
-      }
+      },
     })
 
     this.bucket = new Bucket({
       scene: this,
       x: 1200,
-      y: 660
+      y: 660,
     })
     this.physics.add.collider(this.platforms, this.bucket)
     this.bucket.play('bucketDay')
@@ -456,7 +456,7 @@ class BuildingScene extends BaseScene {
     this.buggy = new Buggy({
       scene: this,
       x: 100,
-      y: 600
+      y: 600,
     })
     this.buggy.play('buggy-parked')
     this.physics.add.collider(this.platforms, this.buggy)
@@ -472,7 +472,7 @@ class BuildingScene extends BaseScene {
       'antennas',
       'buggy',
       'rock',
-      'metalBox'
+      'metalBox',
     ])
 
     this.wood.on('pointerup', () => {
@@ -507,7 +507,7 @@ class BuildingScene extends BaseScene {
     this.survivor = new Survivor({
       scene: this,
       x: 300,
-      y: 625
+      y: 625,
     })
 
     this.physics.add.collider(
@@ -543,7 +543,7 @@ class BuildingScene extends BaseScene {
     this.stranger = new Stranger({
       scene: this,
       x: 750,
-      y: 340
+      y: 340,
     })
     this.stranger.setInteractive()
     this.physics.add.collider(this.platforms, this.stranger)
@@ -582,19 +582,19 @@ class BuildingScene extends BaseScene {
                   this.endGame()
                 })
               }, 10000)
-            }
+            },
           })
-        }
+        },
       })
     })
   }
 
   private strangerAttack() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.tweens.add({
         targets: this.stranger,
         x: 1000,
-        duration: 10
+        duration: 10,
       })
       this.bangAudio.play()
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
@@ -631,7 +631,7 @@ class BuildingScene extends BaseScene {
           await this.createDialog(
             "Ugh… No time to think about that, I'm losing a lot of blood."
           )
-        }
+        },
       })
     })
   }
@@ -847,7 +847,7 @@ class BuildingScene extends BaseScene {
     this.tweens.add({
       targets: this.survivor,
       x: 950,
-      duration: 10
+      duration: 10,
     })
     this.survivor.faceLeft()
     await cameraFade(this, 'fadeIn')

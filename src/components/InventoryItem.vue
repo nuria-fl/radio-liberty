@@ -9,14 +9,14 @@ export default {
   props: {
     item: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   methods: {
     interact() {
       this.$emit('interact', this.item)
-    }
-  }
+    },
+  },
 }
 </script>
 

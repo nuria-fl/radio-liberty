@@ -49,23 +49,23 @@ export default {
     dispatch('addToInventory', 'water-clean')
   },
   addToInventory({ state, commit }, itemId: string) {
-    const item = state.existingItems.find(item => item.id === itemId)
+    const item = state.existingItems.find((item) => item.id === itemId)
 
     commit('addInventory', item)
   },
   removeFromInventory({ state, commit }, itemId: string) {
-    const itemInventory = state.inventory.find(item => item.id === itemId)
+    const itemInventory = state.inventory.find((item) => item.id === itemId)
 
     commit('removeInventory', itemInventory.uid)
   },
   consume({ state, commit, dispatch }, itemId: string) {
-    const item = state.inventory.find(item => item.id === itemId)
+    const item = state.inventory.find((item) => item.id === itemId)
 
     if (item) {
-      Object.keys(item.value).forEach(stat => {
+      Object.keys(item.value).forEach((stat) => {
         dispatch('increase', {
           stat,
-          amount: item.value[stat]
+          amount: item.value[stat],
         })
       })
 
@@ -73,5 +73,5 @@ export default {
     } else {
       console.log('item not found', itemId)
     }
-  }
+  },
 }
