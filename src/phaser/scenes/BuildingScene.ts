@@ -89,6 +89,11 @@ class BuildingScene extends BaseScene {
       name: 'Puddle',
       use: () => {
         this.interactingWithObject = true
+        if (this.currentObject.id === 'bottle') {
+          return this.createDialog(
+            "I can't, there's a cork stopper stuck halfway."
+          )
+        }
         if (this.currentObject.id === 'bucket') {
           return this.setUpWaterCollector()
         }
@@ -109,6 +114,9 @@ class BuildingScene extends BaseScene {
       use: () => {
         this.interactingWithObject = true
         if (this.currentObject.id === 'wood') {
+          return this.addWood()
+        }
+        if (this.currentObject.id === 'brokenGlass') {
           return this.setUpFire()
         }
         return this.createDialog(randomLine())
@@ -127,6 +135,9 @@ class BuildingScene extends BaseScene {
       name: 'Rock',
       use: () => {
         this.interactingWithObject = true
+        if (this.currentObject.id === 'bottle') {
+          return this.breakBottle()
+        }
         if (this.currentObject.id === 'pinecone') {
           return this.getNuts()
         }
@@ -204,6 +215,11 @@ class BuildingScene extends BaseScene {
       text: 'Look at box',
       cb: this.interactBox,
     },
+    bottle: {
+      key: 'interactBottle',
+      text: 'Pick up bottle',
+      cb: this.interactBottle,
+    },
   }
 
   public survivor: Survivor
@@ -222,6 +238,7 @@ class BuildingScene extends BaseScene {
   private nightBackground: Phaser.GameObjects.Image
   private nightForeground: Phaser.GameObjects.Image
   private wood: Physics.Arcade.Image
+  private bottle: Physics.Arcade.Image
   private puddle: Physics.Arcade.Image
   private wall: Physics.Arcade.Image
   private antennas: Physics.Arcade.Image
@@ -234,6 +251,7 @@ class BuildingScene extends BaseScene {
   private bangAudio: Phaser.Sound.BaseSound
   private isUpstairs = false
   private hasWaterCollector = false
+  private hasWood = false
   private hasFire = false
   private hasCard = false
   private encounterHappened = false
@@ -268,6 +286,7 @@ class BuildingScene extends BaseScene {
     this.loadImage(IMAGES.CLOTH)
     this.loadImage(IMAGES.DROP)
     this.loadImage(IMAGES.ROCK)
+    this.loadImage(IMAGES.BOTTLE)
 
     // Preload sprites
     this.loadSprite(SPRITES.METALBOX)
@@ -381,6 +400,11 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.bottle = this.physics.add
+      .staticImage(750, 677, IMAGES.BOTTLE.KEY)
+      .refreshBody()
+      .setInteractive()
+
     this.puddle = this.physics.add
       .staticImage(600, 700, IMAGES.FLOOR.KEY)
       .setScale(1.5, 0.9)
@@ -473,6 +497,7 @@ class BuildingScene extends BaseScene {
       'buggy',
       'rock',
       'metalBox',
+      'bottle',
     ])
 
     this.wood.on('pointerup', () => {
@@ -696,12 +721,27 @@ class BuildingScene extends BaseScene {
     }
   }
 
+  private async addWood() {
+    this.startCutscene()
+    await this.survivor.moveTo(885, 'left')
+    if (!this.hasWood) {
+      this.survivor.stop()
+      this.removeItem({ id: 'wood' })
+      this.pit.play('wood')
+      await this.createDialog('Now I need something to start the fire.')
+      this.hasWood = true
+    }
+  }
+
   private async setUpFire() {
     this.startCutscene()
     await this.survivor.moveTo(885, 'left')
+    if (!this.hasWood) {
+      return this.createDialog('I need something to burn first.')
+    }
     if (!this.hasFire) {
       this.survivor.stop()
-      this.removeItem({ id: 'wood' })
+      this.removeItem({ id: 'brokenGlass' })
       this.fireAudio.play({ loop: true })
       this.pit.play('burning')
       await this.createDialog('Fire is burning!')
@@ -785,6 +825,38 @@ class BuildingScene extends BaseScene {
         this.createDialog("It's locked. I need a 4 digit code.")
       }
     }
+  }
+
+  private interactBottle() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog("A heavy glass bottle. It's empty.")
+
+      this.pickUp('bottle')
+
+      this.bottle.destroy()
+    }
+  }
+
+  private breakBottle() {
+    this.startCutscene()
+    this.survivor.setDestination(415)
+    this.physics.moveTo(this.survivor, 415, this.survivor.y, 100)
+
+    const crackBottle = () => {
+      this.survivor.stop()
+      this.removeItem({ id: 'bottle' })
+      this.pickUp('brokenGlass')
+      this.createDialog('Now I have a nice piece of thick, curved glass.')
+
+      this.sys.events.off('crackBottle', crackBottle, this, false)
+    }
+
+    this.sys.events.on('crackBottle', crackBottle, this)
+    this.physics.add.overlap(this.survivor, this.rock, () => {
+      this.sys.events.emit('crackBottle')
+    })
   }
 
   private getNuts() {
