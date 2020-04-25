@@ -121,6 +121,10 @@ export const IMAGES = {
     KEY: 'ROCK',
     FILE: 'rock.png',
   },
+  BOTTLE: {
+    KEY: 'BOTTLE',
+    FILE: 'bottle.png',
+  },
 }
 
 export const AUDIO = {

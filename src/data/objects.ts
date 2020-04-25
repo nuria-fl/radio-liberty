@@ -40,6 +40,16 @@ export default [
     description:
       'A small key I found in a box. Must belong to that crazy dude.',
   },
+  {
+    id: 'bottle',
+    name: 'Bottle',
+    description: "A heavy glass bottle. There's a cork stopper stuck halfway.",
+  },
+  {
+    id: 'brokenGlass',
+    name: 'Broken glass',
+    description: "The bottom part of the bottle. It's like a magnifying glass.",
+  },
   // {
   //   id: 'salt',
   //   name: 'Salt',
@@ -64,13 +74,6 @@ export default [
   // {
   //   id: 'plastic',
   //   name: 'Plastic',
-  //   description: 'Useful for crafting',
-  //   action: 'scavenge',
-  //   usesUntilBreakdown: 0
-  // },
-  // {
-  //   id: 'bottle',
-  //   name: 'Empty bottle',
   //   description: 'Useful for crafting',
   //   action: 'scavenge',
   //   usesUntilBreakdown: 0
