@@ -142,12 +142,12 @@ class RoadScene extends BaseScene {
       .setOrigin(0, 0)
 
     this.grass = this.add
-      .tileSprite(0, 493, VIEWPORT_WIDTH, 96, IMAGES.GRASS.KEY)
+      .tileSprite(0, 479, VIEWPORT_WIDTH, 96, IMAGES.GRASS.KEY)
       .setOrigin(0, 0)
       .setScrollFactor(0)
 
     this.grassForeground = this.add
-      .tileSprite(0, 493, VIEWPORT_WIDTH, 96, IMAGES.GRASS_FOREGROUND.KEY)
+      .tileSprite(0, 479, VIEWPORT_WIDTH, 96, IMAGES.GRASS_FOREGROUND.KEY)
       .setOrigin(0, 0)
       .setScrollFactor(0)
 
