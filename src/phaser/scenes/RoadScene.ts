@@ -54,6 +54,15 @@ class RoadScene extends BaseScene {
 
   private buggy: Buggy
   private platforms: Physics.Arcade.StaticGroup
+  private sky: Phaser.GameObjects.TileSprite
+  private mountains: Phaser.GameObjects.TileSprite
+  private forest: Phaser.GameObjects.TileSprite
+  private trees: Phaser.GameObjects.TileSprite
+  private hills: Phaser.GameObjects.TileSprite
+  private road: Phaser.GameObjects.TileSprite
+  private guardrail: Phaser.GameObjects.TileSprite
+  private grass: Phaser.GameObjects.TileSprite
+  private grassForeground: Phaser.GameObjects.TileSprite
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
   private engine: any
@@ -73,20 +82,74 @@ class RoadScene extends BaseScene {
     this.loadAudio(AUDIO.INTRO)
 
     // Preload images
+    this.loadImage(IMAGES.FLOOR)
+    this.loadImage(IMAGES.BROKEN_GUARDRAIL)
+    this.loadImage(IMAGES.FOREST)
+    this.loadImage(IMAGES.GRASS_FOREGROUND)
+    this.loadImage(IMAGES.GRASS)
+    this.loadImage(IMAGES.GUARDRAIL)
+    this.loadImage(IMAGES.MOUNTAINS)
+    this.loadImage(IMAGES.PINECONE)
     this.loadImage(IMAGES.ROADSIGN)
     this.loadImage(IMAGES.ROAD)
-    this.loadImage(IMAGES.ROAD_LONG)
-    this.loadImage(IMAGES.FLOOR)
-    this.loadImage(IMAGES.ROAD)
-    this.loadImage(IMAGES.PINECONE)
+    this.loadImage(IMAGES.SKY)
+    this.loadImage(IMAGES.TREES_HILLS)
+    this.loadImage(IMAGES.TREES)
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
   }
 
   public create() {
-    this.add.image(600, 60, IMAGES.ROAD_LONG.KEY).setOrigin(0)
-    const bg = this.add.image(0, 0, IMAGES.ROAD.KEY).setOrigin(0)
+    const WORLD = {
+      WIDTH: 2520,
+      HEIGHT: 720,
+    }
+    const VIEWPORT_WIDTH = WORLD.WIDTH / 2
+
+    this.sky = this.add
+      .tileSprite(0, 0, VIEWPORT_WIDTH, 520, IMAGES.SKY.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.mountains = this.add
+      .tileSprite(0, 140, VIEWPORT_WIDTH, 459, IMAGES.MOUNTAINS.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.forest = this.add
+      .tileSprite(0, 230, VIEWPORT_WIDTH, 354, IMAGES.FOREST.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.trees = this.add
+      .tileSprite(0, -135, VIEWPORT_WIDTH, 720, IMAGES.TREES.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.hills = this.add
+      .tileSprite(0, -135, VIEWPORT_WIDTH, 720, IMAGES.TREES_HILLS.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.road = this.add
+      .tileSprite(0, 397, VIEWPORT_WIDTH, 96, IMAGES.ROAD.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.guardrail = this.add
+      .tileSprite(531, 508, WORLD.WIDTH - 531, 36, IMAGES.GUARDRAIL.KEY)
+      .setOrigin(0, 0)
+
+    this.grass = this.add
+      .tileSprite(0, 493, VIEWPORT_WIDTH, 96, IMAGES.GRASS.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
+
+    this.grassForeground = this.add
+      .tileSprite(0, 493, VIEWPORT_WIDTH, 96, IMAGES.GRASS_FOREGROUND.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0)
 
     this.platforms = this.physics.add.staticGroup()
 
@@ -101,7 +164,9 @@ class RoadScene extends BaseScene {
 
     this.introAudio.play()
 
-    this.physics.world.setBounds(0, 0, bg.width * 2, bg.height)
+    this.add.image(0, 508, IMAGES.BROKEN_GUARDRAIL.KEY).setOrigin(0, 0)
+
+    this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
 
     this.roadsign = this.physics.add
       .staticImage(700, 485, IMAGES.ROADSIGN.KEY)
@@ -122,7 +187,7 @@ class RoadScene extends BaseScene {
 
     this.buggy.setInteractive()
 
-    this.cameras.main.setBounds(0, 0, bg.width * 2, 720)
+    this.cameras.main.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
     this.cameras.main.setBackgroundColor('#9fb9b4')
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.cameras.main.fadeIn(3000)
@@ -130,6 +195,15 @@ class RoadScene extends BaseScene {
   }
 
   public update() {
+    this.sky.tilePositionX = this.cameras.main.scrollX * 0.1
+    this.mountains.tilePositionX = this.cameras.main.scrollX * 0.2
+    this.forest.tilePositionX = this.cameras.main.scrollX * 0.3
+    this.trees.tilePositionX = this.cameras.main.scrollX * 0.4
+    this.hills.tilePositionX = this.cameras.main.scrollX * 0.5
+    this.road.tilePositionX = this.cameras.main.scrollX
+    this.grass.tilePositionX = this.cameras.main.scrollX * 1.1
+    this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
+
     if (!this.playingCutscene) {
       this.survivor.update()
     }

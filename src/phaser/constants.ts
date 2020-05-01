@@ -19,6 +19,12 @@ export const SPRITES = {
     WIDTH: 208,
     HEIGHT: 108,
   },
+  CLOUDS: {
+    KEY: 'CLOUDS',
+    FILE: 'common/clouds.png',
+    WIDTH: 174,
+    HEIGHT: 24,
+  },
   STRANGER: {
     KEY: 'STRANGER',
     FILE: 'building/stranger.png',
@@ -72,21 +78,54 @@ export const IMAGES = {
     KEY: 'FLOOR',
     FILE: 'common/floor.png',
   },
+
+  BROKEN_GUARDRAIL: {
+    KEY: 'BROKEN_GUARDRAIL',
+    FILE: 'road/broken-guardrail.png',
+  },
+  FOREST: {
+    KEY: 'FOREST',
+    FILE: 'road/forest.png',
+  },
+  GRASS_FOREGROUND: {
+    KEY: 'GRASS_FOREGROUND',
+    FILE: 'road/grass-foreground.png',
+  },
+  GRASS: {
+    KEY: 'GRASS',
+    FILE: 'road/grass.png',
+  },
+  GUARDRAIL: {
+    KEY: 'GUARDRAIL',
+    FILE: 'road/guardrail.png',
+  },
+  MOUNTAINS: {
+    KEY: 'MOUNTAINS',
+    FILE: 'road/mountains.png',
+  },
+  PINECONE: {
+    KEY: 'PINECONE',
+    FILE: 'road/pine-cone.png',
+  },
   ROADSIGN: {
     KEY: 'ROADSIGN',
     FILE: 'road/road-sign.png',
   },
   ROAD: {
     KEY: 'ROAD',
-    FILE: 'road/road-bg.png',
+    FILE: 'road/road.png',
   },
-  ROAD_LONG: {
-    KEY: 'ROAD_LONG',
-    FILE: 'road/road-long.png',
+  SKY: {
+    KEY: 'SKY',
+    FILE: 'road/sky.png',
   },
-  PINECONE: {
-    KEY: 'PINECONE',
-    FILE: 'road/pine-cone.png',
+  TREES_HILLS: {
+    KEY: 'TREES_HILLS',
+    FILE: 'road/trees-hills.png',
+  },
+  TREES: {
+    KEY: 'TREES',
+    FILE: 'road/trees.png',
   },
   BUILDING_BG: {
     KEY: 'BUILDING_BG',
