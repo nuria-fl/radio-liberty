@@ -52,9 +52,12 @@ class RoadScene extends BaseScene {
     },
   }
 
+  public WORLD = {
+    WIDTH: 2520,
+    HEIGHT: 720,
+  }
   private buggy: Buggy
   private platforms: Physics.Arcade.StaticGroup
-  private clouds: Phaser.GameObjects.Group
   private sky: Phaser.GameObjects.TileSprite
   private mountains: Phaser.GameObjects.TileSprite
   private forest: Phaser.GameObjects.TileSprite
@@ -99,58 +102,17 @@ class RoadScene extends BaseScene {
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
-    this.loadSprite(SPRITES.CLOUDS)
   }
 
   public create() {
-    const WORLD = {
-      WIDTH: 2520,
-      HEIGHT: 720,
-    }
-    const VIEWPORT_WIDTH = WORLD.WIDTH / 2
+    const VIEWPORT_WIDTH = this.WORLD.WIDTH / 2
 
     this.sky = this.add
       .tileSprite(0, 0, VIEWPORT_WIDTH, 520, IMAGES.SKY.KEY)
       .setOrigin(0, 0)
       .setScrollFactor(0)
 
-    this.clouds = this.add.group({
-      defaultKey: SPRITES.CLOUDS.KEY,
-      defaultFrame: 0,
-    })
-
-    // this.clouds.create(200, 100, SPRITES.CLOUDS.KEY, 2).setScrollFactor(0.1)
-    // this.clouds.create(850, 40, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0.15)
-    // this.clouds.create(700, 150, SPRITES.CLOUDS.KEY, 0).setScrollFactor(0.2)
-    this.clouds.create(550, 150, SPRITES.CLOUDS.KEY, 0).setScrollFactor(0)
-    this.clouds.create(300, 40, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0)
-    this.clouds.create(-200, 110, SPRITES.CLOUDS.KEY, 2).setScrollFactor(0)
-    this.clouds.create(-400, 70, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0)
-
-    let i = 1
-    Phaser.Actions.Call(
-      this.clouds.getChildren(),
-      function (cloud: Phaser.GameObjects.Sprite) {
-        const timeline = this.tweens.createTimeline()
-        timeline.add({
-          targets: cloud,
-          x: 950,
-          duration: 45000 + 10000 * (i - 0.5),
-          yoyo: false,
-          repeat: 0,
-        })
-        timeline.add({
-          targets: cloud,
-          x: { from: -100 * (i + 0.5), to: 950 + 100 * i },
-          duration: 65000 + 20000 * Math.random(),
-          yoyo: false,
-          loop: -1,
-        })
-        timeline.play()
-        i++
-      },
-      this
-    )
+    this.createClouds()
 
     this.mountains = this.add
       .tileSprite(0, 140, VIEWPORT_WIDTH, 459, IMAGES.MOUNTAINS.KEY)
@@ -178,7 +140,7 @@ class RoadScene extends BaseScene {
       .setScrollFactor(0)
 
     this.guardrail = this.add
-      .tileSprite(531, 508, WORLD.WIDTH - 531, 36, IMAGES.GUARDRAIL.KEY)
+      .tileSprite(531, 508, this.WORLD.WIDTH - 531, 36, IMAGES.GUARDRAIL.KEY)
       .setOrigin(0, 0)
 
     this.grass = this.add
@@ -206,7 +168,7 @@ class RoadScene extends BaseScene {
 
     this.add.image(0, 508, IMAGES.BROKEN_GUARDRAIL.KEY).setOrigin(0, 0)
 
-    this.physics.world.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
+    this.physics.world.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
 
     this.roadsign = this.physics.add
       .staticImage(700, 485, IMAGES.ROADSIGN.KEY)
@@ -227,7 +189,7 @@ class RoadScene extends BaseScene {
 
     this.buggy.setInteractive()
 
-    this.cameras.main.setBounds(0, 0, WORLD.WIDTH, WORLD.HEIGHT)
+    this.cameras.main.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
     this.cameras.main.setBackgroundColor('#9fb9b4')
     this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
     this.cameras.main.fadeIn(3000)

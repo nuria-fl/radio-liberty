@@ -222,6 +222,10 @@ class BuildingScene extends BaseScene {
     },
   }
 
+  public WORLD = {
+    WIDTH: 1280,
+    HEIGHT: 800,
+  }
   public survivor: Survivor
   private buggy: Buggy
   private stranger: Stranger
@@ -314,6 +318,8 @@ class BuildingScene extends BaseScene {
       .setOrigin(0)
       .setAlpha(0, 0, 0, 0)
 
+    this.createClouds(200, 1)
+
     this.antennasSprites = this.physics.add.group({
       immovable: true,
       allowGravity: false,
@@ -359,7 +365,7 @@ class BuildingScene extends BaseScene {
       .setOrigin(0)
       .setAlpha(0, 0, 0, 0)
 
-    this.physics.world.setBounds(0, 0, bg.width, bg.height)
+    this.physics.world.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
 
     this.platforms = this.physics.add.staticGroup()
 
@@ -506,7 +512,7 @@ class BuildingScene extends BaseScene {
       }
     })
 
-    this.cameras.main.setBounds(0, 0, 1280, 800)
+    this.cameras.main.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
     cameraFade(this, 'fadeIn')
 
     await timer(this, 700)
@@ -896,6 +902,7 @@ class BuildingScene extends BaseScene {
   }
 
   private setNightMode() {
+    this.clouds.destroy()
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
     this.antennasSprites.playAnimation('antennaNightBlink')

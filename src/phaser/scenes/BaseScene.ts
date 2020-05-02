@@ -16,11 +16,16 @@ interface SpriteAsset {
 }
 
 export class BaseScene extends Phaser.Scene {
+  public WORLD = {
+    WIDTH: 830,
+    HEIGHT: 520,
+  }
   public survivor: Survivor
   public playingCutscene = true
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
   public interactText: Phaser.GameObjects.Text
+  public clouds: Phaser.GameObjects.Group
   public currentObject: { id: string; name: string; consumable: boolean } = null
   public interactingWithObject = false
   public use = {
@@ -63,6 +68,7 @@ export class BaseScene extends Phaser.Scene {
   }
 
   public commonPreload() {
+    this.loadSprite(SPRITES.CLOUDS)
     this.loadSprite(SPRITES.SURVIVOR)
     this.loadAudio(AUDIO.WALK)
   }
@@ -152,6 +158,54 @@ export class BaseScene extends Phaser.Scene {
 
   public endGame() {
     document.dispatchEvent(new CustomEvent('endGame'))
+  }
+
+  public createClouds(verticalOffset = 120, scrollFactor = 0) {
+    this.clouds = this.add.group({
+      defaultKey: SPRITES.CLOUDS.KEY,
+      defaultFrame: 0,
+    })
+
+    this.clouds
+      .create(550, 150 + verticalOffset, SPRITES.CLOUDS.KEY, 0)
+      .setScrollFactor(scrollFactor, 1)
+    this.clouds
+      .create(300, 40 + verticalOffset, SPRITES.CLOUDS.KEY, 1)
+      .setScrollFactor(scrollFactor, 1)
+    this.clouds
+      .create(-200, 110 + verticalOffset, SPRITES.CLOUDS.KEY, 2)
+      .setScrollFactor(scrollFactor, 1)
+    this.clouds
+      .create(-400, 70 + verticalOffset, SPRITES.CLOUDS.KEY, 1)
+      .setScrollFactor(scrollFactor, 1)
+
+    let i = 1
+    Phaser.Actions.Call(
+      this.clouds.getChildren(),
+      function (cloud: Phaser.GameObjects.Sprite) {
+        const timeline = this.tweens.createTimeline()
+        timeline.add({
+          targets: cloud,
+          x: scrollFactor ? this.WORLD.WIDTH + 50 : 950,
+          duration: 45000 + 10000 * (i - 0.5),
+          yoyo: false,
+          repeat: 0,
+        })
+        timeline.add({
+          targets: cloud,
+          x: {
+            from: -100 * (i + 0.5),
+            to: (scrollFactor ? this.WORLD.WIDTH : 900) + 100 * i,
+          },
+          duration: 65000 + 20000 * Math.random(),
+          yoyo: false,
+          loop: -1,
+        })
+        timeline.play()
+        i++
+      },
+      this
+    )
   }
 
   private offEvent(key: string) {
