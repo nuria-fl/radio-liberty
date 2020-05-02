@@ -54,6 +54,7 @@ class RoadScene extends BaseScene {
 
   private buggy: Buggy
   private platforms: Physics.Arcade.StaticGroup
+  private clouds: Phaser.GameObjects.Group
   private sky: Phaser.GameObjects.TileSprite
   private mountains: Phaser.GameObjects.TileSprite
   private forest: Phaser.GameObjects.TileSprite
@@ -98,6 +99,7 @@ class RoadScene extends BaseScene {
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.CLOUDS)
   }
 
   public create() {
@@ -111,6 +113,44 @@ class RoadScene extends BaseScene {
       .tileSprite(0, 0, VIEWPORT_WIDTH, 520, IMAGES.SKY.KEY)
       .setOrigin(0, 0)
       .setScrollFactor(0)
+
+    this.clouds = this.add.group({
+      defaultKey: SPRITES.CLOUDS.KEY,
+      defaultFrame: 0,
+    })
+
+    // this.clouds.create(200, 100, SPRITES.CLOUDS.KEY, 2).setScrollFactor(0.1)
+    // this.clouds.create(850, 40, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0.15)
+    // this.clouds.create(700, 150, SPRITES.CLOUDS.KEY, 0).setScrollFactor(0.2)
+    this.clouds.create(550, 150, SPRITES.CLOUDS.KEY, 0).setScrollFactor(0)
+    this.clouds.create(300, 40, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0)
+    this.clouds.create(-200, 110, SPRITES.CLOUDS.KEY, 2).setScrollFactor(0)
+    this.clouds.create(-400, 70, SPRITES.CLOUDS.KEY, 1).setScrollFactor(0)
+
+    let i = 1
+    Phaser.Actions.Call(
+      this.clouds.getChildren(),
+      function (cloud: Phaser.GameObjects.Sprite) {
+        const timeline = this.tweens.createTimeline()
+        timeline.add({
+          targets: cloud,
+          x: 950,
+          duration: 45000 + 10000 * (i - 0.5),
+          yoyo: false,
+          repeat: 0,
+        })
+        timeline.add({
+          targets: cloud,
+          x: { from: -100 * (i + 0.5), to: 950 + 100 * i },
+          duration: 65000 + 20000 * Math.random(),
+          yoyo: false,
+          loop: -1,
+        })
+        timeline.play()
+        i++
+      },
+      this
+    )
 
     this.mountains = this.add
       .tileSprite(0, 140, VIEWPORT_WIDTH, 459, IMAGES.MOUNTAINS.KEY)
