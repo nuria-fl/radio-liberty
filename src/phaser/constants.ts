@@ -84,7 +84,7 @@ export const IMAGES = {
   },
   TREES: {
     KEY: 'TREES',
-    FILE: 'road/trees.png',
+    FILE: 'common/trees.png',
   },
 
   BROKEN_GUARDRAIL: {
