@@ -234,11 +234,15 @@ class BuildingScene extends BaseScene {
   private boxes: Boxes
   private metalBox: MetalBox
   private pit: Firepit
+  private trees: Phaser.GameObjects.TileSprite
+  private hills: Phaser.GameObjects.TileSprite
+  private grassForeground: Phaser.GameObjects.TileSprite
   private upstairsFloor: Physics.Arcade.Sprite
   private floor: Physics.Arcade.Sprite
   private platforms: Physics.Arcade.StaticGroup
   private antennasSprites: Physics.Arcade.Group
   private dropAnimation: Phaser.Tweens.Tween
+  private forest: Phaser.GameObjects.Image
   private nightBackground: Phaser.GameObjects.Image
   private nightForeground: Phaser.GameObjects.Image
   private wood: Physics.Arcade.Image
@@ -285,6 +289,8 @@ class BuildingScene extends BaseScene {
     this.loadImage(IMAGES.BUILDING_BG_2)
     this.loadImage(IMAGES.BUILDING_NIGHT_BG)
     this.loadImage(IMAGES.BUILDING_NIGHT_BG_2)
+    this.loadImage(IMAGES.BUILDING_HILLS)
+    this.loadImage(IMAGES.BUILDING_FOREST)
     this.loadImage(IMAGES.FLOOR)
     this.loadImage(IMAGES.WOOD)
     this.loadImage(IMAGES.CLOTH)
@@ -358,6 +364,21 @@ class BuildingScene extends BaseScene {
     ])
 
     this.antennasSprites.playAnimation('antennaBlink')
+
+    this.forest = this.add
+      .image(0, 0, IMAGES.BUILDING_FOREST.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0.95, 0.98)
+
+    this.trees = this.add
+      .tileSprite(300, 75, 820, 720, IMAGES.TREES.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0.9, 0.94)
+
+    this.hills = this.add
+      .tileSprite(0, -10, 820, 720, IMAGES.BUILDING_HILLS.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0.85, 0.9)
 
     this.add.image(0, 0, IMAGES.BUILDING_BG_2.KEY).setOrigin(0)
     this.nightForeground = this.add
@@ -492,6 +513,11 @@ class BuildingScene extends BaseScene {
     this.physics.add.collider(this.platforms, this.buggy)
     this.buggy.setInteractive()
 
+    this.grassForeground = this.add
+      .tileSprite(0, 755, 820, 96, IMAGES.GRASS_FOREGROUND.KEY)
+      .setOrigin(0, 0)
+      .setScrollFactor(0, 1)
+
     this.setInteractions([
       'bucket',
       'ladder',
@@ -518,11 +544,11 @@ class BuildingScene extends BaseScene {
     await timer(this, 700)
     await cameraPan(this, this.survivor.x, this.survivor.y, 4000)
     this.cameras.main.startFollow(this.survivor)
-
     this.initCutscene()
   }
 
   public update() {
+    this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
     this.physics.world.gravity.y = 800
     this.survivor.update()
   }
@@ -902,7 +928,17 @@ class BuildingScene extends BaseScene {
   }
 
   private setNightMode() {
-    this.clouds.destroy()
+    Phaser.Actions.Call(
+      this.clouds.getChildren(),
+      (cloud: Phaser.GameObjects.Sprite) => {
+        this.clouds.killAndHide(cloud)
+      },
+      this
+    )
+    this.forest.destroy()
+    this.trees.destroy()
+    this.hills.destroy()
+    this.grassForeground.destroy()
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
     this.antennasSprites.playAnimation('antennaNightBlink')

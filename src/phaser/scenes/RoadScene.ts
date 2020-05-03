@@ -89,7 +89,6 @@ class RoadScene extends BaseScene {
     this.loadImage(IMAGES.FLOOR)
     this.loadImage(IMAGES.BROKEN_GUARDRAIL)
     this.loadImage(IMAGES.FOREST)
-    this.loadImage(IMAGES.GRASS_FOREGROUND)
     this.loadImage(IMAGES.GRASS)
     this.loadImage(IMAGES.GUARDRAIL)
     this.loadImage(IMAGES.MOUNTAINS)
@@ -98,7 +97,6 @@ class RoadScene extends BaseScene {
     this.loadImage(IMAGES.ROAD)
     this.loadImage(IMAGES.SKY)
     this.loadImage(IMAGES.TREES_HILLS)
-    this.loadImage(IMAGES.TREES)
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)

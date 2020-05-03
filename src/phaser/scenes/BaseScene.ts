@@ -1,7 +1,7 @@
 import { DialogService, createDialogBox } from '../utils/dialog'
 import { Survivor } from '../sprites/Survivor'
 import { randomLine } from '../default-lines'
-import { SPRITES, AUDIO } from '../constants'
+import { IMAGES, SPRITES, AUDIO } from '../constants'
 
 interface Asset {
   KEY: string
@@ -68,9 +68,13 @@ export class BaseScene extends Phaser.Scene {
   }
 
   public commonPreload() {
+    this.loadAudio(AUDIO.WALK)
+
+    this.loadImage(IMAGES.GRASS_FOREGROUND)
+    this.loadImage(IMAGES.TREES)
+
     this.loadSprite(SPRITES.CLOUDS)
     this.loadSprite(SPRITES.SURVIVOR)
-    this.loadAudio(AUDIO.WALK)
   }
 
   public initScene() {
