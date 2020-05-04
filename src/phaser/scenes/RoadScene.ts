@@ -5,6 +5,7 @@ import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
 import { Survivor } from '../sprites/Survivor'
 import { Buggy } from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
+import { cameraFade } from '../utils/promisify'
 
 class RoadScene extends BaseScene {
   public interact = {
@@ -341,12 +342,10 @@ class RoadScene extends BaseScene {
       this.survivor.play('push')
       this.survivor.body.setVelocityX(-200)
       this.buggy.body.setVelocityX(-200)
-      this.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {
-        if (progress === 1) {
-          this.scene.add(SCENES.BUILDING, BuildingScene, false)
-          this.scene.start(SCENES.BUILDING)
-        }
-      })
+      await cameraFade(this, 'fadeOut')
+      this.scene.add(SCENES.BUILDING, BuildingScene, false)
+      this.finishScene()
+      this.scene.start(SCENES.BUILDING)
     }
   }
 

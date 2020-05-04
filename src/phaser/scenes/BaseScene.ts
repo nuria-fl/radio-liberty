@@ -16,6 +16,11 @@ interface SpriteAsset {
 }
 
 export class BaseScene extends Phaser.Scene {
+  private bindPauseScene = this.pauseScene.bind(this)
+  private bindResumeScene = this.resumeScene.bind(this)
+  private bindHandleGameOver = this.handleGameOver.bind(this)
+  private bindHandleUseItem = this.handleUseItem.bind(this)
+  private bindHandleInspectItem = this.handleInspectItem.bind(this)
   public WORLD = {
     WIDTH: 830,
     HEIGHT: 520,
@@ -80,6 +85,10 @@ export class BaseScene extends Phaser.Scene {
   public initScene() {
     this.addListeners()
     this.dialog = new DialogService(this)
+  }
+
+  public finishScene() {
+    this.removeListeners()
   }
 
   public startCutscene() {
@@ -222,11 +231,19 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private addListeners() {
-    document.addEventListener('pauseScene', this.pauseScene.bind(this))
-    document.addEventListener('resumeScene', this.resumeScene.bind(this))
-    document.addEventListener('gameOver', this.handleGameOver.bind(this))
-    document.addEventListener('useItem', this.handleUseItem.bind(this))
-    document.addEventListener('inspectItem', this.handleInspectItem.bind(this))
+    document.addEventListener('pauseScene', this.bindPauseScene)
+    document.addEventListener('resumeScene', this.bindResumeScene)
+    document.addEventListener('gameOver', this.bindHandleGameOver)
+    document.addEventListener('useItem', this.bindHandleUseItem)
+    document.addEventListener('inspectItem', this.bindHandleInspectItem)
+  }
+
+  private removeListeners() {
+    document.removeEventListener('pauseScene', this.bindPauseScene)
+    document.removeEventListener('resumeScene', this.bindResumeScene)
+    document.removeEventListener('gameOver', this.bindHandleGameOver)
+    document.removeEventListener('useItem', this.bindHandleUseItem)
+    document.removeEventListener('inspectItem', this.bindHandleInspectItem)
   }
 
   private pauseScene() {

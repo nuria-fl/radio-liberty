@@ -267,6 +267,7 @@ class BuildingScene extends BaseScene {
   private isCured = false
   private boxOpen = false
   private timeout: number
+  private bindHandleUnlock = this.handleUnlock.bind(this)
 
   constructor() {
     super({
@@ -311,7 +312,7 @@ class BuildingScene extends BaseScene {
 
   public async create() {
     this.initScene()
-    document.addEventListener('unlock', this.handleUnlock.bind(this))
+    document.addEventListener('unlock', this.bindHandleUnlock)
 
     this.fireAudio = this.sound.add(AUDIO.FIRE.KEY)
     this.staticAudio = this.sound.add(AUDIO.STATIC.KEY)
@@ -916,7 +917,7 @@ class BuildingScene extends BaseScene {
     this.createDialog(
       "Yes! There's some solution to clean my wound. Also a small key."
     )
-    document.removeEventListener('unlock', this.handleUnlock.bind(this))
+    document.removeEventListener('unlock', this.bindHandleUnlock)
   }
 
   private checkIfFinished() {
@@ -979,6 +980,7 @@ class BuildingScene extends BaseScene {
       false
     )
     await cameraFade(this, 'fadeOut', 2000)
+    this.finishScene()
     document.dispatchEvent(new CustomEvent('completeGame'))
   }
 }
