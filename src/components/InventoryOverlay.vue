@@ -1,7 +1,11 @@
 <template>
   <Modal @close="close">
     <template v-if="zoomedItem">
-      <img :src="`/images/${zoomedItem}.png`" class="zoomed-image" alt="" />
+      <img
+        :src="`/images/common/${zoomedItem}.png`"
+        class="zoomed-image"
+        alt=""
+      />
     </template>
     <template v-else>
       <section>
