@@ -78,6 +78,14 @@ export const IMAGES = {
     KEY: 'FLOOR',
     FILE: 'common/floor.png',
   },
+  GRASS_FOREGROUND: {
+    KEY: 'GRASS_FOREGROUND',
+    FILE: 'common/grass-foreground.png',
+  },
+  TREES: {
+    KEY: 'TREES',
+    FILE: 'common/trees.png',
+  },
 
   BROKEN_GUARDRAIL: {
     KEY: 'BROKEN_GUARDRAIL',
@@ -86,10 +94,6 @@ export const IMAGES = {
   FOREST: {
     KEY: 'FOREST',
     FILE: 'road/forest.png',
-  },
-  GRASS_FOREGROUND: {
-    KEY: 'GRASS_FOREGROUND',
-    FILE: 'road/grass-foreground.png',
   },
   GRASS: {
     KEY: 'GRASS',
@@ -123,10 +127,6 @@ export const IMAGES = {
     KEY: 'TREES_HILLS',
     FILE: 'road/trees-hills.png',
   },
-  TREES: {
-    KEY: 'TREES',
-    FILE: 'road/trees.png',
-  },
   BUILDING_BG: {
     KEY: 'BUILDING_BG',
     FILE: 'building/building.png',
@@ -144,6 +144,14 @@ export const IMAGES = {
     FILE: 'building/building-night-layer2.png',
   },
 
+  BUILDING_HILLS: {
+    KEY: 'BUILDING_HILLS',
+    FILE: 'building/hills.png',
+  },
+  BUILDING_FOREST: {
+    KEY: 'BUILDING_FOREST',
+    FILE: 'building/forest.png',
+  },
   WOOD: {
     KEY: 'WOOD',
     FILE: 'building/wood.png',

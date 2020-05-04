@@ -66,7 +66,7 @@ export default {
   width: 100%;
   height: 100%;
   padding: 9rem 10.8rem 11.3rem;
-  background: url('/images/lock.png');
+  background: url('/images/building/lock.png');
   background-size: cover;
 }
 </style>

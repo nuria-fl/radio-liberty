@@ -36,7 +36,7 @@ export default {
   width: 64px;
   height: 80px;
   position: relative;
-  background: url('/images/digits.png') no-repeat 0 0;
+  background: url('/images/building/digits.png') no-repeat 0 0;
   &--9 {
     background-position: 0 0;
   }
