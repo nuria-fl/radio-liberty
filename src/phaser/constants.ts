@@ -199,4 +199,24 @@ export const AUDIO = {
     KEY: 'BANG',
     FILE: 'bang.mp3',
   },
+  ROCK: {
+    KEY: 'ROCK',
+    FILE: 'rock.mp3',
+  },
+  BROKEN_GLASS: {
+    KEY: 'BROKEN_GLASS',
+    FILE: 'broken-glass.mp3',
+  },
+  BUCKET: {
+    KEY: 'BUCKET',
+    FILE: 'bucket.mp3',
+  },
+  GROWL: {
+    KEY: 'GROWL',
+    FILE: 'growl1.mp3',
+  },
+  GROWL2: {
+    KEY: 'GROWL2',
+    FILE: 'growl2.mp3',
+  },
 }

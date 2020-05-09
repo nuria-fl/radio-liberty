@@ -22,18 +22,15 @@ npm run serve
 npm run build
 ```
 
-### Run your tests
+## Credits
 
-```
-npm run test
-```
+### Intro music and effects
 
-### Lints and fixes files
+- [The Buzzer - 4625](https://freesound.org/people/E_Vice/sounds/255800/)
+- [Acoustic guitar of Valentin Sosnitskiy](https://freesound.org/people/ValentinSosnitskiy/sounds/218801/)
+- [Electric guitar experimental music](https://freesound.org/people/ValentinSosnitskiy/sounds/368661/)
 
-```
-npm run lint
-```
+### Sound effects
 
-### Customize configuration
-
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- [Fireplace](https://freesound.org/people/leosalom/sounds/234288/)
+- [Broken glass](https://freesound.org/people/Craxic/sounds/204136/)
