@@ -257,6 +257,11 @@ class BuildingScene extends BaseScene {
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
   private bangAudio: Phaser.Sound.BaseSound
+  private rockAudio: Phaser.Sound.BaseSound
+  private brokenGlassAudio: Phaser.Sound.BaseSound
+  private bucketAudio: Phaser.Sound.BaseSound
+  private growlAudio: Phaser.Sound.BaseSound
+  private growl2Audio: Phaser.Sound.BaseSound
   private isUpstairs = false
   private hasWaterCollector = false
   private hasWood = false
@@ -284,6 +289,11 @@ class BuildingScene extends BaseScene {
     this.loadAudio(AUDIO.STATIC)
     this.loadAudio(AUDIO.DROP)
     this.loadAudio(AUDIO.BANG)
+    this.loadAudio(AUDIO.ROCK)
+    this.loadAudio(AUDIO.BROKEN_GLASS)
+    this.loadAudio(AUDIO.BUCKET)
+    this.loadAudio(AUDIO.GROWL)
+    this.loadAudio(AUDIO.GROWL2)
 
     // Preload images
     this.loadImage(IMAGES.BUILDING_BG)
@@ -318,6 +328,11 @@ class BuildingScene extends BaseScene {
     this.staticAudio = this.sound.add(AUDIO.STATIC.KEY)
     this.dropAudio = this.sound.add(AUDIO.DROP.KEY)
     this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
+    this.rockAudio = this.sound.add(AUDIO.ROCK.KEY)
+    this.brokenGlassAudio = this.sound.add(AUDIO.BROKEN_GLASS.KEY)
+    this.bucketAudio = this.sound.add(AUDIO.BUCKET.KEY)
+    this.growlAudio = this.sound.add(AUDIO.GROWL.KEY)
+    this.growl2Audio = this.sound.add(AUDIO.GROWL2.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING_BG.KEY).setOrigin(0)
     this.nightBackground = this.add
@@ -618,6 +633,7 @@ class BuildingScene extends BaseScene {
         x: 820,
         duration: 1000,
         onComplete: async () => {
+          this.growlAudio.play()
           await this.createDialog('* Growl *', false)
           await this.createDialog('Oh… Hello', false)
 
@@ -626,6 +642,7 @@ class BuildingScene extends BaseScene {
             x: 880,
             duration: 1000,
             onComplete: async () => {
+              this.growl2Audio.play()
               await this.createDialog('* Growl *', false)
               await this.createDialog(
                 "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
@@ -697,6 +714,8 @@ class BuildingScene extends BaseScene {
   private interactBucket() {
     if (!this.playingCutscene) {
       this.survivor.stop()
+
+      this.bucketAudio.play()
 
       this.createDialog('A bucket. Convenient.')
 
@@ -874,16 +893,20 @@ class BuildingScene extends BaseScene {
 
   private breakBottle() {
     this.startCutscene()
-    this.survivor.setDestination(415)
+    this.survivor.setDestination(390)
     this.physics.moveTo(this.survivor, 415, this.survivor.y, 100)
 
-    const crackBottle = () => {
+    const crackBottle = async () => {
+      this.sys.events.off('crackBottle', crackBottle, this, false)
       this.survivor.stop()
+      this.survivor.play('backwards')
+      this.rockAudio.play()
+      await timer(this, 1000)
+      this.brokenGlassAudio.play()
       this.removeItem({ id: 'bottle' })
       this.pickUp('brokenGlass')
       this.createDialog('Now I have a nice piece of thick, curved glass.')
-
-      this.sys.events.off('crackBottle', crackBottle, this, false)
+      this.survivor.play('stand')
     }
 
     this.sys.events.on('crackBottle', crackBottle, this)
@@ -894,16 +917,16 @@ class BuildingScene extends BaseScene {
 
   private getNuts() {
     this.startCutscene()
-    this.survivor.setDestination(415)
+    this.survivor.setDestination(390)
     this.physics.moveTo(this.survivor, 415, this.survivor.y, 100)
 
     const crackNuts = () => {
+      this.sys.events.off('crackNuts', crackNuts, this, false)
       this.survivor.stop()
+      this.rockAudio.play()
       this.removeItem({ id: 'pinecone' })
       this.pickUp('nuts')
       this.createDialog('Yes! Delicious pine nuts')
-
-      this.sys.events.off('crackNuts', crackNuts, this, false)
     }
 
     this.sys.events.on('crackNuts', crackNuts, this)
