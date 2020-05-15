@@ -103,6 +103,10 @@ export const IMAGES = {
     KEY: 'GUARDRAIL',
     FILE: 'road/guardrail.png',
   },
+  INTRO_VIEW: {
+    KEY: 'INTRO_VIEW',
+    FILE: 'road/intro-view.png',
+  },
   MOUNTAINS: {
     KEY: 'MOUNTAINS',
     FILE: 'road/mountains.png',
@@ -111,9 +115,17 @@ export const IMAGES = {
     KEY: 'PINECONE',
     FILE: 'road/pine-cone.png',
   },
+  RADIO: {
+    KEY: 'RADIO',
+    FILE: 'road/radio.jpg',
+  },
   ROADSIGN: {
     KEY: 'ROADSIGN',
     FILE: 'road/road-sign.png',
+  },
+  ROAD_WINDOW: {
+    KEY: 'ROAD_WINDOW',
+    FILE: 'road/road-window.png',
   },
   ROAD: {
     KEY: 'ROAD',
@@ -122,6 +134,10 @@ export const IMAGES = {
   SKY: {
     KEY: 'SKY',
     FILE: 'road/sky.png',
+  },
+  TINY_BUGGY: {
+    KEY: 'TINY_BUGGY',
+    FILE: 'road/tiny-buggy.png',
   },
   TREES_HILLS: {
     KEY: 'TREES_HILLS',
