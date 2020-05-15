@@ -113,8 +113,22 @@ export class BaseScene extends Phaser.Scene {
     )
   }
 
+  public createNarratorDialog(text, stopCutscene = true) {
+    return createDialogBox(
+      text,
+      stopCutscene,
+      { window: false, dialogSpeed: 50 },
+      this
+    )
+  }
+
   public createDialog(text, stopCutscene = true) {
-    return createDialogBox(text, stopCutscene, this)
+    return createDialogBox(
+      text,
+      stopCutscene,
+      { window: true, dialogSpeed: 30 },
+      this
+    )
   }
 
   public setupInput() {
