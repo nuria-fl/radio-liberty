@@ -169,9 +169,7 @@ class RoadScene extends BaseScene {
       "It's been a few hundred years since the end of the world.\n\nClimate change caused floods, draughts, hurricanes.\n\nEconomy collapsed. All was lₒst.",
       false
     )
-    let dialog1 = false
-    let dialog2 = false
-    let done = false
+    const steps = []
     let image: Phaser.GameObjects.Sprite
     let noise: Phaser.GameObjects.Sprite
     let radio: Phaser.GameObjects.Image
@@ -186,8 +184,8 @@ class RoadScene extends BaseScene {
       yoyo: false,
       repeat: 0,
       onUpdate: ({ progress }) => {
-        if (progress > 0.15 && !dialog1) {
-          dialog1 = true
+        if (progress > 0.15 && !steps[0]) {
+          steps.push(true)
           this.createNarratorDialog(
             'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
             false
@@ -199,7 +197,8 @@ class RoadScene extends BaseScene {
           this.cameras.main.flash(100)
         }
 
-        if (progress > 0.35 && !radio) {
+        if (progress > 0.35 && !steps[1]) {
+          steps.push(true)
           radio = this.add
             .image(688, 420, IMAGES.RADIO.KEY)
             .setDepth(1)
@@ -222,7 +221,6 @@ class RoadScene extends BaseScene {
           })
           noise = this.createNoise()
           this.cameras.main.flash(100)
-          // image.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.4 && progress < 0.407) {
@@ -231,16 +229,15 @@ class RoadScene extends BaseScene {
           this.cameras.main.shake(150, 0.02)
         }
 
-        if (progress > 0.5 && !dialog2) {
-          dialog2 = true
+        if (progress > 0.5 && !steps[2]) {
+          steps.push(true)
           this.createNarratorDialog(
             'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ cₚქₚt\n\n☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱',
             false
           )
-          needleTween.stop()
+          needleTween.pause()
           needle.setAlpha(0)
           radio.setAlpha(0, 0, 0, 0)
-          // image.setAlpha(1, 1, 1, 1)
           this.cameras.main.shake(100, 0.02)
           this.cameras.main.flash(50)
         }
@@ -255,20 +252,12 @@ class RoadScene extends BaseScene {
           noise.setAlpha(0, 0, 0, 0)
         }
 
-        if (progress > 0.65 && progress < 0.66) {
+        if (progress > 0.65 && !steps[3]) {
+          steps.push(true)
           this.cameras.main.flash(100)
           this.cameras.main.shake(100, 0.02)
           needle.setAlpha(1)
-          needleTween = this.tweens.add({
-            targets: needle,
-            x: 70,
-            duration: 300,
-            ease: 'Circ',
-            yoyo: true,
-            loop: -1,
-            hold: 50,
-            loopDelay: 50,
-          })
+          needleTween.setTimeScale(6).resume()
           radio.setAlpha(1, 1, 1, 1)
           noise.setAlpha(0.5, 0.5, 0.5, 0.5)
         }
@@ -289,8 +278,8 @@ class RoadScene extends BaseScene {
           noise.setAlpha(0, 0, 0, 0)
         }
 
-        if (progress > 0.8 && !done) {
-          done = true
+        if (progress > 0.8 && !steps[4]) {
+          steps.push(true)
           image.destroy()
           needleTween.stop()
           needle.destroy()
