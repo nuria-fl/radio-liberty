@@ -31,6 +31,12 @@ export const SPRITES = {
     WIDTH: 693,
     HEIGHT: 520,
   },
+  ROAD_WINDOW: {
+    KEY: 'ROAD_WINDOW',
+    FILE: 'road/road-window.png',
+    WIDTH: 228,
+    HEIGHT: 150,
+  },
   STRANGER: {
     KEY: 'STRANGER',
     FILE: 'building/stranger.png',
@@ -123,15 +129,11 @@ export const IMAGES = {
   },
   RADIO: {
     KEY: 'RADIO',
-    FILE: 'road/radio.jpg',
+    FILE: 'road/radio.png',
   },
   ROADSIGN: {
     KEY: 'ROADSIGN',
     FILE: 'road/road-sign.png',
-  },
-  ROAD_WINDOW: {
-    KEY: 'ROAD_WINDOW',
-    FILE: 'road/road-window.png',
   },
   ROAD: {
     KEY: 'ROAD',

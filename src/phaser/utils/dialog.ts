@@ -160,7 +160,7 @@ export class DialogService {
       : this.config.padding
     const y = this.config.window
       ? dimensions.y + this.config.padding
-      : this.config.padding * 2
+      : this.config.padding * 3
 
     this.text = this.scene.make
       .text({

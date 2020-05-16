@@ -99,7 +99,6 @@ class RoadScene extends BaseScene {
     this.loadImage(IMAGES.PINECONE)
     this.loadImage(IMAGES.RADIO)
     this.loadImage(IMAGES.ROADSIGN)
-    this.loadImage(IMAGES.ROAD_WINDOW)
     this.loadImage(IMAGES.ROAD)
     this.loadImage(IMAGES.SKY)
     this.loadImage(IMAGES.TINY_BUGGY)
@@ -108,6 +107,7 @@ class RoadScene extends BaseScene {
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
     this.loadSprite(SPRITES.NOISE)
+    this.loadSprite(SPRITES.ROAD_WINDOW)
   }
 
   public create() {
@@ -172,9 +172,11 @@ class RoadScene extends BaseScene {
     let dialog1 = false
     let dialog2 = false
     let done = false
-    let image: Phaser.GameObjects.Image
+    let image: Phaser.GameObjects.Sprite
     let noise: Phaser.GameObjects.Sprite
     let radio: Phaser.GameObjects.Image
+    let needle: Phaser.GameObjects.Graphics
+    let needleTween: Phaser.Tweens.Tween
     await timer(this, 6000)
     this.tweens.add({
       targets: tinyBuggy.pathFollower,
@@ -190,22 +192,37 @@ class RoadScene extends BaseScene {
             'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
             false
           )
-          image = this.add.image(400, 400, IMAGES.ROAD_WINDOW.KEY).setDepth(1)
+          image = this.createWindow()
         }
 
-        if (progress > 0.25 && progress < 0.27) {
+        if (progress > 0.26 && progress < 0.28) {
           this.cameras.main.flash(100)
         }
 
-        if (progress > 0.3 && !radio) {
+        if (progress > 0.35 && !radio) {
           radio = this.add
-            .image(400, 400, IMAGES.RADIO.KEY)
-            .setScale(0.3, 0.3)
+            .image(688, 420, IMAGES.RADIO.KEY)
             .setDepth(1)
             .setScrollFactor(0)
+          needle = this.add
+            .graphics()
+            .setDepth(1)
+            .fillStyle(0xac3232)
+            .fillRect(648, 400, 5, 20)
+
+          needleTween = this.tweens.add({
+            targets: needle,
+            x: 70,
+            duration: 1000,
+            ease: 'Circ',
+            yoyo: true,
+            loop: -1,
+            hold: 200,
+            loopDelay: 500,
+          })
           noise = this.createNoise()
           this.cameras.main.flash(100)
-          image.setAlpha(0, 0, 0, 0)
+          // image.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.4 && progress < 0.407) {
@@ -220,8 +237,10 @@ class RoadScene extends BaseScene {
             'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ cₚქₚt\n\n☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱',
             false
           )
-          radio.destroy()
-          image.setAlpha(1, 1, 1, 1)
+          needleTween.stop()
+          needle.setAlpha(0)
+          radio.setAlpha(0, 0, 0, 0)
+          // image.setAlpha(1, 1, 1, 1)
           this.cameras.main.shake(100, 0.02)
           this.cameras.main.flash(50)
         }
@@ -239,6 +258,18 @@ class RoadScene extends BaseScene {
         if (progress > 0.65 && progress < 0.66) {
           this.cameras.main.flash(100)
           this.cameras.main.shake(100, 0.02)
+          needle.setAlpha(1)
+          needleTween = this.tweens.add({
+            targets: needle,
+            x: 70,
+            duration: 300,
+            ease: 'Circ',
+            yoyo: true,
+            loop: -1,
+            hold: 50,
+            loopDelay: 50,
+          })
+          radio.setAlpha(1, 1, 1, 1)
           noise.setAlpha(0.5, 0.5, 0.5, 0.5)
         }
 
@@ -261,6 +292,9 @@ class RoadScene extends BaseScene {
         if (progress > 0.8 && !done) {
           done = true
           image.destroy()
+          needleTween.stop()
+          needle.destroy()
+          radio.destroy()
           this.cameras.main.flash(50)
           this.cameras.main.shake(100, 0.02)
           noise.setAlpha(0.5, 0.5, 0.5, 0.5)
@@ -305,14 +339,34 @@ class RoadScene extends BaseScene {
       key: 'noise',
       frames: this.anims.generateFrameNames(SPRITES.NOISE.KEY, {
         start: 0,
-        end: 3,
+        end: 6,
       }),
-      frameRate: 10,
+      frameRate: 12,
       repeat: -1,
     })
 
     noise.play('noise')
     return noise
+  }
+
+  private createWindow() {
+    const road = this.add
+      .sprite(688, 420, SPRITES.ROAD_WINDOW.KEY)
+      .setDepth(1)
+      .setScrollFactor(0)
+
+    this.anims.create({
+      key: 'road-window',
+      frames: this.anims.generateFrameNames(SPRITES.ROAD_WINDOW.KEY, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    road.play('road-window')
+    return road
   }
 
   private runRoadCutscene() {
@@ -483,15 +537,17 @@ class RoadScene extends BaseScene {
       this.buggy.body.setCollideWorldBounds(false)
 
       this.survivor.play('backwards')
-
+      await timer(this, 1000)
       await this.createDialog(
         "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
       )
+      await timer(this, 700)
       await this.createDialog(
         "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
       )
+      this.survivor.faceLeft()
       await this.createDialog(
-        "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+        'There is some sort of building down the road. Looks like a good shelter.'
       )
 
       await this.survivor.moveTo(348, 'left')
