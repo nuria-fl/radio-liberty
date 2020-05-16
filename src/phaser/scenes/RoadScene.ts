@@ -6,7 +6,7 @@ import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
 import { Survivor } from '../sprites/Survivor'
 import { Buggy } from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
-import { cameraFade, cameraPan, timer } from '../utils/promisify'
+import { cameraFade, timer } from '../utils/promisify'
 
 class RoadScene extends BaseScene {
   public interact = {
@@ -107,6 +107,7 @@ class RoadScene extends BaseScene {
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.NOISE)
   }
 
   public create() {
@@ -156,16 +157,6 @@ class RoadScene extends BaseScene {
       .lineTo(487, 270)
       .lineTo(650, 150)
       .lineTo(773, 0)
-    // const graphics = this.add
-    //   .graphics({
-    //     lineStyle: {
-    //       width: 3,
-    //       color: 0x00701a,
-    //       alpha: 1,
-    //     },
-    //   })
-    //   .setDepth(2)
-    // path.draw(graphics)
 
     tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
       path: path,
@@ -173,14 +164,6 @@ class RoadScene extends BaseScene {
       rotateToPath: true,
     })
 
-    // this.tweens.add({
-    //   targets: tinyBuggy.pathFollower,
-    //   t: 1,
-    //   ease: 'Linear', // 'Cubic', 'Elastic', 'Bounce', 'Back'
-    //   duration: 3000,
-    //   repeat: -1,
-    //   yoyo: false,
-    // })
     await timer(this, 1000)
     this.createNarratorDialog(
       "It's been a few hundred years since the end of the world.\n\nClimate change caused floods, draughts, hurricanes.\n\nEconomy collapsed. All was lₒst.",
@@ -190,7 +173,8 @@ class RoadScene extends BaseScene {
     let dialog2 = false
     let done = false
     let image: Phaser.GameObjects.Image
-    let radio
+    let noise: Phaser.GameObjects.Sprite
+    let radio: Phaser.GameObjects.Image
     await timer(this, 6000)
     this.tweens.add({
       targets: tinyBuggy.pathFollower,
@@ -200,34 +184,33 @@ class RoadScene extends BaseScene {
       yoyo: false,
       repeat: 0,
       onUpdate: ({ progress }) => {
-        if (progress > 0.05 && !image) {
-          image = this.add.image(400, 400, IMAGES.ROAD_WINDOW.KEY).setDepth(1)
-        }
-
         if (progress > 0.15 && !dialog1) {
           dialog1 = true
           this.createNarratorDialog(
             'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
             false
           )
+          image = this.add.image(400, 400, IMAGES.ROAD_WINDOW.KEY).setDepth(1)
         }
 
-        if (progress > 0.25 && progress < 0.26) {
+        if (progress > 0.25 && progress < 0.27) {
           this.cameras.main.flash(100)
         }
 
         if (progress > 0.3 && !radio) {
-          this.cameras.main.flash(100)
-          image.setAlpha(0, 0, 0, 0)
           radio = this.add
             .image(400, 400, IMAGES.RADIO.KEY)
             .setScale(0.3, 0.3)
             .setDepth(1)
             .setScrollFactor(0)
+          noise = this.createNoise()
+          this.cameras.main.flash(100)
+          image.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.4 && progress < 0.407) {
           this.cameras.main.flash(100)
+          noise.setAlpha(0, 0, 0, 0)
           this.cameras.main.shake(150, 0.02)
         }
 
@@ -243,24 +226,36 @@ class RoadScene extends BaseScene {
           this.cameras.main.flash(50)
         }
 
-        if (progress > 0.56 && progress < 0.57) {
+        if (progress > 0.52 && progress < 0.53) {
           this.cameras.main.flash(100)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
           this.cameras.main.shake(150, 0.02)
+        }
+
+        if (progress > 0.59 && progress < 0.6) {
+          noise.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.65 && progress < 0.66) {
           this.cameras.main.flash(100)
           this.cameras.main.shake(100, 0.02)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
         }
 
         if (progress > 0.69 && progress < 0.7) {
           this.cameras.main.flash(50)
+          noise.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.72 && progress < 0.73) {
           this.cameras.main.flash(100)
           this.cameras.main.shake(150, 0.02)
           this.cameras.main.flash(50)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
+        }
+
+        if (progress > 0.75 && progress < 0.76) {
+          noise.setAlpha(0, 0, 0, 0)
         }
 
         if (progress > 0.8 && !done) {
@@ -268,8 +263,9 @@ class RoadScene extends BaseScene {
           image.destroy()
           this.cameras.main.flash(50)
           this.cameras.main.shake(100, 0.02)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
           this.tweens.add({
-            targets: [view, tinyBuggy],
+            targets: [view, tinyBuggy, noise],
             alphaTopLeft: 0,
             alphaTopRight: 0,
             alphaBottomRight: 0,
@@ -287,11 +283,36 @@ class RoadScene extends BaseScene {
         }
         if (progress === 1) {
           view.destroy()
+          noise.destroy()
           // destroying the tinyBuggy causes some issue with the path follower plugin
           // tinyBuggy.destroy()
         }
       },
     })
+  }
+
+  private createNoise() {
+    const noise = this.add
+      .sprite(0, 0, SPRITES.NOISE.KEY)
+      .setOrigin(0, 0)
+      .setDepth(1)
+      .setScale(1.2, 1.2)
+      .setScrollFactor(0)
+      .setBlendMode(Phaser.BlendModes.SCREEN)
+      .setAlpha(0.5, 0.5, 0.5, 0.5)
+
+    this.anims.create({
+      key: 'noise',
+      frames: this.anims.generateFrameNames(SPRITES.NOISE.KEY, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    })
+
+    noise.play('noise')
+    return noise
   }
 
   private runRoadCutscene() {

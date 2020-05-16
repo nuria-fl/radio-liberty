@@ -25,6 +25,12 @@ export const SPRITES = {
     WIDTH: 174,
     HEIGHT: 24,
   },
+  NOISE: {
+    KEY: 'NOISE',
+    FILE: 'road/noise.png',
+    WIDTH: 693,
+    HEIGHT: 520,
+  },
   STRANGER: {
     KEY: 'STRANGER',
     FILE: 'building/stranger.png',
