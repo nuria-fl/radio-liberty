@@ -393,6 +393,13 @@ class RoadScene extends BaseScene {
           this.cameras.main.shake(100, 0.02)
           this.cameras.main.flash(100)
         }
+
+        if (
+          progress > 0.78 &&
+          this.buggy.anims.currentAnim.key === 'buggy-driving'
+        ) {
+          this.buggy.play('buggy-stopped')
+        }
       },
       onComplete: async () => {
         this.dialog.closeDialog()
@@ -542,7 +549,9 @@ class RoadScene extends BaseScene {
       await this.createDialog(
         "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
       )
+
       this.survivor.faceLeft()
+      this.survivor.play('stand')
       await this.createDialog(
         'There is some sort of building down the road. Looks like a good shelter.'
       )
@@ -550,6 +559,7 @@ class RoadScene extends BaseScene {
       await this.survivor.moveTo(348, 'left')
 
       this.survivor.play('push')
+      this.buggy.play('buggy-pushed')
       this.survivor.body.setVelocityX(-200)
       this.buggy.body.setVelocityX(-200)
       await cameraFade(this, 'fadeOut')
