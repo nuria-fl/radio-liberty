@@ -174,7 +174,9 @@ class RoadScene extends BaseScene {
     let noise: Phaser.GameObjects.Sprite
     let radio: Phaser.GameObjects.Image
     let needle: Phaser.GameObjects.Graphics
+    let box: Phaser.GameObjects.Graphics
     let needleTween: Phaser.Tweens.Tween
+
     await timer(this, 6000)
     this.tweens.add({
       targets: tinyBuggy.pathFollower,
@@ -190,6 +192,11 @@ class RoadScene extends BaseScene {
             'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
             false
           )
+          box = this.add
+            .graphics()
+            .setDepth(1)
+            .fillStyle(0x000000, 0.7)
+            .fillRect(571, 342, 234, 156)
           image = this.createWindow()
         }
 
@@ -280,6 +287,7 @@ class RoadScene extends BaseScene {
 
         if (progress > 0.8 && !steps[4]) {
           steps.push(true)
+          box.destroy()
           image.destroy()
           needleTween.stop()
           needle.destroy()
