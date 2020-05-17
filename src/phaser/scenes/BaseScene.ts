@@ -56,6 +56,7 @@ export class BaseScene extends Phaser.Scene {
     },
   }
   public interact = {}
+  public interactKeys = []
 
   public loadImage(IMAGE: Asset) {
     this.load.image(IMAGE.KEY, `/images/${IMAGE.FILE}`)
@@ -150,8 +151,11 @@ export class BaseScene extends Phaser.Scene {
     })
   }
 
-  public setInteractions(keys: string[]) {
+  public setInteractions(keys = this.interactKeys) {
     keys.forEach((key) => this.setupEvent(key))
+    if (this.interactText) {
+      this.interactText.destroy()
+    }
     this.interactText = this.add.text(10, 500, '')
     this.interactText.setScrollFactor(0, 0)
   }
@@ -320,6 +324,15 @@ export class BaseScene extends Phaser.Scene {
         this[key].off('pointerout', reset)
         this.use[key].setText = null
       })
+      /*
+        off pointerover and pointerout removes interaction hover too,
+        so we add them again only for the ones that have had them removed
+      */
+      const interactKeys = this.interactKeys.filter((key) =>
+        Object.keys(this.use).includes(key)
+      )
+      this.setInteractions(interactKeys)
+
       if (!this.interactingWithObject) {
         this.stopCutscene()
       }
