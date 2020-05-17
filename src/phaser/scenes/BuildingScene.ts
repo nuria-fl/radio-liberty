@@ -724,6 +724,7 @@ class BuildingScene extends BaseScene {
       this.pickUp('bucket')
 
       this.bucket.setVisible(false)
+      this.interactKeys = this.interactKeys.filter((key) => key !== 'bucket')
     }
   }
 

@@ -141,7 +141,7 @@ class RoadScene extends BaseScene {
       this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
     }
 
-    if (!this.playingCutscene) {
+    if (!this.playingCutscene && this.survivor) {
       this.survivor.update()
     }
   }

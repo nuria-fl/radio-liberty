@@ -2,7 +2,7 @@ import { SPRITES, AUDIO } from '../constants'
 import { BaseScene } from '../scenes/BaseScene'
 const SPRITE = SPRITES.SURVIVOR
 
-export class Survivor extends Phaser.GameObjects.Sprite {
+export class Survivor extends Phaser.Physics.Arcade.Sprite {
   public target = null
   public alive = true
   public isDown = false
