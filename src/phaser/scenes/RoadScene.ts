@@ -1,3 +1,5 @@
+// A bug caused the import to fail, using raw import in preload for now
+// import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
 import { Physics } from 'phaser'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
@@ -5,7 +7,7 @@ import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
 import { Survivor } from '../sprites/Survivor'
 import { Buggy } from '../sprites/Buggy'
 import BuildingScene from './BuildingScene'
-import { cameraFade } from '../utils/promisify'
+import { cameraFade, timer } from '../utils/promisify'
 
 class RoadScene extends BaseScene {
   public interact = {
@@ -72,6 +74,7 @@ class RoadScene extends BaseScene {
   private pinecone: Physics.Arcade.Image
   private engine: any
   private introAudio: Phaser.Sound.BaseSound
+  private roadCreated = false
 
   constructor() {
     super({
@@ -92,18 +95,337 @@ class RoadScene extends BaseScene {
     this.loadImage(IMAGES.FOREST)
     this.loadImage(IMAGES.GRASS)
     this.loadImage(IMAGES.GUARDRAIL)
+    this.loadImage(IMAGES.INTRO_VIEW)
     this.loadImage(IMAGES.MOUNTAINS)
     this.loadImage(IMAGES.PINECONE)
+    this.loadImage(IMAGES.RADIO)
     this.loadImage(IMAGES.ROADSIGN)
     this.loadImage(IMAGES.ROAD)
     this.loadImage(IMAGES.SKY)
+    this.loadImage(IMAGES.TINY_BUGGY)
     this.loadImage(IMAGES.TREES_HILLS)
 
     // Preload sprites
     this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.NOISE)
+    this.loadSprite(SPRITES.ROAD_WINDOW)
+
+    this.load.plugin(
+      'rexpathfollowerplugin',
+      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js',
+      true
+    )
   }
 
   public create() {
+    this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
+
+    this.introAudio.play()
+    this.initScene()
+    this.cameras.main.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
+    this.cameras.main.setBackgroundColor('#9fb9b4')
+    this.cameras.main.fadeIn(3000)
+    this.runViewCutscene()
+  }
+
+  public update() {
+    if (this.roadCreated) {
+      this.sky.tilePositionX = this.cameras.main.scrollX * 0.1
+      this.mountains.tilePositionX = this.cameras.main.scrollX * 0.2
+      this.forest.tilePositionX = this.cameras.main.scrollX * 0.3
+      this.trees.tilePositionX = this.cameras.main.scrollX * 0.4
+      this.hills.tilePositionX = this.cameras.main.scrollX * 0.5
+      this.road.tilePositionX = this.cameras.main.scrollX
+      this.grass.tilePositionX = this.cameras.main.scrollX * 1.1
+      this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
+    }
+
+    if (!this.playingCutscene) {
+      this.survivor.update()
+    }
+  }
+
+  private async runViewCutscene() {
+    const view = this.add
+      .image(0, 0, IMAGES.INTRO_VIEW.KEY)
+      .setOrigin(0, 0)
+      .setDepth(1)
+      .setScrollFactor(0)
+    const tinyBuggy: any = this.add
+      .image(-20, 480, IMAGES.TINY_BUGGY.KEY)
+      .setDepth(1)
+      .setScrollFactor(0)
+
+    const path = this.add
+      .path(-20, 500)
+      .lineTo(78, 412)
+      .lineTo(210, 340)
+      .lineTo(291, 347)
+      .lineTo(487, 270)
+      .lineTo(650, 150)
+      .lineTo(773, 0)
+
+    // TODO: replace once the pathfollower bug is fixed
+    // tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
+    //   path: path,
+    //   t: 0,
+    //   rotateToPath: true,
+    // })
+
+    const PathFollower: any = this.plugins.get('rexpathfollowerplugin')
+
+    tinyBuggy.pathFollower = PathFollower.add(tinyBuggy, {
+      path: path,
+      t: 0,
+      rotateToPath: true,
+    })
+
+    await timer(this, 1000)
+    this.createNarratorDialog(
+      "It's been a few hundred years since the end of the world.\n\nClimate change caused floods, draughts, hurricanes.\n\nEconomy collapsed. All was lₒst.",
+      false
+    )
+    const steps = []
+    let image: Phaser.GameObjects.Sprite
+    let noise: Phaser.GameObjects.Sprite
+    let radio: Phaser.GameObjects.Image
+    let needle: Phaser.GameObjects.Graphics
+    let box: Phaser.GameObjects.Graphics
+    let needleTween: Phaser.Tweens.Tween
+
+    await timer(this, 6000)
+    this.tweens.add({
+      targets: tinyBuggy.pathFollower,
+      t: 1,
+      ease: 'Linear',
+      duration: 25000,
+      yoyo: false,
+      repeat: 0,
+      onUpdate: ({ progress }) => {
+        if (progress > 0.15 && !steps[0]) {
+          steps.push(true)
+          this.createNarratorDialog(
+            'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
+            false
+          )
+          box = this.add
+            .graphics()
+            .setDepth(1)
+            .fillStyle(0x000000, 0.7)
+            .fillRect(571, 342, 234, 156)
+          image = this.createWindow()
+        }
+
+        if (progress > 0.26 && progress < 0.28) {
+          this.cameras.main.flash(100)
+        }
+
+        if (progress > 0.35 && !steps[1]) {
+          steps.push(true)
+          radio = this.add
+            .image(688, 420, IMAGES.RADIO.KEY)
+            .setDepth(1)
+            .setScrollFactor(0)
+          needle = this.add
+            .graphics()
+            .setDepth(1)
+            .fillStyle(0xac3232)
+            .fillRect(648, 400, 5, 20)
+
+          needleTween = this.tweens.add({
+            targets: needle,
+            x: 70,
+            duration: 1000,
+            ease: 'Circ',
+            yoyo: true,
+            loop: -1,
+            hold: 200,
+            loopDelay: 500,
+          })
+          noise = this.createNoise()
+          this.cameras.main.flash(100)
+        }
+
+        if (progress > 0.4 && progress < 0.407) {
+          this.cameras.main.flash(100)
+          noise.setAlpha(0, 0, 0, 0)
+          this.cameras.main.shake(150, 0.02)
+        }
+
+        if (progress > 0.5 && !steps[2]) {
+          steps.push(true)
+          this.createNarratorDialog(
+            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ cₚქₚt\n\n☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱',
+            false
+          )
+          needleTween.pause()
+          needle.setAlpha(0)
+          radio.setAlpha(0, 0, 0, 0)
+          this.cameras.main.shake(100, 0.02)
+          this.cameras.main.flash(50)
+        }
+
+        if (progress > 0.52 && progress < 0.53) {
+          this.cameras.main.flash(100)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
+          this.cameras.main.shake(150, 0.02)
+        }
+
+        if (progress > 0.59 && progress < 0.6) {
+          noise.setAlpha(0, 0, 0, 0)
+        }
+
+        if (progress > 0.65 && !steps[3]) {
+          steps.push(true)
+          this.cameras.main.flash(100)
+          this.cameras.main.shake(100, 0.02)
+          needle.setAlpha(1)
+          needleTween.setTimeScale(6).resume()
+          radio.setAlpha(1, 1, 1, 1)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
+        }
+
+        if (progress > 0.69 && progress < 0.7) {
+          this.cameras.main.flash(50)
+          noise.setAlpha(0, 0, 0, 0)
+        }
+
+        if (progress > 0.72 && progress < 0.73) {
+          this.cameras.main.flash(100)
+          this.cameras.main.shake(150, 0.02)
+          this.cameras.main.flash(50)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
+        }
+
+        if (progress > 0.75 && progress < 0.76) {
+          noise.setAlpha(0, 0, 0, 0)
+        }
+
+        if (progress > 0.8 && !steps[4]) {
+          steps.push(true)
+          box.destroy()
+          image.destroy()
+          needleTween.stop()
+          needle.destroy()
+          radio.destroy()
+          this.cameras.main.flash(50)
+          this.cameras.main.shake(100, 0.02)
+          noise.setAlpha(0.5, 0.5, 0.5, 0.5)
+          this.tweens.add({
+            targets: [view, tinyBuggy, noise],
+            alphaTopLeft: 0,
+            alphaTopRight: 0,
+            alphaBottomRight: 0,
+            alphaBottomLeft: 0,
+            duration: 2000,
+            yoyo: false,
+            repeat: 0,
+            onUpdate: ({ progress }) => {
+              if (progress > 0.5 && this.dialog.text) {
+                this.dialog.closeDialog()
+              }
+            },
+          })
+          this.runRoadCutscene()
+        }
+        if (progress === 1) {
+          view.destroy()
+          noise.destroy()
+          // destroying the tinyBuggy causes some issue with the path follower plugin
+          // tinyBuggy.destroy()
+        }
+      },
+    })
+  }
+
+  private createNoise() {
+    const noise = this.add
+      .sprite(0, 0, SPRITES.NOISE.KEY)
+      .setOrigin(0, 0)
+      .setDepth(1)
+      .setScale(1.2, 1.2)
+      .setScrollFactor(0)
+      .setBlendMode(Phaser.BlendModes.SCREEN)
+      .setAlpha(0.5, 0.5, 0.5, 0.5)
+
+    this.anims.create({
+      key: 'noise',
+      frames: this.anims.generateFrameNames(SPRITES.NOISE.KEY, {
+        start: 0,
+        end: 6,
+      }),
+      frameRate: 12,
+      repeat: -1,
+    })
+
+    noise.play('noise')
+    return noise
+  }
+
+  private createWindow() {
+    const road = this.add
+      .sprite(688, 420, SPRITES.ROAD_WINDOW.KEY)
+      .setDepth(1)
+      .setScrollFactor(0)
+
+    this.anims.create({
+      key: 'road-window',
+      frames: this.anims.generateFrameNames(SPRITES.ROAD_WINDOW.KEY, {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    road.play('road-window')
+    return road
+  }
+
+  private runRoadCutscene() {
+    this.buildRoad()
+
+    this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
+    this.buggy.play('buggy-driving')
+
+    this.tweens.add({
+      targets: this.buggy,
+      x: 200,
+      ease: 'Sine.easeOut',
+      duration: 8000,
+      yoyo: false,
+      repeat: 0,
+      onUpdate: ({ progress }) => {
+        if (progress > 0.31 && progress < 0.32) {
+          this.cameras.main.flash(100)
+          this.cameras.main.shake(150, 0.02)
+        }
+
+        if (progress > 0.41 && progress < 0.42) {
+          this.cameras.main.flash(100)
+        }
+
+        if (progress > 0.65 && progress < 0.66) {
+          this.cameras.main.shake(100, 0.02)
+          this.cameras.main.flash(100)
+        }
+
+        if (
+          progress > 0.78 &&
+          this.buggy.anims.currentAnim.key === 'buggy-driving'
+        ) {
+          this.buggy.play('buggy-stopped')
+        }
+      },
+      onComplete: async () => {
+        this.dialog.closeDialog()
+        await this.createDialog('What the…?')
+        this.startPlay()
+      },
+    })
+  }
+
+  private buildRoad() {
     const VIEWPORT_WIDTH = this.WORLD.WIDTH / 2
 
     this.sky = this.add
@@ -159,12 +481,6 @@ class RoadScene extends BaseScene {
     floor.setOrigin(0)
     floor.refreshBody()
 
-    this.initScene()
-
-    this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
-
-    this.introAudio.play()
-
     this.add.image(0, 508, IMAGES.BROKEN_GUARDRAIL.KEY).setOrigin(0, 0)
 
     this.physics.world.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
@@ -187,95 +503,10 @@ class RoadScene extends BaseScene {
     this.physics.add.collider(this.platforms, this.buggy)
 
     this.buggy.setInteractive()
-
-    this.cameras.main.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
-    this.cameras.main.setBackgroundColor('#9fb9b4')
-    this.cameras.main.startFollow(this.buggy, false, 1, 1, 0, 120)
-    this.cameras.main.fadeIn(3000)
-    this.initCutscene()
+    this.roadCreated = true
   }
 
-  public update() {
-    this.sky.tilePositionX = this.cameras.main.scrollX * 0.1
-    this.mountains.tilePositionX = this.cameras.main.scrollX * 0.2
-    this.forest.tilePositionX = this.cameras.main.scrollX * 0.3
-    this.trees.tilePositionX = this.cameras.main.scrollX * 0.4
-    this.hills.tilePositionX = this.cameras.main.scrollX * 0.5
-    this.road.tilePositionX = this.cameras.main.scrollX
-    this.grass.tilePositionX = this.cameras.main.scrollX * 1.1
-    this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
-
-    if (!this.playingCutscene) {
-      this.survivor.update()
-    }
-  }
-
-  private initCutscene() {
-    this.buggy.play('buggy-driving')
-    let dialog1 = false
-    let dialog2 = false
-    let dialog3 = false
-
-    this.tweens.add({
-      targets: this.buggy,
-      x: 200,
-      ease: 'Sine.easeOut',
-      duration: 28000,
-      yoyo: false,
-      repeat: 0,
-      onUpdate: ({ progress }) => {
-        if (progress > 0.05 && !dialog1) {
-          dialog1 = true
-          this.createDialog(
-            "It's been a few hundred years since the end of the world. Climate change caused floods, draughts, hurricanes. Economy collapsed, along with gover⍰ments and people's faith on huma̶nity. All was lₒst.",
-            false
-          )
-        }
-        if (progress > 0.25 && progress < 0.26) {
-          this.cameras.main.flash(100)
-        }
-        if (progress > 0.3 && !dialog2) {
-          dialog2 = true
-          this.dialog.closeDialog()
-          this.createDialog(
-            'People alw̴ays find a wa̶y of staying alive, ̷t̶h̴o̴u̸gh. Some people suΓvive scavenging for supₚlies. Oth■rs, stealiₚg and killiⁿg t̶hem.',
-            false
-          )
-        }
-        if (progress > 0.4 && progress < 0.407) {
-          this.cameras.main.flash(100)
-        }
-        if (progress > 0.49 && !dialog3) {
-          dialog3 = true
-          this.dialog.closeDialog()
-          this.createDialog(
-            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ ⚆ჰõυནhპᵣῆ cₚქₚt ☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ☃︎ ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱̩̲̪̘ꑛκh◉ქ  ◗ₚ⌇⍺⍰ ⚆ ⚀℆✁ ✝︎☗⚆ₚ 🀰◎❖☒␡✦・ₚ✢⍰ꑛκ⍰✝︎⎍',
-            false
-          )
-        }
-        if (progress > 0.6 && progress < 0.61) {
-          this.cameras.main.flash(100)
-          this.cameras.main.shake(150, 0.02)
-        }
-
-        if (progress > 0.68 && progress < 0.69) {
-          this.cameras.main.flash(50)
-          this.cameras.main.shake(100, 0.02)
-        }
-
-        if (progress > 0.75 && this.dialog.text) {
-          this.dialog.closeDialog()
-        }
-      },
-      onComplete: async () => {
-        this.dialog.closeDialog()
-        await this.createDialog('What the…?')
-        this.initGame()
-      },
-    })
-  }
-
-  private initGame() {
+  private startPlay() {
     this.startGame()
     this.buggy.play('buggy-parked')
     this.initEngine()
@@ -326,20 +557,25 @@ class RoadScene extends BaseScene {
       this.buggy.body.setCollideWorldBounds(false)
 
       this.survivor.play('backwards')
-
+      await timer(this, 1000)
       await this.createDialog(
         "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
       )
+      await timer(this, 700)
       await this.createDialog(
         "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
       )
+
+      this.survivor.faceLeft()
+      this.survivor.play('stand')
       await this.createDialog(
-        "There is some sort of building down the road. Looks like a good shelter, I can push the buggy to there, doesn't look too far"
+        'There is some sort of building down the road. Looks like a good shelter.'
       )
 
       await this.survivor.moveTo(348, 'left')
 
       this.survivor.play('push')
+      this.buggy.play('buggy-pushed')
       this.survivor.body.setVelocityX(-200)
       this.buggy.body.setVelocityX(-200)
       await cameraFade(this, 'fadeOut')

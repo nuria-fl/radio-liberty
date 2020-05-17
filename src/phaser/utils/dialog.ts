@@ -14,6 +14,7 @@ export class DialogService {
     windowHeight: 100,
     padding: 15,
     dialogSpeed: 30,
+    window: true,
   }
   public eventCounter: number
   public dialog: string[]
@@ -26,18 +27,24 @@ export class DialogService {
   // Initialize the dialog modal
   public init(opts: any = {}) {
     // set properties from opts object or use defaults
-    Object.assign(this.config, opts)
+    this.config = Object.assign(this.config, opts)
 
     // used for animating the text
     this.eventCounter = 0
 
     // Create the dialog window
-    this.createWindow()
+    if (this.config.window) {
+      this.createWindow()
+    }
   }
 
   public closeDialog() {
-    this.graphics.destroy()
-    this.text.destroy()
+    if (this.graphics) {
+      this.graphics.destroy()
+    }
+    if (this.text) {
+      this.text.destroy()
+    }
   }
 
   // Sets the text for the dialog window
@@ -103,7 +110,7 @@ export class DialogService {
     const gameHeight = this.getGameHeight()
     const gameWidth = this.getGameWidth()
     const dimensions = this.calculateWindowDimensions(gameWidth, gameHeight)
-    this.graphics = this.scene.add.graphics()
+    this.graphics = this.scene.add.graphics().setDepth(9)
     this.graphics.setScrollFactor(0, 0)
 
     this.createOuterWindow(
@@ -141,17 +148,33 @@ export class DialogService {
       this.getGameHeight()
     )
 
-    const x = dimensions.x + this.config.padding
-    const y = dimensions.y + this.config.padding
+    const style = this.config.window
+      ? {}
+      : {
+          align: 'center',
+          fontSize: 22,
+          fixedWidth: this.getGameWidth() - this.config.padding * 2,
+        }
+    const x = this.config.window
+      ? dimensions.x + this.config.padding
+      : this.config.padding
+    const y = this.config.window
+      ? dimensions.y + this.config.padding
+      : this.config.padding * 3
 
-    this.text = this.scene.make.text({
-      x,
-      y,
-      text,
-      style: {
-        wordWrap: { width: this.getGameWidth() - this.config.padding * 2 - 25 },
-      },
-    })
+    this.text = this.scene.make
+      .text({
+        x,
+        y,
+        text,
+        style: {
+          ...style,
+          wordWrap: {
+            width: this.getGameWidth() - this.config.padding * 2 - 25,
+          },
+        },
+      })
+      .setDepth(9)
     this.text.setScrollFactor(0, 0)
   }
 }
@@ -159,6 +182,7 @@ export class DialogService {
 export const createDialogBox = (
   text: string,
   stopCutscene = true,
+  config = {},
   scene: any
 ) => {
   return new Promise((resolve) => {
@@ -166,7 +190,7 @@ export const createDialogBox = (
       scene.survivor.stop()
     }
     scene.startCutscene()
-    scene.dialog.init()
+    scene.dialog.init(config)
     scene.dialog.setText(text)
     const addListener = () => {
       scene.input.once('pointerup', () => {

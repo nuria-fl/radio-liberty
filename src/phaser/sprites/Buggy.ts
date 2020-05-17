@@ -13,8 +13,17 @@ export class Buggy extends Phaser.GameObjects.Sprite {
     scene.anims.create({
       key: 'buggy-parked',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
-        start: 1,
-        end: 1,
+        start: 4,
+        end: 4,
+      }),
+      repeat: -1,
+    })
+
+    scene.anims.create({
+      key: 'buggy-stopped',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 0,
+        end: 0,
       }),
       repeat: -1,
     })
@@ -23,9 +32,20 @@ export class Buggy extends Phaser.GameObjects.Sprite {
       key: 'buggy-driving',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
-        end: 0,
+        end: 3,
       }),
       repeat: -1,
+      frameRate: 8,
+    })
+
+    scene.anims.create({
+      key: 'buggy-pushed',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 4,
+        end: 5,
+      }),
+      repeat: -1,
+      frameRate: 6,
     })
 
     this.body.setSize(80, 100) // smaller than sprite size
