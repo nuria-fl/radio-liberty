@@ -27,6 +27,7 @@ class RoadScene extends BaseScene {
       cb: this.interactPinecone,
     },
   }
+  public interactKeys = ['roadsign', 'pinecone', 'buggy']
   public use = {
     ...this.use,
     roadsign: {
@@ -140,7 +141,7 @@ class RoadScene extends BaseScene {
       this.grassForeground.tilePositionX = this.cameras.main.scrollX * 1.2
     }
 
-    if (!this.playingCutscene) {
+    if (!this.playingCutscene && this.survivor) {
       this.survivor.update()
     }
   }
@@ -511,7 +512,7 @@ class RoadScene extends BaseScene {
     this.buggy.play('buggy-parked')
     this.initEngine()
     this.initSurvivor()
-    this.setInteractions(['roadsign', 'pinecone', 'buggy'])
+    this.setInteractions()
     this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
     this.stopCutscene()
   }

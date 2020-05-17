@@ -110,6 +110,10 @@ export class DialogService {
     const gameHeight = this.getGameHeight()
     const gameWidth = this.getGameWidth()
     const dimensions = this.calculateWindowDimensions(gameWidth, gameHeight)
+    // reset graphics
+    if (this.graphics) {
+      this.graphics.destroy()
+    }
     this.graphics = this.scene.add.graphics().setDepth(9)
     this.graphics.setScrollFactor(0, 0)
 

@@ -222,6 +222,20 @@ class BuildingScene extends BaseScene {
     },
   }
 
+  public interactKeys = [
+    'bucket',
+    'ladder',
+    'wood',
+    'puddle',
+    'wall',
+    'pit',
+    'antennas',
+    'buggy',
+    'rock',
+    'metalBox',
+    'bottle',
+  ]
+
   public WORLD = {
     WIDTH: 1280,
     HEIGHT: 800,
@@ -534,19 +548,7 @@ class BuildingScene extends BaseScene {
       .setOrigin(0, 0)
       .setScrollFactor(0, 1)
 
-    this.setInteractions([
-      'bucket',
-      'ladder',
-      'wood',
-      'puddle',
-      'wall',
-      'pit',
-      'antennas',
-      'buggy',
-      'rock',
-      'metalBox',
-      'bottle',
-    ])
+    this.setInteractions()
 
     this.wood.on('pointerup', () => {
       if (!this.encounterHappened && this.isUpstairs) {
@@ -722,6 +724,7 @@ class BuildingScene extends BaseScene {
       this.pickUp('bucket')
 
       this.bucket.setVisible(false)
+      this.interactKeys = this.interactKeys.filter((key) => key !== 'bucket')
     }
   }
 
