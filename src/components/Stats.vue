@@ -39,12 +39,12 @@ export default {
   },
   mounted() {
     document.addEventListener('getHurt', this.handleHurt)
-    document.addEventListener('getCured', this.getCured())
+    document.addEventListener('getCured', this.getCured)
     this.decreaseStats()
   },
   beforeDestroy() {
     document.removeEventListener('getHurt', this.handleHurt)
-    document.removeEventListener('getCured', this.getCured())
+    document.removeEventListener('getCured', this.getCured)
   },
   methods: {
     ...mapMutations(['getCured', 'getSick']),
