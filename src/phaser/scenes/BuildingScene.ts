@@ -285,6 +285,8 @@ class BuildingScene extends BaseScene {
   private cleanWound = false
   private isCured = false
   private boxOpen = false
+  private ladderXPosition = 1130
+  private ladderCutscene = false
   private timeout: number
   private bindHandleUnlock = this.handleUnlock.bind(this)
 
@@ -440,7 +442,7 @@ class BuildingScene extends BaseScene {
 
     this.ladder = new Ladder({
       scene: this,
-      x: 1130,
+      x: this.ladderXPosition,
       y: 532,
     })
     this.physics.add.collider(this.platforms, this.ladder)
@@ -592,6 +594,7 @@ class BuildingScene extends BaseScene {
         if (platform.y > 600 && this.isUpstairs) {
           this.survivor.play('stand')
           this.isUpstairs = false
+          this.ladderCutscene = false
           this.sys.events.off(
             this.interact.ladder.key,
             this.interact.ladder.cb,
@@ -601,6 +604,7 @@ class BuildingScene extends BaseScene {
         } else if (survivor.body.y < 350 && !this.isUpstairs) {
           this.survivor.play('stand')
           this.isUpstairs = true
+          this.ladderCutscene = false
           this.sys.events.off(
             this.interact.ladder.key,
             this.interact.ladder.cb,
@@ -741,7 +745,16 @@ class BuildingScene extends BaseScene {
   }
 
   private interactLadder() {
-    if (!this.playingCutscene) {
+    if (!this.ladderCutscene) {
+      this.ladderCutscene = true
+      this.survivor.setDestination(this.ladderXPosition)
+    }
+    if (
+      this.ladderCutscene &&
+      !this.playingCutscene &&
+      this.survivor.x > this.ladderXPosition - 5 &&
+      this.survivor.x < this.ladderXPosition + 5
+    ) {
       if (this.survivor.body.velocity.x !== 0) {
         this.survivor.stop()
       }
