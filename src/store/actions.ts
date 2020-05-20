@@ -20,7 +20,7 @@ export default {
     const newAmount = state.stats[stat] - amount
     const isOver = newAmount <= 0
     commit('setStat', { stat, amount: isOver ? 0 : newAmount })
-    if (isOver) {
+    if (state.enabled && isOver) {
       dispatch('gameOver')
     }
   },
@@ -34,7 +34,7 @@ export default {
   decreaseStats({ state, commit, dispatch }) {
     const decreaseInterval = 1000
     const loop = setTimeout(() => {
-      if (state.enabled && !state.gameOver && !state.paused) {
+      if (!state.gameOver && !state.paused) {
         dispatch('decrease', { stat: 'water', amount: 0.3 })
         dispatch('decrease', { stat: 'food', amount: 0.2 })
         if (state.isSick) {
