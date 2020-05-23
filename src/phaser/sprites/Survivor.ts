@@ -19,16 +19,6 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene = scene
 
     this.scene.anims.create({
-      key: 'walk',
-      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 0,
-        end: 3,
-      }),
-      frameRate: 7,
-      repeat: -1,
-    })
-
-    this.scene.anims.create({
       key: 'stand',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
         start: 0,
@@ -38,10 +28,20 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     })
 
     this.scene.anims.create({
+      key: 'walk',
+      frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
+        start: 1,
+        end: 4,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    this.scene.anims.create({
       key: 'dead',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 4,
-        end: 4,
+        start: 5,
+        end: 5,
       }),
       repeat: -1,
     })
@@ -49,8 +49,8 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene.anims.create({
       key: 'push',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 5,
-        end: 6,
+        start: 6,
+        end: 11,
       }),
       frameRate: 4,
       repeat: -1,
@@ -59,8 +59,8 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene.anims.create({
       key: 'fight',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 7,
-        end: 8,
+        start: 12,
+        end: 13,
       }),
       frameRate: 4,
       repeat: -1,
@@ -69,8 +69,8 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene.anims.create({
       key: 'getUp',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 9,
-        end: 9,
+        start: 14,
+        end: 14,
       }),
       repeat: -1,
     })
@@ -78,8 +78,8 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene.anims.create({
       key: 'backwards',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 10,
-        end: 10,
+        start: 15,
+        end: 15,
       }),
       repeat: -1,
     })
@@ -87,8 +87,8 @@ export class Survivor extends Phaser.Physics.Arcade.Sprite {
     this.scene.anims.create({
       key: 'climbing',
       frames: this.scene.anims.generateFrameNumbers(SPRITE.KEY, {
-        start: 11,
-        end: 12,
+        start: 16,
+        end: 17,
       }),
       frameRate: 4,
       repeat: -1,
