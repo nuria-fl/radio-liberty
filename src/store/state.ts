@@ -8,6 +8,7 @@ export default {
   enabled: false,
   isSick: false,
   loop: null,
+  pages: 4,
   stats: {
     health: MAX,
     water: MAX,
