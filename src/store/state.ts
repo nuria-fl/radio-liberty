@@ -9,6 +9,7 @@ export default {
   isSick: false,
   loop: null,
   pages: 4,
+  notes: [],
   stats: {
     health: MAX,
     water: MAX,

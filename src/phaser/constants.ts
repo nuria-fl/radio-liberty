@@ -94,6 +94,10 @@ export const IMAGES = {
     KEY: 'GRASS_FOREGROUND',
     FILE: 'common/grass-foreground.png',
   },
+  NOTE: {
+    KEY: 'NOTE',
+    FILE: 'common/note.png',
+  },
   TREES: {
     KEY: 'TREES',
     FILE: 'common/trees.png',
