@@ -52,7 +52,8 @@ export default {
     const item = state.existingItems.find((item) => item.id === itemId)
 
     if (item.type === 'note') {
-      commit('addNote', item)
+      const page = parseInt(item.id.split('-')[1], 10)
+      commit('addNote', page)
     } else {
       commit('addInventory', item)
     }

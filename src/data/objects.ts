@@ -51,7 +51,7 @@ export default [
     description: "The bottom part of the bottle. It's like a magnifying glass.",
   },
   {
-    id: 'noteRoad',
+    id: 'page-7',
     name: 'Instructions',
     description:
       'Looks like old instructions for the victims of the collapse. Huh, they thought this would make a difference?',

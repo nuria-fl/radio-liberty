@@ -29,8 +29,7 @@ export default {
     state.stats[stat] = amount
   },
   addNote(state, note) {
-    state.pages++
-    state.notes.push(note)
+    state.pages[note] = true
   },
   addInventory(state, item) {
     if (state.inventory.length < MAXINVENTORY) {

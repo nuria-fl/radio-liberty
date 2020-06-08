@@ -626,7 +626,7 @@ class RoadScene extends BaseScene {
         "I'll add this to my notebook. Looks like old instructions for the victims of the collapse. Huh, they thought this would make a difference?"
       )
 
-      this.pickUp('noteRoad')
+      this.pickUp('page-7')
 
       this.note.destroy()
 
