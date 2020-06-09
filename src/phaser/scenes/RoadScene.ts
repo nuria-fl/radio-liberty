@@ -623,7 +623,7 @@ class RoadScene extends BaseScene {
       this.survivor.stop()
 
       this.createDialog(
-        "I'll add this to my notebook. Looks like old instructions for the victims of the collapse. Huh, they thought this would make a difference?"
+        "I'll add this to my notebook. Looks like old instructions to go through a checkpoint that was nearby. I guess when the floods started everyone started leaving the area and they put controls to contain diseases. Crazy times."
       )
 
       this.pickUp('page-7')
