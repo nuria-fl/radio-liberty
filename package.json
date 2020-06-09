@@ -8,7 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@typescript-eslint/eslint-plugin-tslint": "^2.34.0",
+    "@typescript-eslint/eslint-plugin-tslint": "^3.2.0",
     "core-js": "^3.6.5",
     "phaser": "^3.23.0",
     "phaser3-rex-plugins": "^1.1.18",
