@@ -78,6 +78,7 @@ export class BaseScene extends Phaser.Scene {
 
     this.loadImage(IMAGES.GRASS_FOREGROUND)
     this.loadImage(IMAGES.TREES)
+    this.loadImage(IMAGES.NOTE)
 
     this.loadSprite(SPRITES.CLOUDS)
     this.loadSprite(SPRITES.SURVIVOR)

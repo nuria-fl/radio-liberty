@@ -50,6 +50,25 @@ export default [
     name: 'Broken glass',
     description: "The bottom part of the bottle. It's like a magnifying glass.",
   },
+  {
+    id: 'page-7',
+    name: 'Instructions',
+    description:
+      'Looks like old instructions for the victims of the collapse. Huh, they thought this would make a difference?',
+    type: 'note',
+  },
+  {
+    id: 'page-8',
+    name: 'entry',
+    description: '',
+    type: 'note',
+  },
+  {
+    id: 'page-9',
+    name: 'Ration card',
+    description: '',
+    type: 'note',
+  },
   // {
   //   id: 'salt',
   //   name: 'Salt',

@@ -8,7 +8,7 @@ export default {
   enabled: false,
   isSick: false,
   loop: null,
-  pages: 4,
+  pages: [true, true, true, true, true, true, true, false, false],
   stats: {
     health: MAX,
     water: MAX,

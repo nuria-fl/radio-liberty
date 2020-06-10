@@ -28,6 +28,9 @@ export default {
   setStat(state, { stat, amount }) {
     state.stats[stat] = amount
   },
+  addNote(state, note) {
+    state.pages[note] = true
+  },
   addInventory(state, item) {
     if (state.inventory.length < MAXINVENTORY) {
       item.uid = utils.generateId()

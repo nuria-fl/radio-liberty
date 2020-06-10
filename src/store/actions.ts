@@ -51,7 +51,12 @@ export default {
   addToInventory({ state, commit }, itemId: string) {
     const item = state.existingItems.find((item) => item.id === itemId)
 
-    commit('addInventory', item)
+    if (item.type === 'note') {
+      const page = parseInt(item.id.split('-')[1], 10)
+      commit('addNote', page)
+    } else {
+      commit('addInventory', item)
+    }
   },
   removeFromInventory({ state, commit }, itemId: string) {
     const itemInventory = state.inventory.find((item) => item.id === itemId)

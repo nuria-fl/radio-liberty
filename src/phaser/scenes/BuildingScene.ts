@@ -220,6 +220,11 @@ class BuildingScene extends BaseScene {
       text: 'Pick up bottle',
       cb: this.interactBottle,
     },
+    note: {
+      key: 'lookNote',
+      text: 'Pick up note',
+      cb: this.interactNote,
+    },
   }
 
   public interactKeys = [
@@ -234,6 +239,7 @@ class BuildingScene extends BaseScene {
     'rock',
     'metalBox',
     'bottle',
+    'note',
   ]
 
   public WORLD = {
@@ -266,6 +272,7 @@ class BuildingScene extends BaseScene {
   private antennas: Physics.Arcade.Image
   private rock: Physics.Arcade.Image
   private cloth: Physics.Arcade.Image
+  private note: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
@@ -494,6 +501,11 @@ class BuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.note = this.physics.add
+      .staticImage(957, 685, IMAGES.NOTE.KEY)
+      .refreshBody()
+      .setInteractive()
+
     this.initSurvivor()
 
     this.initStranger()
@@ -573,11 +585,12 @@ class BuildingScene extends BaseScene {
     this.survivor.update()
   }
 
-  private initCutscene() {
-    this.createDialog(
+  private async initCutscene() {
+    this.startGame()
+    await this.createDialog(
       "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
     )
-    this.startGame()
+    this.pickUp('page-8')
   }
 
   private initSurvivor() {
@@ -957,6 +970,27 @@ class BuildingScene extends BaseScene {
       "Yes! There's some solution to clean my wound. Also a small key."
     )
     document.removeEventListener('unlock', this.bindHandleUnlock)
+  }
+
+  private interactNote() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog(
+        "I'll add this to my notebook. Looks like a ration card, back when the economy collapsed it was the only way to prevent hoarding and ensure everyone had something to eat."
+      )
+
+      this.pickUp('page-9')
+
+      this.note.destroy()
+
+      this.sys.events.off(
+        this.interact.note.key,
+        this.interact.note.cb,
+        this,
+        false
+      )
+    }
   }
 
   private checkIfFinished() {

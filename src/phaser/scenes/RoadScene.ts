@@ -26,8 +26,13 @@ class RoadScene extends BaseScene {
       text: 'Pick up pinecone',
       cb: this.interactPinecone,
     },
+    note: {
+      key: 'lookNote',
+      text: 'Pick up note',
+      cb: this.interactNote,
+    },
   }
-  public interactKeys = ['roadsign', 'pinecone', 'buggy']
+  public interactKeys = ['roadsign', 'pinecone', 'buggy', 'note']
   public use = {
     ...this.use,
     roadsign: {
@@ -73,6 +78,7 @@ class RoadScene extends BaseScene {
   private grassForeground: Phaser.GameObjects.TileSprite
   private roadsign: Physics.Arcade.Image
   private pinecone: Physics.Arcade.Image
+  private note: Physics.Arcade.Image
   private engine: any
   private introAudio: Phaser.Sound.BaseSound
   private roadCreated = false
@@ -491,6 +497,11 @@ class RoadScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.note = this.physics.add
+      .staticImage(637, 505, IMAGES.NOTE.KEY)
+      .refreshBody()
+      .setInteractive()
+
     this.pinecone = this.physics.add
       .staticImage(550, 555, IMAGES.PINECONE.KEY)
       .refreshBody()
@@ -601,6 +612,27 @@ class RoadScene extends BaseScene {
       this.sys.events.off(
         this.interact.pinecone.key,
         this.interact.pinecone.cb,
+        this,
+        false
+      )
+    }
+  }
+
+  private interactNote() {
+    if (!this.playingCutscene) {
+      this.survivor.stop()
+
+      this.createDialog(
+        "I'll add this to my notebook. Looks like old instructions to go through a checkpoint that was nearby. I guess when the floods started everyone started leaving the area and they put controls to contain diseases. Crazy times."
+      )
+
+      this.pickUp('page-7')
+
+      this.note.destroy()
+
+      this.sys.events.off(
+        this.interact.note.key,
+        this.interact.note.cb,
         this,
         false
       )

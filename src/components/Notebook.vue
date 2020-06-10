@@ -10,7 +10,20 @@
       :disabled="!canGoNext"
       @click="next"
     ></button>
-    <img :src="`/images/notebook/page${currentPage}.png`" alt="" />
+    <div>
+      <img
+        v-if="pages[currentPage]"
+        :src="`/images/notebook/${currentPage}.png`"
+        alt=""
+      />
+    </div>
+    <div>
+      <img
+        v-if="pages[currentPage + 1]"
+        :src="`/images/notebook/${currentPage + 1}.png`"
+        alt=""
+      />
+    </div>
   </div>
 </template>
 
@@ -20,30 +33,44 @@ import { mapState } from 'vuex'
 export default {
   data() {
     return {
-      currentPage: 1,
+      currentPage: 0,
     }
-  },
-  created() {
-    this.currentPage = this.pages
   },
   computed: {
     ...mapState(['pages']),
+    lastAvailablePage() {
+      const lastIdx = [...this.pages].reverse().findIndex((page) => page)
+      console.log(lastIdx)
+
+      return -(lastIdx - this.pages.length + 1)
+    },
+    isLeftPage() {
+      return this.lastAvailablePage % 2 !== 0
+    },
     canGoNext() {
-      return this.currentPage < this.pages
+      return (
+        this.currentPage <
+        (this.isLeftPage ? this.lastAvailablePage - 1 : this.lastAvailablePage)
+      )
     },
     canGoPrev() {
       return this.currentPage > 1
     },
   },
+  created() {
+    this.currentPage = this.isLeftPage
+      ? this.lastAvailablePage - 1
+      : this.lastAvailablePage
+  },
   methods: {
     next() {
       if (this.canGoNext) {
-        this.currentPage++
+        this.currentPage += 2
       }
     },
     prev() {
       if (this.canGoPrev) {
-        this.currentPage--
+        this.currentPage -= 2
       }
     },
   },
@@ -54,12 +81,14 @@ export default {
 .notebook {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 100%;
   height: 100%;
+  padding: 0 5.3rem;
   position: relative;
   background: url('/images/common/notebook.png') no-repeat;
   background-size: cover;
+  color: #fff;
   &__btn {
     position: absolute;
     top: 0;
