@@ -57,6 +57,18 @@ export default [
       'Looks like old instructions for the victims of the collapse. Huh, they thought this would make a difference?',
     type: 'note',
   },
+  {
+    id: 'page-8',
+    name: 'entry',
+    description: '',
+    type: 'note',
+  },
+  {
+    id: 'page-9',
+    name: 'Ration card',
+    description: '',
+    type: 'note',
+  },
   // {
   //   id: 'salt',
   //   name: 'Salt',
