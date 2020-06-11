@@ -646,21 +646,27 @@ class BuildingScene extends BaseScene {
     this.startCutscene()
     this.encounterHappened = true
 
+    this.stranger.anims.play('strangerWalk')
+
     this.survivor.moveTo(1000, 'left').then(() => {
       this.tweens.add({
         targets: this.stranger,
         x: 820,
         duration: 1000,
         onComplete: async () => {
+          this.stranger.anims.play('strangerStand')
           this.growlAudio.play()
           await this.createDialog('* Growl *', false)
           await this.createDialog('Oh… Hello', false)
+
+          this.stranger.anims.play('strangerWalk')
 
           this.tweens.add({
             targets: this.stranger,
             x: 880,
             duration: 1000,
             onComplete: async () => {
+              this.stranger.anims.play('strangerStand')
               this.growl2Audio.play()
               await this.createDialog('* Growl *', false)
               await this.createDialog(
@@ -687,12 +693,14 @@ class BuildingScene extends BaseScene {
     return new Promise((resolve) => {
       this.tweens.add({
         targets: this.stranger,
-        x: 1000,
+        x: 1050,
         duration: 10,
       })
+
       this.bangAudio.play()
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
+          this.stranger.anims.play('strangerFight')
           this.survivor.play('fight')
           resolve()
         }
@@ -712,6 +720,7 @@ class BuildingScene extends BaseScene {
       this.setupEvent('cloth')
 
       this.staticAudio.play()
+      this.stranger.anims.play('strangerFlee')
       this.survivor.play('getUp')
       this.tweens.add({
         targets: this.stranger,

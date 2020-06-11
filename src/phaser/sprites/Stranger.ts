@@ -11,10 +11,39 @@ export class Stranger extends Phaser.GameObjects.Sprite {
     scene.add.existing(this)
 
     scene.anims.create({
-      key: 'standing',
+      key: 'strangerStand',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
         end: 0,
+      }),
+      repeat: -1,
+    })
+
+    scene.anims.create({
+      key: 'strangerWalk',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 0,
+        end: 4,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    scene.anims.create({
+      key: 'strangerFight',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 5,
+        end: 6,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    })
+
+    scene.anims.create({
+      key: 'strangerFlee',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 7,
+        end: 7,
       }),
       repeat: -1,
     })

@@ -40,7 +40,7 @@ export const SPRITES = {
   STRANGER: {
     KEY: 'STRANGER',
     FILE: 'building/stranger.png',
-    WIDTH: 32,
+    WIDTH: 56,
     HEIGHT: 100,
   },
   FIREPIT: {
