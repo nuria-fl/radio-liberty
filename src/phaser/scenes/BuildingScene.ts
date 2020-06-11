@@ -588,7 +588,7 @@ class BuildingScene extends BaseScene {
   private async initCutscene() {
     this.startGame()
     await this.createDialog(
-      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some food and water, I'm running low"
+      "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some water, I'm running low"
     )
     this.pickUp('page-8')
   }

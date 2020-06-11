@@ -1,4 +1,4 @@
 const MAX = 100
-const MAXINVENTORY = 10
+const MAXINVENTORY = 100
 
 export { MAX, MAXINVENTORY }
