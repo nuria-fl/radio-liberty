@@ -696,12 +696,12 @@ class BuildingScene extends BaseScene {
         x: 1050,
         duration: 10,
       })
+      this.stranger.anims.play('strangerFight')
+      this.survivor.play('fight')
 
       this.bangAudio.play()
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
-          this.stranger.anims.play('strangerFight')
-          this.survivor.play('fight')
           resolve()
         }
       })
