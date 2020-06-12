@@ -266,13 +266,12 @@ export class BaseScene extends Phaser.Scene {
   }
 
   private pauseScene() {
-    this.scene.pause()
-    this.sound.pauseAll()
+    // this.scene.pause()
+    this.survivor?.stop()
   }
 
   private resumeScene() {
-    this.scene.resume()
-    this.sound.resumeAll()
+    // this.scene.resume()
   }
 
   private handleGameOver() {

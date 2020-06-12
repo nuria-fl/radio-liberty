@@ -98,6 +98,9 @@ export default {
     margin: 0;
     background: transparent;
     border: none;
+    &:focus {
+      outline: none;
+    }
     &:not(:disabled) {
       cursor: pointer;
     }
