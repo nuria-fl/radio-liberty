@@ -1,5 +1,4 @@
-// A bug caused the import to fail, using raw import in preload for now
-// import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
+import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
 import { Physics } from 'phaser'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
@@ -82,6 +81,7 @@ class RoadScene extends BaseScene {
   private engine: any
   private introAudio: Phaser.Sound.BaseSound
   private roadCreated = false
+  private completedScene = false
 
   constructor() {
     super({
@@ -116,12 +116,6 @@ class RoadScene extends BaseScene {
     this.loadSprite(SPRITES.BUGGY)
     this.loadSprite(SPRITES.NOISE)
     this.loadSprite(SPRITES.ROAD_WINDOW)
-
-    this.load.plugin(
-      'rexpathfollowerplugin',
-      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js',
-      true
-    )
   }
 
   public create() {
@@ -172,16 +166,7 @@ class RoadScene extends BaseScene {
       .lineTo(650, 150)
       .lineTo(773, 0)
 
-    // TODO: replace once the pathfollower bug is fixed
-    // tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
-    //   path: path,
-    //   t: 0,
-    //   rotateToPath: true,
-    // })
-
-    const PathFollower: any = this.plugins.get('rexpathfollowerplugin')
-
-    tinyBuggy.pathFollower = PathFollower.add(tinyBuggy, {
+    tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
       path: path,
       t: 0,
       rotateToPath: true,
@@ -557,44 +542,55 @@ class RoadScene extends BaseScene {
 
   private async interactBuggy() {
     if (!this.playingCutscene) {
-      this.survivor.stop()
-      this.sys.events.off(
-        this.interact.buggy.key,
-        this.interact.buggy.cb,
-        this,
-        false
-      )
+      if (this.completedScene) {
+        this.finishRoadScene()
+      } else {
+        this.survivor.stop()
+        this.sys.events.off(
+          this.interact.buggy.key,
+          this.interact.buggy.cb,
+          this,
+          false
+        )
 
-      this.survivor.body.setCollideWorldBounds(false)
-      this.buggy.body.setCollideWorldBounds(false)
+        this.survivor.body.setCollideWorldBounds(false)
+        this.buggy.body.setCollideWorldBounds(false)
 
-      this.survivor.play('backwards')
-      await timer(this, 1000)
-      await this.createDialog(
-        "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
-      )
-      await timer(this, 700)
-      await this.createDialog(
-        "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
-      )
+        this.survivor.play('backwards')
+        await timer(this, 1000)
+        await this.createDialog(
+          "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+          false
+        )
+        await timer(this, 700)
+        await this.createDialog(
+          "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+          false
+        )
 
-      this.survivor.faceLeft()
-      this.survivor.play('stand')
-      await this.createDialog(
-        'There is some sort of building down the road. Looks like a good shelter.'
-      )
-
-      await this.survivor.moveTo(348, 'left')
-
-      this.survivor.play('push')
-      this.buggy.play('buggy-pushed')
-      this.survivor.body.setVelocityX(-200)
-      this.buggy.body.setVelocityX(-200)
-      await cameraFade(this, 'fadeOut')
-      this.scene.add(SCENES.BUILDING, BuildingScene, false)
-      this.finishScene()
-      this.scene.start(SCENES.BUILDING)
+        this.survivor.faceLeft()
+        this.survivor.play('stand')
+        await this.createDialog(
+          'There is some sort of building down the road. Looks like a good shelter.'
+        )
+        this.completedScene = true
+      }
     }
+  }
+
+  private async finishRoadScene() {
+    this.input.off('pointerdown')
+    this.survivor.stop()
+    await this.survivor.moveTo(348, 'left')
+
+    this.survivor.play('push')
+    this.buggy.play('buggy-pushed')
+    this.survivor.body.setVelocityX(-200)
+    this.buggy.body.setVelocityX(-200)
+    await cameraFade(this, 'fadeOut')
+    this.scene.add(SCENES.BUILDING, BuildingScene, false)
+    this.finishScene()
+    this.scene.start(SCENES.BUILDING)
   }
 
   private interactPinecone() {

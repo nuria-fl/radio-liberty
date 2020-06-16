@@ -81,8 +81,8 @@ export default {
     },
     use(item) {
       this.disable()
-      document.dispatchEvent(new CustomEvent('useItem', { detail: item }))
       this.close()
+      document.dispatchEvent(new CustomEvent('useItem', { detail: item }))
     },
     inspect(item) {
       if (item.zoomable) {
