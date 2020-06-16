@@ -741,16 +741,20 @@ class BuildingScene extends BaseScene {
 
   private interactBucket() {
     if (!this.playingCutscene) {
-      this.survivor.stop()
+      if (this.hasWaterCollector) {
+        this.interactPuddle()
+      } else {
+        this.survivor.stop()
 
-      this.bucketAudio.play()
+        this.bucketAudio.play()
 
-      this.createDialog('A bucket. Convenient.')
+        this.createDialog('A bucket. Convenient.')
 
-      this.pickUp('bucket')
+        this.pickUp('bucket')
 
-      this.bucket.setVisible(false)
-      this.interactKeys = this.interactKeys.filter((key) => key !== 'bucket')
+        this.bucket.setVisible(false)
+        this.interactKeys = this.interactKeys.filter((key) => key !== 'bucket')
+      }
     }
   }
 
