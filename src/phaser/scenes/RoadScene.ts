@@ -1,5 +1,5 @@
 // A bug caused the import to fail, using raw import in preload for now
-// import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
+import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
 import { Physics } from 'phaser'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
@@ -116,12 +116,6 @@ class RoadScene extends BaseScene {
     this.loadSprite(SPRITES.BUGGY)
     this.loadSprite(SPRITES.NOISE)
     this.loadSprite(SPRITES.ROAD_WINDOW)
-
-    this.load.plugin(
-      'rexpathfollowerplugin',
-      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexpathfollowerplugin.min.js',
-      true
-    )
   }
 
   public create() {
@@ -172,16 +166,7 @@ class RoadScene extends BaseScene {
       .lineTo(650, 150)
       .lineTo(773, 0)
 
-    // TODO: replace once the pathfollower bug is fixed
-    // tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
-    //   path: path,
-    //   t: 0,
-    //   rotateToPath: true,
-    // })
-
-    const PathFollower: any = this.plugins.get('rexpathfollowerplugin')
-
-    tinyBuggy.pathFollower = PathFollower.add(tinyBuggy, {
+    tinyBuggy.pathFollower = new PathFollower(tinyBuggy, {
       path: path,
       t: 0,
       rotateToPath: true,
