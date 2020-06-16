@@ -556,17 +556,20 @@ class RoadScene extends BaseScene {
       this.survivor.play('backwards')
       await timer(this, 1000)
       await this.createDialog(
-        "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead."
+        "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+        false
       )
       await timer(this, 700)
       await this.createDialog(
-        "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway."
+        "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+        false
       )
 
       this.survivor.faceLeft()
       this.survivor.play('stand')
       await this.createDialog(
-        'There is some sort of building down the road. Looks like a good shelter.'
+        'There is some sort of building down the road. Looks like a good shelter.',
+        false
       )
 
       await this.survivor.moveTo(348, 'left')
