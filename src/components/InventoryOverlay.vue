@@ -88,8 +88,8 @@ export default {
       if (item.zoomable) {
         this.zoom(item.id)
       } else {
-        document.dispatchEvent(new CustomEvent('inspectItem', { detail: item }))
         this.close()
+        document.dispatchEvent(new CustomEvent('inspectItem', { detail: item }))
       }
     },
     zoom(item) {

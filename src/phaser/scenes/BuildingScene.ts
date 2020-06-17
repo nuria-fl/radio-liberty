@@ -38,6 +38,7 @@ class BuildingScene extends BaseScene {
         if (this.currentObject.id === 'cloth') {
           if (this.cleanWound) {
             document.dispatchEvent(new CustomEvent('getCured'))
+            this.stopHurtEffect()
             this.removeItem({ id: 'cloth' })
             return this.createDialog(
               'Good, that should stop the bleeding for now.'
@@ -283,6 +284,8 @@ class BuildingScene extends BaseScene {
   private bucketAudio: Phaser.Sound.BaseSound
   private growlAudio: Phaser.Sound.BaseSound
   private growl2Audio: Phaser.Sound.BaseSound
+  private hurtTimeout: Phaser.Time.TimerEvent
+  private hurtBackground: Phaser.GameObjects.Rectangle
   private isUpstairs = false
   private hasWaterCollector = false
   private hasWood = false
@@ -734,9 +737,41 @@ class BuildingScene extends BaseScene {
           await this.createDialog(
             "Ugh… No time to think about that, I'm losing a lot of blood."
           )
+          this.startHurtEffect()
         },
       })
     })
+  }
+
+  private startHurtEffect() {
+    if (!this.hurtBackground) {
+      this.hurtBackground = this.add
+        .rectangle(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT, 0x961812)
+        .setAlpha(0)
+        .setOrigin(0, 0)
+        .setScrollFactor(0)
+    }
+
+    this.tweens.add({
+      targets: this.hurtBackground,
+      alpha: { from: 0, to: 0.5 },
+      ease: 'Linear',
+      duration: 600,
+      repeat: 0,
+      yoyo: true,
+    })
+
+    this.hurtTimeout = this.time.addEvent({
+      delay: 5000,
+      callback: () => {
+        this.startHurtEffect()
+      },
+    })
+  }
+
+  private stopHurtEffect() {
+    this.hurtTimeout.destroy()
+    this.hurtBackground.destroy()
   }
 
   private interactBucket() {
