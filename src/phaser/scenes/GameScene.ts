@@ -1,6 +1,7 @@
 import { SCENES } from '../constants'
 import RoadScene from './RoadScene'
 import BuildingScene from './BuildingScene'
+import { cameraFade } from '../utils/promisify'
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -9,15 +10,21 @@ class GameScene extends Phaser.Scene {
     })
   }
 
+  public preload() {
+    this.load.image('COVER', `/images/common/cover.png`)
+    this.load.image('LOGO', `/images/common/logo.png`)
+    this.load.image('BUTTON', `/images/common/button.png`)
+  }
+
   public create() {
     const scene = this.chooseScene()
+    this.add.image(0, 0, 'COVER').setOrigin(0)
+    this.add.image(415, 150, 'LOGO')
     this.add
-      .text(342, 284, 'Start Game', {
-        fontSize: 24,
-        color: '#fff',
-      })
+      .image(415, 230, 'BUTTON')
       .setInteractive({ useHandCursor: true })
-      .on('pointerdown', () => {
+      .on('pointerdown', async () => {
+        await cameraFade(this, 'fadeOut')
         this.scene.start(scene)
       })
   }
