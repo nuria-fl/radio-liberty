@@ -1,7 +1,7 @@
 import { SCENES } from '../constants'
 import RoadScene from './RoadScene'
 import BuildingScene from './BuildingScene'
-import { cameraFade } from '../utils/promisify'
+import { cameraFade, cameraPan } from '../utils/promisify'
 
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -24,7 +24,13 @@ class GameScene extends Phaser.Scene {
       .image(415, 230, 'BUTTON')
       .setInteractive({ useHandCursor: true })
       .on('pointerdown', async () => {
-        await cameraFade(this, 'fadeOut')
+        cameraPan(this, 415, 0, 1500)
+        await cameraFade(this, 'fadeOut', 1000, {
+          red: 207,
+          green: 233,
+          blue: 249,
+        })
+
         this.scene.start(scene)
       })
   }

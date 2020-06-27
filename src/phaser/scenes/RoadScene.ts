@@ -124,8 +124,12 @@ class RoadScene extends BaseScene {
     this.introAudio.play()
     this.initScene()
     this.cameras.main.setBounds(0, 0, this.WORLD.WIDTH, this.WORLD.HEIGHT)
-    this.cameras.main.setBackgroundColor('#9fb9b4')
-    this.cameras.main.fadeIn(3000)
+    this.cameras.main.setBackgroundColor('#cfe9f9')
+    cameraFade(this, 'fadeIn', 3000, {
+      red: 207,
+      green: 233,
+      blue: 249,
+    })
     this.runViewCutscene()
   }
 
