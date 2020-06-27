@@ -8,6 +8,7 @@ const config = {
   parent: 'content',
   width: 830,
   height: 520,
+  transparent: true,
   physics: {
     default: 'arcade',
     arcade: {
