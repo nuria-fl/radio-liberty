@@ -36,6 +36,9 @@ export default {
     cursor: pointer;
     color: #fff;
     font-size: 2rem;
+    &:focus {
+      outline: none;
+    }
   }
 }
 </style>

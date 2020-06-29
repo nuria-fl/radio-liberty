@@ -54,8 +54,10 @@ export default {
     if (item.type === 'note') {
       const page = parseInt(item.id.split('-')[1], 10)
       commit('addNote', page)
+      return true
     } else {
       commit('addInventory', item)
+      return false
     }
   },
   removeFromInventory({ state, commit }, itemId: string) {

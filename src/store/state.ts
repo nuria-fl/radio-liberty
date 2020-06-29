@@ -22,13 +22,6 @@ export default {
       consumable: false,
     },
     {
-      id: 'notebook',
-      name: 'Notebook',
-      description: null,
-      consumable: false,
-      zoomable: true,
-    },
-    {
       id: 'radio',
       name: 'Radio',
       description: "It's just picking static",

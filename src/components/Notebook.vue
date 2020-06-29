@@ -1,36 +1,42 @@
 <template>
-  <div class="notebook">
-    <button
-      class="notebook__btn notebook__btn--prev"
-      :disabled="!canGoPrev"
-      @click="prev"
-    ></button>
-    <button
-      class="notebook__btn notebook__btn--next"
-      :disabled="!canGoNext"
-      @click="next"
-    ></button>
-    <div>
-      <img
-        v-if="pages[currentPage]"
-        :src="`/images/notebook/${currentPage}.png`"
-        alt=""
-      />
+  <Modal @close="close">
+    <div class="notebook">
+      <button
+        class="notebook__btn notebook__btn--prev"
+        :disabled="!canGoPrev"
+        @click="prev"
+      ></button>
+      <button
+        class="notebook__btn notebook__btn--next"
+        :disabled="!canGoNext"
+        @click="next"
+      ></button>
+      <div>
+        <img
+          v-if="pages[currentPage]"
+          :src="`/images/notebook/${currentPage}.png`"
+          alt=""
+        />
+      </div>
+      <div>
+        <img
+          v-if="pages[currentPage + 1]"
+          :src="`/images/notebook/${currentPage + 1}.png`"
+          alt=""
+        />
+      </div>
     </div>
-    <div>
-      <img
-        v-if="pages[currentPage + 1]"
-        :src="`/images/notebook/${currentPage + 1}.png`"
-        alt=""
-      />
-    </div>
-  </div>
+  </Modal>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import Modal from '@/components/Modal'
 
 export default {
+  components: {
+    Modal,
+  },
   data() {
     return {
       currentPage: 0,
@@ -40,7 +46,6 @@ export default {
     ...mapState(['pages']),
     lastAvailablePage() {
       const lastIdx = [...this.pages].reverse().findIndex((page) => page)
-      console.log(lastIdx)
 
       return -(lastIdx - this.pages.length + 1)
     },
@@ -72,6 +77,9 @@ export default {
       if (this.canGoPrev) {
         this.currentPage -= 2
       }
+    },
+    close() {
+      this.$emit('close')
     },
   },
 }
