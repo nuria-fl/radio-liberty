@@ -1,6 +1,8 @@
 <template>
   <section class="overlay">
-    <button class="overlay__close" @click="close">&times;</button>
+    <button class="overlay__close" @click="close">
+      <img src="/images/common/close.png" alt="close" />
+    </button>
     <slot></slot>
   </section>
 </template>
@@ -36,6 +38,9 @@ export default {
     cursor: pointer;
     color: #fff;
     font-size: 2rem;
+    &:focus {
+      outline: none;
+    }
   }
 }
 </style>

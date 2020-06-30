@@ -1,7 +1,7 @@
 <template>
   <ul class="Stats">
     <li v-for="(stat, key) in roundedStats" :key="key" class="Stats__item">
-      <span class="Stats__icon">{{ icons[key] }}</span>
+      <img :src="`/images/common/${key}.png`" :alt="key" />
       <strong
         :class="{
           warning: stat < 50,
@@ -18,15 +18,6 @@
 import { mapState, mapActions, mapMutations } from 'vuex'
 
 export default {
-  data() {
-    return {
-      icons: {
-        health: '❤️',
-        water: '💧',
-        food: '🍗',
-      },
-    }
-  },
   computed: {
     ...mapState(['stats']),
     roundedStats() {
@@ -75,9 +66,6 @@ export default {
       margin: 1em 0;
       padding-left: 1em;
     }
-  }
-  &__icon {
-    filter: grayscale(50%);
   }
 }
 .warning {

@@ -1,9 +1,7 @@
 <template>
   <Modal @close="close">
     <template v-if="zoomedItem">
-      <Notebook v-if="zoomedItem === 'notebook'" />
       <img
-        v-else
         :src="`/images/common/${zoomedItem}.png`"
         class="zoomed-image"
         alt=""
@@ -46,13 +44,11 @@
 import { mapState, mapMutations } from 'vuex'
 import InventoryItem from '@/components/InventoryItem'
 import Modal from '@/components/Modal'
-import Notebook from '@/components/Notebook'
 
 export default {
   components: {
     InventoryItem,
     Modal,
-    Notebook,
   },
   data() {
     return {
