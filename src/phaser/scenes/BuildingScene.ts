@@ -1020,17 +1020,17 @@ class BuildingScene extends BaseScene {
     document.removeEventListener('unlock', this.bindHandleUnlock)
   }
 
-  private interactNote() {
+  private async interactNote() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
-      this.createDialog(
+      this.note.destroy()
+
+      await this.createDialog(
         "I'll add this to my notebook. Looks like a ration card, back when the economy collapsed it was the only way to prevent hoarding and ensure everyone had something to eat."
       )
 
       this.pickUp('page-9')
-
-      this.note.destroy()
 
       this.sys.events.off(
         this.interact.note.key,
@@ -1060,6 +1060,8 @@ class BuildingScene extends BaseScene {
     this.forest.destroy()
     this.trees.destroy()
     this.hills.destroy()
+    this.buggy.destroy()
+    this.rock.destroy()
     this.grassForeground.destroy()
     this.nightBackground.setAlpha(1, 1, 1, 1)
     this.nightForeground.setAlpha(1, 1, 1, 1)
