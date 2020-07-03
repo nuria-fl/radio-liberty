@@ -577,6 +577,7 @@ class RoadScene extends BaseScene {
         await this.createDialog(
           'There is some sort of building down the road. Looks like a good shelter.'
         )
+        this.interact.buggy.text = 'Push buggy'
         this.completedScene = true
       }
     }
@@ -618,17 +619,17 @@ class RoadScene extends BaseScene {
     }
   }
 
-  private interactNote() {
+  private async interactNote() {
     if (!this.playingCutscene) {
       this.survivor.stop()
 
-      this.createDialog(
+      this.note.destroy()
+
+      await this.createDialog(
         "I'll add this to my notebook. Looks like old instructions to go through a checkpoint that was nearby. I guess when the floods started everyone started leaving the area and they put controls to contain diseases. Crazy times."
       )
 
       this.pickUp('page-7')
-
-      this.note.destroy()
 
       this.sys.events.off(
         this.interact.note.key,

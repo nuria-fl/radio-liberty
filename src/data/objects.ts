@@ -42,7 +42,7 @@ export default [
   },
   {
     id: 'bottle',
-    name: 'Bottle',
+    name: 'Glass bottle',
     description: "A heavy glass bottle. There's a cork stopper stuck halfway.",
   },
   {

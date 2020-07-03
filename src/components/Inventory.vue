@@ -55,8 +55,10 @@ export default {
       this.resumeScene()
     },
     buzz() {
-      this.$refs.notebook.classList.remove('btn--buzz')
       this.$refs.notebook.classList.add('btn--buzz')
+      setTimeout(() => {
+        this.$refs.notebook.classList.remove('btn--buzz')
+      }, 1000)
     },
     openInventory() {
       this.showInventory = true
