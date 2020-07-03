@@ -277,6 +277,7 @@ class BuildingScene extends BaseScene {
   private drop: Phaser.GameObjects.Image
   private bgAudio: Phaser.Sound.BaseSound
   private nightAudio: Phaser.Sound.BaseSound
+  private attackAudio: Phaser.Sound.BaseSound
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
@@ -315,6 +316,7 @@ class BuildingScene extends BaseScene {
     // Preload audio
     this.loadAudio(AUDIO.BIRDS)
     this.loadAudio(AUDIO.CRICKETS)
+    this.loadAudio(AUDIO.ATTACK)
     this.loadAudio(AUDIO.FIRE)
     this.loadAudio(AUDIO.STATIC)
     this.loadAudio(AUDIO.DROP)
@@ -365,6 +367,8 @@ class BuildingScene extends BaseScene {
     this.dropAudio = this.sound.add(AUDIO.DROP.KEY)
     this.bangAudio = this.sound.add(AUDIO.BANG.KEY)
     this.rockAudio = this.sound.add(AUDIO.ROCK.KEY)
+    this.nightAudio = this.sound.add(AUDIO.CRICKETS.KEY)
+    this.attackAudio = this.sound.add(AUDIO.ATTACK.KEY)
     this.brokenGlassAudio = this.sound.add(AUDIO.BROKEN_GLASS.KEY)
     this.bucketAudio = this.sound.add(AUDIO.BUCKET.KEY)
     this.growlAudio = this.sound.add(AUDIO.GROWL.KEY)
@@ -713,6 +717,7 @@ class BuildingScene extends BaseScene {
       this.survivor.play('fight')
 
       this.bangAudio.play()
+      this.attackAudio.play()
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
           resolve()
@@ -1093,7 +1098,6 @@ class BuildingScene extends BaseScene {
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
     this.bgAudio.stop()
-    this.nightAudio = this.sound.add(AUDIO.CRICKETS.KEY)
     this.nightAudio.play('', { loop: true })
     this.setNightMode()
     this.tweens.add({

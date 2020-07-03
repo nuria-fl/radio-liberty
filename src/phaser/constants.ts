@@ -215,6 +215,10 @@ export const AUDIO = {
     KEY: 'CRICKETS',
     FILE: 'crickets.mp3',
   },
+  ATTACK: {
+    KEY: 'ATTACK',
+    FILE: 'violin.mp3',
+  },
   WALK: {
     KEY: 'WALK',
     FILE: 'walk.mp3',
