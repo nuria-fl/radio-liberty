@@ -16,7 +16,7 @@ import { randomLine } from '../default-lines'
 class BuildingScene extends BaseScene {
   public use = {
     ...this.use,
-    survivor: {
+    survivorBox: {
       setText: null,
       name: 'Survivor',
       use: () => {

@@ -99,7 +99,7 @@ export default [
   },
   {
     id: 'water-clean',
-    name: 'Clean water',
+    name: 'Water',
     description: 'Safe for drink',
     action: 'craft',
     value: {
