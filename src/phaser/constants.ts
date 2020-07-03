@@ -207,6 +207,14 @@ export const AUDIO = {
     KEY: 'INTRO',
     FILE: 'intro.mp3',
   },
+  BIRDS: {
+    KEY: 'BIRDS',
+    FILE: 'birds.mp3',
+  },
+  CRICKETS: {
+    KEY: 'CRICKETS',
+    FILE: 'crickets.mp3',
+  },
   WALK: {
     KEY: 'WALK',
     FILE: 'walk.mp3',

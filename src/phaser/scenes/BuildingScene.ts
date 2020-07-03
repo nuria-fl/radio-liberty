@@ -275,6 +275,8 @@ class BuildingScene extends BaseScene {
   private cloth: Physics.Arcade.Image
   private note: Physics.Arcade.Image
   private drop: Phaser.GameObjects.Image
+  private bgAudio: Phaser.Sound.BaseSound
+  private nightAudio: Phaser.Sound.BaseSound
   private fireAudio: Phaser.Sound.BaseSound
   private staticAudio: Phaser.Sound.BaseSound
   private dropAudio: Phaser.Sound.BaseSound
@@ -311,6 +313,8 @@ class BuildingScene extends BaseScene {
     this.commonPreload()
 
     // Preload audio
+    this.loadAudio(AUDIO.BIRDS)
+    this.loadAudio(AUDIO.CRICKETS)
     this.loadAudio(AUDIO.FIRE)
     this.loadAudio(AUDIO.STATIC)
     this.loadAudio(AUDIO.DROP)
@@ -347,6 +351,12 @@ class BuildingScene extends BaseScene {
   }
 
   public async create() {
+    this.bgAudio = this.sound.add(AUDIO.BIRDS.KEY)
+
+    this.bgAudio.play('', {
+      loop: true,
+    })
+
     this.initScene()
     document.addEventListener('unlock', this.bindHandleUnlock)
 
@@ -1082,6 +1092,9 @@ class BuildingScene extends BaseScene {
     )
     this.startCutscene()
     await cameraFade(this, 'fadeOut')
+    this.bgAudio.stop()
+    this.nightAudio = this.sound.add(AUDIO.CRICKETS.KEY)
+    this.nightAudio.play('', { loop: true })
     this.setNightMode()
     this.tweens.add({
       targets: this.survivor,

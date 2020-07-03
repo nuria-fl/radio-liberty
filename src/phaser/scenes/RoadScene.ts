@@ -80,6 +80,7 @@ class RoadScene extends BaseScene {
   private note: Physics.Arcade.Image
   private engine: any
   private introAudio: Phaser.Sound.BaseSound
+  private bgAudio: Phaser.Sound.BaseSound
   private roadCreated = false
   private completedScene = false
 
@@ -95,6 +96,7 @@ class RoadScene extends BaseScene {
 
     // Preload audio
     this.loadAudio(AUDIO.INTRO)
+    this.loadAudio(AUDIO.BIRDS)
 
     // Preload images
     this.loadImage(IMAGES.FLOOR)
@@ -119,6 +121,12 @@ class RoadScene extends BaseScene {
   }
 
   public create() {
+    this.bgAudio = this.sound.add(AUDIO.BIRDS.KEY)
+
+    this.bgAudio.play('', {
+      loop: true,
+    })
+
     this.introAudio = this.sound.add(AUDIO.INTRO.KEY)
 
     this.introAudio.play()
@@ -594,6 +602,7 @@ class RoadScene extends BaseScene {
     this.buggy.body.setVelocityX(-200)
     await cameraFade(this, 'fadeOut')
     this.scene.add(SCENES.BUILDING, BuildingScene, false)
+    this.bgAudio.stop()
     this.finishScene()
     this.scene.start(SCENES.BUILDING)
   }
