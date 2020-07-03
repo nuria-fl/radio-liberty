@@ -26,6 +26,7 @@ export class BaseScene extends Phaser.Scene {
     HEIGHT: 520,
   }
   public survivor: Survivor
+  public survivorBox: Phaser.GameObjects.Rectangle
   public playingCutscene = true
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
@@ -34,7 +35,7 @@ export class BaseScene extends Phaser.Scene {
   public currentObject: { id: string; name: string; consumable: boolean } = null
   public interactingWithObject = false
   public use = {
-    survivor: {
+    survivorBox: {
       setText: null,
       name: 'Survivor',
       use: () => {
@@ -297,7 +298,9 @@ export class BaseScene extends Phaser.Scene {
 
     const baseText = this.useText.text
 
-    this.survivor.setInteractive()
+    this.survivorBox = this.add
+      .rectangle(this.survivor.x, this.survivor.y, 40, 120)
+      .setInteractive()
 
     const setText = (text: string) => {
       if (this.useText.active) {
@@ -337,7 +340,7 @@ export class BaseScene extends Phaser.Scene {
         this.stopCutscene()
       }
 
-      this.survivor.removeInteractive()
+      this.survivorBox.destroy()
       this.useText.destroy()
       this.currentObject = null
     })
