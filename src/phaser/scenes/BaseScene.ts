@@ -32,6 +32,7 @@ export class BaseScene extends Phaser.Scene {
   public useText: Phaser.GameObjects.Text
   public interactText: Phaser.GameObjects.Text
   public clouds: Phaser.GameObjects.Group
+  public pagesAudio: Phaser.Sound.BaseSound
   public currentObject: { id: string; name: string; consumable: boolean } = null
   public interactingWithObject = false
   public use = {
@@ -76,6 +77,7 @@ export class BaseScene extends Phaser.Scene {
 
   public commonPreload() {
     this.loadAudio(AUDIO.WALK)
+    this.loadAudio(AUDIO.PAGES)
 
     this.loadImage(IMAGES.GRASS_FOREGROUND)
     this.loadImage(IMAGES.TREES)
@@ -88,6 +90,7 @@ export class BaseScene extends Phaser.Scene {
   public initScene() {
     this.addListeners()
     this.dialog = new DialogService(this)
+    this.pagesAudio = this.sound.add(AUDIO.PAGES.KEY)
   }
 
   public finishScene() {
@@ -105,6 +108,9 @@ export class BaseScene extends Phaser.Scene {
   }
 
   public pickUp(item) {
+    if (item.includes('page')) {
+      this.pagesAudio.play({ volume: 0.4 })
+    }
     document.dispatchEvent(new CustomEvent('pickUp', { detail: item }))
   }
 

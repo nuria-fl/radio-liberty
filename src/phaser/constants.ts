@@ -207,6 +207,34 @@ export const AUDIO = {
     KEY: 'INTRO',
     FILE: 'intro.mp3',
   },
+  BIRDS: {
+    KEY: 'BIRDS',
+    FILE: 'birds.mp3',
+  },
+  CRICKETS: {
+    KEY: 'CRICKETS',
+    FILE: 'crickets.mp3',
+  },
+  ATTACK: {
+    KEY: 'ATTACK',
+    FILE: 'violin.mp3',
+  },
+  PAGES: {
+    KEY: 'PAGES',
+    FILE: 'pages.mp3',
+  },
+  UNLOCK: {
+    KEY: 'UNLOCK',
+    FILE: 'unlock.mp3',
+  },
+  TINKER: {
+    KEY: 'TINKER',
+    FILE: 'tinker.mp3',
+  },
+  PLACE: {
+    KEY: 'PLACE',
+    FILE: 'place.mp3',
+  },
   WALK: {
     KEY: 'WALK',
     FILE: 'walk.mp3',
