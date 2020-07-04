@@ -32,8 +32,8 @@ export default {
       return (
         this.input[0] == 3 &&
         this.input[1] == 6 &&
-        this.input[2] == 1 &&
-        this.input[3] == 8
+        this.input[2] == 9 &&
+        this.input[3] == 5
       )
     },
   },
