@@ -285,8 +285,10 @@ class BuildingScene extends BaseScene {
   private rockAudio: Phaser.Sound.BaseSound
   private brokenGlassAudio: Phaser.Sound.BaseSound
   private bucketAudio: Phaser.Sound.BaseSound
+  private placeAudio: Phaser.Sound.BaseSound
   private growlAudio: Phaser.Sound.BaseSound
   private growl2Audio: Phaser.Sound.BaseSound
+  private unlockAudio: Phaser.Sound.BaseSound
   private hurtTimeout: Phaser.Time.TimerEvent
   private hurtBackground: Phaser.GameObjects.Rectangle
   private isUpstairs = false
@@ -324,8 +326,10 @@ class BuildingScene extends BaseScene {
     this.loadAudio(AUDIO.ROCK)
     this.loadAudio(AUDIO.BROKEN_GLASS)
     this.loadAudio(AUDIO.BUCKET)
+    this.loadAudio(AUDIO.PLACE)
     this.loadAudio(AUDIO.GROWL)
     this.loadAudio(AUDIO.GROWL2)
+    this.loadAudio(AUDIO.UNLOCK)
 
     // Preload images
     this.loadImage(IMAGES.BUILDING_BG)
@@ -371,8 +375,10 @@ class BuildingScene extends BaseScene {
     this.attackAudio = this.sound.add(AUDIO.ATTACK.KEY)
     this.brokenGlassAudio = this.sound.add(AUDIO.BROKEN_GLASS.KEY)
     this.bucketAudio = this.sound.add(AUDIO.BUCKET.KEY)
+    this.placeAudio = this.sound.add(AUDIO.PLACE.KEY)
     this.growlAudio = this.sound.add(AUDIO.GROWL.KEY)
     this.growl2Audio = this.sound.add(AUDIO.GROWL2.KEY)
+    this.unlockAudio = this.sound.add(AUDIO.UNLOCK.KEY)
 
     const bg = this.add.image(0, 0, IMAGES.BUILDING_BG.KEY).setOrigin(0)
     this.nightBackground = this.add
@@ -672,7 +678,7 @@ class BuildingScene extends BaseScene {
         duration: 1000,
         onComplete: async () => {
           this.stranger.anims.play('strangerStand')
-          this.growlAudio.play()
+          this.growlAudio.play({ volume: 0.2 })
           await this.createDialog('* Growl *', false)
           await this.createDialog('Oh… Hello', false)
 
@@ -684,7 +690,7 @@ class BuildingScene extends BaseScene {
             duration: 1000,
             onComplete: async () => {
               this.stranger.anims.play('strangerStand')
-              this.growl2Audio.play()
+              this.growl2Audio.play({ volume: 0.2 })
               await this.createDialog('* Growl *', false)
               await this.createDialog(
                 "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
@@ -716,8 +722,8 @@ class BuildingScene extends BaseScene {
       this.stranger.anims.play('strangerFight')
       this.survivor.play('fight')
 
-      this.bangAudio.play()
-      this.attackAudio.play()
+      this.bangAudio.play({ volume: 0.8 })
+      this.attackAudio.play({ volume: 0.7 })
       this.cameras.main.flash(500, 255, 0, 0, true, (_, progress) => {
         if (progress === 1) {
           resolve()
@@ -747,7 +753,9 @@ class BuildingScene extends BaseScene {
         onComplete: async () => {
           this.stranger.destroy()
           document.dispatchEvent(new CustomEvent('getHurt'))
-          await this.createDialog('... What did just happen?')
+          await this.createDialog(
+            '... What did just happen? Was that my radio?'
+          )
           this.survivor.recover()
           await this.createDialog(
             "Ugh… No time to think about that, I'm losing a lot of blood."
@@ -857,6 +865,7 @@ class BuildingScene extends BaseScene {
     if (!this.hasWaterCollector) {
       this.survivor.stop()
       this.removeItem({ id: 'bucket' })
+      this.placeAudio.play({ volume: 0.2 })
       this.bucket.setPosition(605, 660)
       this.bucket.setVisible(true)
       await this.createDialog('Water collector set!')
@@ -1028,6 +1037,7 @@ class BuildingScene extends BaseScene {
   }
 
   private handleUnlock() {
+    this.unlockAudio.play()
     this.boxOpen = true
     this.createDialog(
       "Yes! There's some solution to clean my wound. Also a small key."

@@ -81,6 +81,7 @@ class RoadScene extends BaseScene {
   private engine: any
   private introAudio: Phaser.Sound.BaseSound
   private bgAudio: Phaser.Sound.BaseSound
+  private tinkerAudio: Phaser.Sound.BaseSound
   private roadCreated = false
   private completedScene = false
 
@@ -97,6 +98,7 @@ class RoadScene extends BaseScene {
     // Preload audio
     this.loadAudio(AUDIO.INTRO)
     this.loadAudio(AUDIO.BIRDS)
+    this.loadAudio(AUDIO.TINKER)
 
     // Preload images
     this.loadImage(IMAGES.FLOOR)
@@ -121,6 +123,7 @@ class RoadScene extends BaseScene {
   }
 
   public create() {
+    this.tinkerAudio = this.sound.add(AUDIO.TINKER.KEY)
     this.bgAudio = this.sound.add(AUDIO.BIRDS.KEY)
 
     this.bgAudio.play('', {
@@ -569,12 +572,16 @@ class RoadScene extends BaseScene {
         this.buggy.body.setCollideWorldBounds(false)
 
         this.survivor.play('backwards')
-        await timer(this, 1000)
+        this.tinkerAudio.play()
+        await timer(this, 1800)
+        this.tinkerAudio.pause()
         await this.createDialog(
           "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
           false
         )
-        await timer(this, 700)
+        this.tinkerAudio.resume()
+        await timer(this, 2100)
+        this.tinkerAudio.stop()
         await this.createDialog(
           "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
           false
