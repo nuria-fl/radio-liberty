@@ -47,7 +47,9 @@ class BuildingScene extends BaseScene {
               return this.checkIfFinished()
             })
           }
-          return this.createDialog('I should clean up the wound first.')
+          return this.createDialog(
+            "I should clean up the wound first. I'm gonna need some medical supplies."
+          )
         }
 
         if (this.currentObject.id === 'solution') {
@@ -119,6 +121,11 @@ class BuildingScene extends BaseScene {
         }
         if (this.currentObject.id === 'brokenGlass') {
           return this.setUpFire()
+        }
+        if (this.currentObject.id === 'bottle') {
+          return this.createDialog(
+            'The glass looks thick enough to act as a magnifying glass! But I should break the bottle to just use a piece.'
+          )
         }
         return this.createDialog(randomLine())
       },
@@ -972,10 +979,14 @@ class BuildingScene extends BaseScene {
       }
 
       if (this.hasCard) {
-        await this.createDialog("Let's see if I can figure this out")
+        await this.createDialog(
+          "Medical supplies should be in there! Might this belong to that guy? Let's see if I can figure out the code."
+        )
         document.dispatchEvent(new CustomEvent('showLock'))
       } else {
-        this.createDialog("It's locked. I need a 4 digit code.")
+        this.createDialog(
+          "Seems to be a box of medical supplies, but it's locked. I need a 4 digit code."
+        )
       }
     }
   }
