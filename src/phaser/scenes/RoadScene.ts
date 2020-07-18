@@ -543,6 +543,7 @@ class RoadScene extends BaseScene {
   private interactSign() {
     if (!this.playingCutscene) {
       this.survivor.stop()
+      this.finishInteraction()
 
       this.createDialog('It reads something like… P A … S')
 
@@ -557,10 +558,12 @@ class RoadScene extends BaseScene {
 
   private async interactBuggy() {
     if (!this.playingCutscene) {
+      this.finishInteraction()
       if (this.completedScene) {
         this.finishRoadScene()
       } else {
         this.survivor.stop()
+        this.playingCutscene = true
         this.sys.events.off(
           this.interact.buggy.key,
           this.interact.buggy.cb,
@@ -616,6 +619,7 @@ class RoadScene extends BaseScene {
 
   private interactPinecone() {
     if (!this.playingCutscene) {
+      this.finishInteraction()
       this.survivor.stop()
 
       this.createDialog(
@@ -637,6 +641,7 @@ class RoadScene extends BaseScene {
 
   private async interactNote() {
     if (!this.playingCutscene) {
+      this.finishInteraction()
       this.survivor.stop()
 
       this.note.destroy()

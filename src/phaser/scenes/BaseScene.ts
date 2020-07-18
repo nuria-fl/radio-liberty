@@ -31,6 +31,7 @@ export class BaseScene extends Phaser.Scene {
   public dialog: DialogService
   public useText: Phaser.GameObjects.Text
   public interactText: Phaser.GameObjects.Text
+  public commitToInteract: boolean
   public clouds: Phaser.GameObjects.Group
   public pagesAudio: Phaser.Sound.BaseSound
   public currentObject: { id: string; name: string; consumable: boolean } = null
@@ -143,6 +144,7 @@ export class BaseScene extends Phaser.Scene {
   public setupInput() {
     this.input.on('pointerdown', (pointer) => {
       if (this.playingCutscene === false && !this.survivor.isDown) {
+        this.finishInteraction()
         // remove all interactions
         Object.keys(this.interact).forEach((k) => {
           this.sys.events.off(
@@ -166,22 +168,27 @@ export class BaseScene extends Phaser.Scene {
     }
     this.interactText = this.add.text(10, 500, '')
     this.interactText.setScrollFactor(0, 0)
+    this.interactText.setAlpha(0.7)
   }
 
   public setupEvent(key: string) {
     this[key].on('pointerup', () => {
       if (!this.playingCutscene) {
-        this.interactText.setText('')
+        this.commitToInteract = true
+        this.interactText.setAlpha(1)
+        this.interactText.setText(this.interact[key].text)
         this.sys.events.on(this.interact[key].key, this.interact[key].cb, this)
       }
     })
     this[key].on('pointerover', () => {
-      if (!this.playingCutscene) {
+      if (!this.playingCutscene && !this.commitToInteract) {
         this.interactText.setText(this.interact[key].text)
       }
     })
     this[key].on('pointerout', () => {
-      this.interactText.setText('')
+      if (!this.commitToInteract) {
+        this.interactText.setText('')
+      }
     })
     this.physics.add.overlap(this.survivor, this[key], () => {
       this.sys.events.emit(this.interact[key].key)
@@ -189,6 +196,12 @@ export class BaseScene extends Phaser.Scene {
         this.offEvent(key)
       }
     })
+  }
+
+  public finishInteraction() {
+    this.commitToInteract = false
+    this.interactText.setAlpha(0.7)
+    this.interactText.setText('')
   }
 
   public startGame() {
