@@ -805,6 +805,7 @@ class BuildingScene extends BaseScene {
   }
 
   private interactBucket() {
+    this.finishInteraction()
     if (!this.playingCutscene) {
       if (this.hasWaterCollector) {
         this.interactPuddle()
@@ -826,7 +827,7 @@ class BuildingScene extends BaseScene {
   private interactWood() {
     if (!this.playingCutscene) {
       this.survivor.stop()
-
+      this.finishInteraction()
       this.createDialog('Dry wood, lucky me!')
 
       this.pickUp('wood')
@@ -836,6 +837,7 @@ class BuildingScene extends BaseScene {
   }
 
   private interactLadder() {
+    this.finishInteraction()
     if (!this.ladderCutscene) {
       this.ladderCutscene = true
       this.survivor.setDestination(this.ladderXPosition)
@@ -911,6 +913,7 @@ class BuildingScene extends BaseScene {
   }
 
   private interactPuddle() {
+    this.finishInteraction()
     if (this.hasWaterCollector) {
       this.createDialog('It will be full in a while.')
     } else {
@@ -919,12 +922,14 @@ class BuildingScene extends BaseScene {
   }
 
   private interactWall() {
+    this.finishInteraction()
     this.createDialog(
       'Someone has written the name "Libby" all over the wall... Geez, what a creep.'
     )
   }
 
   private interactPit() {
+    this.finishInteraction()
     if (this.hasFire) {
       this.createDialog('It should last all night.')
     } else {
@@ -935,6 +940,7 @@ class BuildingScene extends BaseScene {
   }
 
   private async interactAntennas() {
+    this.finishInteraction()
     this.startCutscene()
     this.cameras.main.stopFollow()
     await cameraPan(this, 0, 0, 1000)
@@ -947,15 +953,18 @@ class BuildingScene extends BaseScene {
   }
 
   private interactBuggy() {
+    this.finishInteraction()
     this.createDialog('Not much more I can do to fix it today.')
   }
 
   private interactRock() {
+    this.finishInteraction()
     this.createDialog("I don't want to carry a rock around.")
   }
 
   private interactCloth() {
     if (!this.playingCutscene) {
+      this.finishInteraction()
       this.survivor.stop()
 
       this.createDialog(
@@ -973,6 +982,7 @@ class BuildingScene extends BaseScene {
   private async interactBox() {
     if (!this.playingCutscene) {
       this.survivor.stop()
+      this.finishInteraction()
 
       if (this.boxOpen) {
         return this.createDialog("It's empty.")
@@ -994,6 +1004,7 @@ class BuildingScene extends BaseScene {
   private interactBottle() {
     if (!this.playingCutscene) {
       this.survivor.stop()
+      this.finishInteraction()
 
       this.createDialog("A heavy glass bottle. It's empty.")
 
@@ -1057,6 +1068,7 @@ class BuildingScene extends BaseScene {
   }
 
   private async interactNote() {
+    this.finishInteraction()
     if (!this.playingCutscene) {
       this.survivor.stop()
 
