@@ -563,6 +563,7 @@ class RoadScene extends BaseScene {
         this.finishRoadScene()
       } else {
         this.survivor.stop()
+        this.playingCutscene = true
         this.sys.events.off(
           this.interact.buggy.key,
           this.interact.buggy.cb,
