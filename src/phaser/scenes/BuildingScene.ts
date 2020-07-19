@@ -672,6 +672,7 @@ class BuildingScene extends BaseScene {
   }
 
   private startEncounter() {
+    this.finishInteraction()
     this.survivor.stop()
     this.startCutscene()
     this.encounterHappened = true
