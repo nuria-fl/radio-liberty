@@ -10,17 +10,23 @@
       body {
         min-height: 100vh;
         display: flex;
+        flex-direction: column;
         align-items: center;
         justify-content: center;
+        font-family: monospace;
       }
       .game {
         position: relative;
         width: 830px;
         height: 520px;
         background: #cfe9f9;
+        margin-bottom: 1rem;
       }
       canvas {
         display: block;
+      }
+      .credits {
+        color: #666;
       }
     </style>
   </head>
@@ -32,6 +38,13 @@
       <div id="app"></div>
       <div id="content"></div>
     </div>
+    <a
+      href="https://github.com/nuria-fl/radio-liberty-docs/blob/master/attributions/audio.md"
+      rel="noopener noreferrer nofollow"
+      class="credits"
+      target="_blank"
+      >Credits</a
+    >
     <!-- built files will be auto injected -->
   </body>
 </html>
