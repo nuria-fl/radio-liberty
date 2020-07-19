@@ -523,6 +523,14 @@ class RoadScene extends BaseScene {
     this.buggy.play('buggy-parked')
     this.initEngine()
     this.initSurvivor()
+    const limit = this.physics.add
+      .staticImage(1000, 500, IMAGES.FLOOR.KEY)
+      .setAlpha(0)
+    this.physics.add.collider(limit, this.survivor, () => {
+      this.createDialog(
+        "I come from that direction, nothing of interest there. I should check what's going on with my buggy."
+      )
+    })
     this.setInteractions()
     this.cameras.main.startFollow(this.survivor, false, 1, 1, 0, 110)
     this.stopCutscene()
