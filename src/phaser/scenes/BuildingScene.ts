@@ -492,7 +492,7 @@ class BuildingScene extends BaseScene {
     this.metalBox.setInteractive()
 
     this.rock = this.physics.add
-      .staticImage(415, 625, IMAGES.ROCK.KEY)
+      .staticImage(415, 624, IMAGES.ROCK.KEY)
       .refreshBody()
       .setInteractive()
 
