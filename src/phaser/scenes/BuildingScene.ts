@@ -492,7 +492,7 @@ class BuildingScene extends BaseScene {
     this.metalBox.setInteractive()
 
     this.rock = this.physics.add
-      .staticImage(415, 625, IMAGES.ROCK.KEY)
+      .staticImage(415, 624, IMAGES.ROCK.KEY)
       .refreshBody()
       .setInteractive()
 
@@ -594,7 +594,7 @@ class BuildingScene extends BaseScene {
 
     this.setInteractions()
 
-    this.wood.on('pointerup', () => {
+    this.wood.on('pointerdown', () => {
       if (!this.encounterHappened && this.isUpstairs) {
         this.startEncounter()
       }
@@ -672,9 +672,9 @@ class BuildingScene extends BaseScene {
   }
 
   private startEncounter() {
+    this.startCutscene()
     this.finishInteraction()
     this.survivor.stop()
-    this.startCutscene()
     this.encounterHappened = true
 
     this.stranger.anims.play('strangerWalk')
