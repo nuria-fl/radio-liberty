@@ -44,6 +44,7 @@ export default Vue.extend({
     document.addEventListener('playCutscene', this.disable)
     document.addEventListener('stopCutscene', this.enable)
     document.addEventListener('showLock', this.displayLock)
+    document.addEventListener('startBuildingScene', this.setUpFromBuildingScene)
   },
   beforeDestroy() {
     document.removeEventListener('startGame', this.startGame)
@@ -52,10 +53,20 @@ export default Vue.extend({
     document.removeEventListener('playCutscene', this.disable)
     document.removeEventListener('stopCutscene', this.enable)
     document.removeEventListener('showLock', this.displayLock)
+    document.removeEventListener(
+      'startBuildingScene',
+      this.setUpFromBuildingScene
+    )
   },
   methods: {
     ...mapMutations(['enable', 'disable', 'startGame']),
-    ...mapActions(['initInventory', 'decrease', 'pauseScene', 'resumeScene']),
+    ...mapActions([
+      'initInventory',
+      'decrease',
+      'pauseScene',
+      'resumeScene',
+      'addToInventory',
+    ]),
     endGame() {
       this.decrease({ stat: 'health', amount: 100 })
     },
@@ -70,6 +81,12 @@ export default Vue.extend({
     hideLock() {
       this.showLock = false
       this.resumeScene()
+    },
+    setUpFromBuildingScene() {
+      this.decrease({ stat: 'water', amount: 20 })
+      this.decrease({ stat: 'food', amount: 10 })
+      this.addToInventory('pinecone')
+      this.addToInventory('page-7')
     },
   },
 })

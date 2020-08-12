@@ -364,6 +364,11 @@ class BuildingScene extends BaseScene {
   }
 
   public async create() {
+    if (localStorage.getItem('SCENE') === 'BUILDING') {
+      document.dispatchEvent(new CustomEvent('startBuildingScene'))
+    } else {
+      localStorage.setItem('SCENE', 'BUILDING')
+    }
     this.bgAudio = this.sound.add(AUDIO.BIRDS.KEY)
 
     this.bgAudio.play('', {
