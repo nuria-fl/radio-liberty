@@ -122,6 +122,11 @@ class BuildingScene extends BaseScene {
         if (this.currentObject.id === 'brokenGlass') {
           return this.setUpFire()
         }
+        if (this.currentObject.id === 'pinecone') {
+          return this.createDialog(
+            "It would burn too fast. Besides, I could really use the pine nuts, I'm low on food!"
+          )
+        }
         if (this.currentObject.id === 'bottle') {
           return this.createDialog(
             'The glass looks thick enough to act as a magnifying glass! But I should break the bottle to just use a piece.'
@@ -364,6 +369,11 @@ class BuildingScene extends BaseScene {
   }
 
   public async create() {
+    if (localStorage.getItem('SCENE') === 'BUILDING') {
+      document.dispatchEvent(new CustomEvent('startBuildingScene'))
+    } else {
+      localStorage.setItem('SCENE', 'BUILDING')
+    }
     this.bgAudio = this.sound.add(AUDIO.BIRDS.KEY)
 
     this.bgAudio.play('', {
