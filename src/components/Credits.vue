@@ -3,7 +3,7 @@
     <h1>End of chapter one</h1>
     <h2>
       A game by <a href="https://www.nuriasatorres.com/">Núria</a><br />
-      Thank you for playing
+      Thank you for playing. If you liked the game, consider <a href="https://ko-fi.com/nuriafl" target="_blank">buying me a coffee</a>!
     </h2>
 
     <button @click="restart">Start new game</button>
@@ -37,6 +37,24 @@ export default {
   a {
     color: #fff;
     text-decoration: underline;
+  }
+  h2 {
+    max-width: 70%;
+    line-height: 1.2;
+  }
+  button {
+    background: transparent;
+    border: 1px solid;
+    color: #fff;
+    font-family: monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 1rem auto;
+    padding: .5rem;
+    &:hover {
+      background: #fff;
+      color: #000;
+    }
   }
 }
 </style>

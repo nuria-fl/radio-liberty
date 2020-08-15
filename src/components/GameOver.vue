@@ -29,5 +29,19 @@ export default {
   right: 0;
   background: rgba(0, 0, 0, 0.8);
   color: #fff;
+  button {
+    background: transparent;
+    border: 1px solid;
+    color: #fff;
+    font-family: monospace;
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 1rem auto;
+    padding: .5rem;
+    &:hover {
+      background: #fff;
+      color: #000;
+    }
+  }
 }
 </style>
