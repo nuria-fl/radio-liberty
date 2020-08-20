@@ -1,0 +1,78 @@
+{
+  "common": {
+    "randomLines": [
+      "That doesn't seem to work.",
+      "Dude, that makes no sense.",
+      "I'm not sure what's supposed to happen.",
+      "Eh… I don't think so."
+    ],
+    "items": {
+      "survivor": "Survivor"
+    },
+    "dialogs": {
+      "consume": "Ah… much better",
+      "taserWithSurvivor": "NO WAY!!"
+    }
+  },
+  "road": {
+    "interact": {
+      "lookSign": "Look at road sign",
+      "lookBuggy": "Look at buggy",
+      "lookPinecone": "Pick up pinecone",
+      "lookNote": "Pick up pinecone"
+    },
+    "items": {
+      "sign": "Road sign",
+      "buggy": "Buggy",
+      "pinecone": "Pine cone"
+    },
+    "dialogs": {
+      "intro1": "Han passat uns quants centenars d'anys des de que es va acabar el món.\n\nEl canvi climàtic va provocar inundacions, sequeres, huracans.\n\nL'economia va col·lapsar. Tot estava perdut.",
+      "intro2": "La gent sempre t̶roba la ma̶nera de sobreviu̸re, pero̴.\n\nAlguns sobΓeviuen cercant prₚvisions.\n\nAltr■s, robant-lₚs i mataⁿt̶-los.",
+      "intro3": "Lₚ nₒstrₚ supervivent ₚₚ ha̶ e⍰ta✝︎ ₚia̶t3#ₚaⁿ✝︎ ནhპ ⎍␡ cₚქₚt\n\n☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ",
+      "intro4": "Però què…?",
+      "interactSign": "Sembla que diu… P A … S",
+      "interactPinecone": "Oh, una pinya! Puc treure'n alguns pinyons. Necessitaré alguna cosa per trencar la closca però...",
+      "interactNote": "I'll add this to my notebook. Looks like old instructions to go through a checkpoint that was nearby. I guess when the floods started everyone started leaving the area and they put controls to contain diseases. Crazy times.",
+      "buggy1": "Hmm that's weird. Nothing seems to be wrong with the engine, it's just not getting any power, the battery is completely dead.",
+      "buggy2": "Uh, it doesn't look like something that I can fix today. It's getting late so I should find some place to rest anyway.",
+      "buggy3": "There is some sort of building down the road. Looks like a good shelter."
+    }
+  },
+  "building": {
+    "interact": {
+      "interactBuggy": "Look at buggy",
+      "interactBucket": "Pick up bucket",
+      "interactLadder": "Use ladder",
+      "interactWood": "Pick up wood",
+      "interactRock": "Pick up rock",
+      "interactPuddle": "Look at puddle",
+      "interactWall": "Look at wall",
+      "interactPit": "Look at pit",
+      "interactAntennas": "Look at antennas",
+      "interactCloth": "Pick up cloth",
+      "interactBox": "Look at box",
+      "interactBottle": "Pick up bottle",
+      "lookNote": "Pick up note"
+    },
+    "items": {},
+    "dialogs": {
+      "intro": "Hm, doesn't look like anyone is been here for some time, but I bet I can find something useful lying around. I should start a fire and find some water, I'm running low",
+      "encounterGrowl": "* Growl *",
+      "encounterSurvivor1": "Oh… Hello",
+      "encounterSurvivor2": "Uhm… I'm sorry, I thought the place was abandoned, my car broke down and… eh…",
+      "encounterSurvivor3": "I don't think I can reason with him.",
+      "encounterSurvivor4": "... What did just happen? Was that my radio?",
+      "encounterSurvivor5": "Ugh… No time to think about that, I'm losing a lot of blood.",
+      "interactBucket": "A bucket. Convenient.",
+      "interactWood": "Dry wood, lucky me!",
+      "setWaterCollector": "Water collector set!",
+      "addWood": "Now I need something to start the fire.",
+      "setUpFire": "Now I need something to start the fire.",
+      "clothWithCleanWound": "Good, that should stop the bleeding for now.",
+      "clothWithoutCleanWound": "I should clean up the wound first.",
+      "cleanWound": "Wound is now clean, I should cover it as soon as possible",
+      "puddleWithGlassBottle": "I can't, there's a cork stopper stuck halfway."
+    }
+  }
+}

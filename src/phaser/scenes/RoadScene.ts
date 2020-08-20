@@ -1,5 +1,6 @@
 import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
 import { Physics } from 'phaser'
+import currentLang from '../i18n'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
 import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
@@ -12,22 +13,22 @@ class RoadScene extends BaseScene {
   public interact = {
     roadsign: {
       key: 'lookSign',
-      text: 'Look at road sign',
+      text: currentLang.road.interact.lookSign,
       cb: this.interactSign,
     },
     buggy: {
       key: 'lookBuggy',
-      text: 'Look at buggy',
+      text: currentLang.road.interact.lookBuggy,
       cb: this.interactBuggy,
     },
     pinecone: {
       key: 'lookPinecone',
-      text: 'Pick up pinecone',
+      text: currentLang.road.interact.lookPinecone,
       cb: this.interactPinecone,
     },
     note: {
       key: 'lookNote',
-      text: 'Pick up note',
+      text: currentLang.road.interact.lookNote,
       cb: this.interactNote,
     },
   }
@@ -188,10 +189,7 @@ class RoadScene extends BaseScene {
     })
 
     await timer(this, 1000)
-    this.createNarratorDialog(
-      "It's been a few hundred years since the end of the world.\n\nClimate change caused floods, draughts, hurricanes.\n\nEconomy collapsed. All was lₒst.",
-      false
-    )
+    this.createNarratorDialog(currentLang.road.dialogs.intro1, false)
     const steps = []
     let image: Phaser.GameObjects.Sprite
     let noise: Phaser.GameObjects.Sprite
@@ -211,10 +209,7 @@ class RoadScene extends BaseScene {
       onUpdate: ({ progress }) => {
         if (progress > 0.15 && !steps[0]) {
           steps.push(true)
-          this.createNarratorDialog(
-            'People alw̴ays find a wa̶y to survive, t̶ho̴u̸gh.\n\nSome people geΓ by scavenging for supₚlies.\n\nOth■rs, stealiₚg and killiⁿg t̶hem.',
-            false
-          )
+          this.createNarratorDialog(currentLang.road.dialogs.intro2, false)
           box = this.add
             .graphics()
             .setDepth(1)
@@ -261,10 +256,7 @@ class RoadScene extends BaseScene {
 
         if (progress > 0.5 && !steps[2]) {
           steps.push(true)
-          this.createNarratorDialog(
-            'Oₚr survivₒr ₚₚ ha̶s be⍰n ₚ✝︎ra̶v3#ₚliⁿქ ནhპ ⎍␡ cₚქₚt\n\n☓∑⌗  ̷of ✦ᵤrₒₚₑ, ₚl⍰■e ᶠᶦⁿ◀︎ᵈing a wₚ ⚈ₚay ◗ to  s̶t̶ay̶ a̶livₚ ͕̱',
-            false
-          )
+          this.createNarratorDialog(currentLang.road.dialogs.intro3, false)
           needleTween.pause()
           needle.setAlpha(0)
           radio.setAlpha(0, 0, 0, 0)
@@ -426,7 +418,7 @@ class RoadScene extends BaseScene {
       },
       onComplete: async () => {
         this.dialog.closeDialog()
-        await this.createDialog('What the…?')
+        await this.createDialog(currentLang.road.dialogs.intro4)
         this.startPlay()
       },
     })
