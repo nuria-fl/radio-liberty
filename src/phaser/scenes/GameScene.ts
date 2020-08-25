@@ -11,10 +11,10 @@ class GameScene extends Phaser.Scene {
   }
 
   public preload() {
-    this.load.image('COVER', `/images/common/cover.png`)
-    this.load.image('LOGO', `/images/common/logo.png`)
-    this.load.image('NEW_GAME_BUTTON', `/images/common/new-game.png`)
-    this.load.image('CONTINUE_BUTTON', `/images/common/continue.png`)
+    this.load.image('COVER', `./images/common/cover.png`)
+    this.load.image('LOGO', `./images/common/logo.png`)
+    this.load.image('NEW_GAME_BUTTON', `./images/common/new-game.png`)
+    this.load.image('CONTINUE_BUTTON', `./images/common/continue.png`)
   }
 
   public create() {

@@ -62,15 +62,15 @@ export class BaseScene extends Phaser.Scene {
   public interactKeys = []
 
   public loadImage(IMAGE: Asset) {
-    this.load.image(IMAGE.KEY, `/images/${IMAGE.FILE}`)
+    this.load.image(IMAGE.KEY, `./images/${IMAGE.FILE}`)
   }
 
   public loadAudio(AUDIO: Asset) {
-    this.load.audio(AUDIO.KEY, `/sound/${AUDIO.FILE}`)
+    this.load.audio(AUDIO.KEY, `./sound/${AUDIO.FILE}`)
   }
 
   public loadSprite(SPRITE: SpriteAsset) {
-    this.load.spritesheet(SPRITE.KEY, `/images/${SPRITE.FILE}`, {
+    this.load.spritesheet(SPRITE.KEY, `./images/${SPRITE.FILE}`, {
       frameWidth: SPRITE.WIDTH,
       frameHeight: SPRITE.HEIGHT,
     })

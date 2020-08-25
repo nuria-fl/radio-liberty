@@ -14,14 +14,14 @@
       <div>
         <img
           v-if="pages[currentPage]"
-          :src="`/images/notebook/${currentPage}.png`"
+          :src="require(`@/assets/notebook/${currentPage}.png`)"
           alt=""
         />
       </div>
       <div>
         <img
           v-if="pages[currentPage + 1]"
-          :src="`/images/notebook/${currentPage + 1}.png`"
+          :src="require(`@/assets/notebook/${currentPage + 1}.png`)"
           alt=""
         />
       </div>
@@ -94,7 +94,7 @@ export default {
   height: 100%;
   padding: 0 5.3rem;
   position: relative;
-  background: url('/images/common/notebook.png') no-repeat;
+  background: url('~@/assets/notebook.png') no-repeat;
   background-size: cover;
   color: #fff;
   &__btn {

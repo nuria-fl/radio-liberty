@@ -1,7 +1,7 @@
 <template>
   <ul class="Stats">
     <li v-for="(stat, key) in roundedStats" :key="key" class="Stats__item">
-      <img :src="`/images/common/${key}.png`" :alt="key" />
+      <img :src="require(`@/assets/${key}.png`)" :alt="key" />
       <strong
         :class="{
           warning: stat < 50,

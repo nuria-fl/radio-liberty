@@ -2,10 +2,10 @@
   <div>
     <div class="actions">
       <button ref="notebook" class="btn" @click="openNotebook">
-        <img src="/images/common/notebook-icon.png" alt="notebook" />
+        <img src="@/assets/notebook-icon.png" alt="notebook" />
       </button>
       <button class="btn" @click="openInventory">
-        <img src="/images/common/backpack.png" alt="backpack" />
+        <img src="@/assets/backpack.png" alt="backpack" />
       </button>
     </div>
     <Notebook v-if="showNotebook" @close="closeNotebook" />
