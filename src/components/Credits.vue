@@ -2,7 +2,7 @@
   <div class="overlay">
     <h1>End of chapter one</h1>
     <h2>
-      A game by <a href="https://www.nuriasatorres.com/">Núria</a><br />
+      A game by <a href="https://www.nuriasatorres.com/" target="_blank">Núria</a><br />
       Thank you for playing. If you liked the game, consider <a href="https://ko-fi.com/nuriafl" target="_blank">buying me a coffee</a>!
     </h2>
 

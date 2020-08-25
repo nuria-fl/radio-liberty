@@ -40,7 +40,7 @@ export default {
     width: 105px;
     height: 60px;
     margin-bottom: 0.3rem;
-    background: url('/images/common/inventory.png') no-repeat;
+    background: url('~@/assets/inventory.png') no-repeat;
     &--taser {
       background-position: 0 0;
     }

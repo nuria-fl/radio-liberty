@@ -1,7 +1,7 @@
 <template>
   <section class="overlay">
     <button class="overlay__close" @click="close">
-      <img src="/images/common/close.png" alt="close" />
+      <img src="@/assets/close.png" alt="close" />
     </button>
     <slot></slot>
   </section>

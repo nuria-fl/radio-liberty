@@ -2,7 +2,7 @@
   <Modal @close="close">
     <template v-if="zoomedItem">
       <img
-        :src="`/images/common/${zoomedItem}.png`"
+        :src="require(`@/assets/${zoomedItem}.png`)"
         class="zoomed-image"
         alt=""
       />

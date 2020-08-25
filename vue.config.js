@@ -16,4 +16,5 @@ module.exports = {
     },
     plugins: [definePlugin],
   },
+  publicPath: './'
 }
