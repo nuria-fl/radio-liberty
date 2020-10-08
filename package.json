@@ -11,7 +11,7 @@
     "@typescript-eslint/eslint-plugin-tslint": "^3.10.1",
     "core-js": "^3.6.5",
     "phaser": "^3.24.1",
-    "phaser3-rex-plugins": "^1.1.29",
+    "phaser3-rex-plugins": "^1.1.30",
     "vue": "^2.6.12",
     "vuex": "^3.5.1"
   },
