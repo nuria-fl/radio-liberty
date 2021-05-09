@@ -1,12 +1,12 @@
 import PathFollower from 'phaser3-rex-plugins/plugins/pathfollower.js'
 import { Physics } from 'phaser'
-import { BaseScene } from './BaseScene'
-import { randomLine } from '../default-lines'
-import { SCENES, IMAGES, AUDIO, SPRITES } from '../constants'
-import { Survivor } from '../sprites/Survivor'
-import { Buggy } from '../sprites/Buggy'
+import { BaseScene } from '../BaseScene'
+import { randomLine } from '../../default-lines'
+import { SCENES, IMAGES, AUDIO, SPRITES } from '../../constants'
+import { Survivor } from '../../sprites/Survivor'
+import { Buggy } from '../../sprites/Buggy'
 import BuildingScene from './BuildingScene'
-import { cameraFade, timer } from '../utils/promisify'
+import { cameraFade, timer } from '../../utils/promisify'
 
 class RoadScene extends BaseScene {
   public interact = {

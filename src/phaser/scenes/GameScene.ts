@@ -1,6 +1,7 @@
 import { SCENES } from '../constants'
-import RoadScene from './RoadScene'
-import BuildingScene from './BuildingScene'
+import RoadScene from './chapter1/RoadScene'
+import BuildingScene from './chapter1/BuildingScene'
+import C2BuildingScene from './chapter2/BuildingScene'
 import { cameraFade, cameraPan } from '../utils/promisify'
 
 class GameScene extends Phaser.Scene {
@@ -26,7 +27,7 @@ class GameScene extends Phaser.Scene {
       (process.env.NODE_ENV === 'development' && window.location.search)
     ) {
       this.add
-        .image(415, 290, 'CONTINUE_BUTTON')
+        .image(415, 350, 'CONTINUE_BUTTON')
         .setInteractive({ useHandCursor: true })
         .on('pointerdown', async () => {
           cameraPan(this, 415, 0, 1500)
@@ -58,6 +59,23 @@ class GameScene extends Phaser.Scene {
         })
 
         this.scene.start(SCENES.ROAD)
+      })
+
+    this.add
+      .image(415, 290, 'NEW_GAME_BUTTON')
+      .setInteractive({ useHandCursor: true })
+      .on('pointerdown', async () => {
+        cameraPan(this, 415, 0, 1500)
+        localStorage.removeItem('SCENE')
+        this.scene.add(SCENES.C2BUILDING, C2BuildingScene, false)
+
+        await cameraFade(this, 'fadeOut', 1000, {
+          red: 207,
+          green: 233,
+          blue: 249,
+        })
+
+        this.scene.start(SCENES.C2BUILDING)
       })
   }
 

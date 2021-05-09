@@ -66,6 +66,13 @@ export default {
     commit('removeInventory', itemInventory.uid)
   },
   consume({ state, commit, dispatch }, itemId: string) {
+    if (itemId === 'waterCollector') {
+      return dispatch('increase', {
+        stat: 'water',
+        amount: 100,
+      })
+    }
+
     const item = state.inventory.find((item) => item.id === itemId)
 
     if (item) {

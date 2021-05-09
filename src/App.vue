@@ -45,6 +45,7 @@ export default Vue.extend({
     document.addEventListener('stopCutscene', this.enable)
     document.addEventListener('showLock', this.displayLock)
     document.addEventListener('startBuildingScene', this.setUpFromBuildingScene)
+    document.addEventListener('startChapter2', this.setUpChapter2)
   },
   beforeDestroy() {
     document.removeEventListener('startGame', this.startGame)
@@ -57,6 +58,7 @@ export default Vue.extend({
       'startBuildingScene',
       this.setUpFromBuildingScene
     )
+    document.removeEventListener('startChapter2', this.setUpChapter2)
   },
   methods: {
     ...mapMutations(['enable', 'disable', 'startGame']),
@@ -66,6 +68,7 @@ export default Vue.extend({
       'pauseScene',
       'resumeScene',
       'addToInventory',
+      'removeFromInventory',
     ]),
     endGame() {
       this.decrease({ stat: 'health', amount: 100 })
@@ -87,6 +90,13 @@ export default Vue.extend({
       this.decrease({ stat: 'food', amount: 10 })
       this.addToInventory('pinecone')
       this.addToInventory('page-7')
+    },
+    setUpChapter2() {
+      this.removeFromInventory('water-clean')
+      this.decrease({ stat: 'water', amount: 60 })
+      this.decrease({ stat: 'food', amount: 30 })
+      const items = ['page-7', 'page-8', 'page-9', 'idCard', 'brokenGlass']
+      items.forEach((item) => this.addToInventory(item))
     },
   },
 })

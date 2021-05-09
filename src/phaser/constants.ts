@@ -4,6 +4,7 @@ export const SCENES = {
   GAME: 'GAME',
   ROAD: 'ROAD',
   BUILDING: 'BUILDING',
+  C2BUILDING: 'C2BUILDING',
 }
 
 export const SPRITES = {

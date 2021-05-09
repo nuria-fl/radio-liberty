@@ -11,7 +11,7 @@ export class Bucket extends Phaser.GameObjects.Sprite {
     scene.add.existing(this)
 
     scene.anims.create({
-      key: 'bucketDay',
+      key: 'bucketEmpty',
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 0,
         end: 0,
@@ -24,6 +24,15 @@ export class Bucket extends Phaser.GameObjects.Sprite {
       frames: scene.anims.generateFrameNames(SPRITE.KEY, {
         start: 1,
         end: 1,
+      }),
+      repeat: -1,
+    })
+
+    scene.anims.create({
+      key: 'bucketFull',
+      frames: scene.anims.generateFrameNames(SPRITE.KEY, {
+        start: 2,
+        end: 2,
       }),
       repeat: -1,
     })
