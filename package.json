@@ -10,7 +10,7 @@
   "dependencies": {
     "@typescript-eslint/eslint-plugin-tslint": "^3.10.1",
     "core-js": "^3.16.0",
-    "phaser": "^3.24.1",
+    "phaser": "^3.55.2",
     "phaser3-rex-plugins": "^1.1.58",
     "vue": "^2.6.12",
     "vuex": "^3.6.2"
