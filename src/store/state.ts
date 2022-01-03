@@ -1,5 +1,6 @@
 import { MAX } from '@/data/constants'
 import items from '@/data/items'
+import recipes from '@/data/recipes'
 
 export default {
   started: false,
@@ -28,5 +29,6 @@ export default {
       consumable: false,
     },
   ],
+  recipes,
   existingItems: items,
 }

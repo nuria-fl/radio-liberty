@@ -11,6 +11,7 @@ import { Ladder } from '../sprites/Ladder'
 import { cameraFade, cameraPan, timer } from '../utils/promisify'
 import { BaseScene } from './BaseScene'
 import { randomLine } from '../default-lines'
+import { CraftBench } from '../sprites/CraftBench'
 
 class BaseBuildingScene extends BaseScene {
   public use: any = {
@@ -143,6 +144,11 @@ class BaseBuildingScene extends BaseScene {
       text: 'Look at box',
       cb: this.interactBox,
     },
+    craftbench: {
+      key: 'interactBench',
+      text: 'Use bench',
+      cb: this.interactBench,
+    },
   }
 
   public interactKeys = [
@@ -154,6 +160,7 @@ class BaseBuildingScene extends BaseScene {
     'buggy',
     'rock',
     'metalBox',
+    'craftbench',
   ]
 
   public WORLD = {
@@ -167,6 +174,7 @@ class BaseBuildingScene extends BaseScene {
   public boxes: Boxes
   public metalBox: MetalBox
   public pit: Firepit
+  public craftbench: CraftBench
   public nightBackground: Phaser.GameObjects.Image
   public nightForeground: Phaser.GameObjects.Image
   public trees: Phaser.GameObjects.TileSprite
@@ -226,6 +234,7 @@ class BaseBuildingScene extends BaseScene {
     this.loadSprite(SPRITES.ANTENNA)
     this.loadSprite(SPRITES.FIREPIT)
     this.loadSprite(SPRITES.BUGGY)
+    this.loadSprite(SPRITES.CRAFTBENCH)
   }
 
   public async create() {
@@ -392,6 +401,16 @@ class BaseBuildingScene extends BaseScene {
       .refreshBody()
       .setInteractive()
 
+    this.craftbench = new CraftBench({
+      scene: this,
+      x: 771,
+      y: 630,
+    })
+
+    this.physics.add.collider(this.platforms, this.craftbench)
+    this.craftbench.play('craftbenchDay')
+    this.craftbench.setInteractive()
+
     this.initSurvivor()
 
     this.boxes = new Boxes({
@@ -555,6 +574,13 @@ class BaseBuildingScene extends BaseScene {
     }
   }
 
+  public interactBench() {
+    this.survivor.stop()
+    this.finishInteraction()
+    document.dispatchEvent(new CustomEvent('startCrafting'))
+    // return this.createDialog('I can craft stuff here.')
+  }
+
   public setNightMode() {
     this.bgAudio.stop()
     this.nightAudio.play('', { loop: true })
@@ -582,6 +608,7 @@ class BaseBuildingScene extends BaseScene {
     this.boxes.play('boxesNight')
     this.bucket.play('bucketNight')
     this.ladder.play('ladderNight')
+    this.craftbench.play('craftbenchNight')
   }
 }
 

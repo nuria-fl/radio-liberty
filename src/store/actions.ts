@@ -47,6 +47,8 @@ export default {
   },
   initInventory({ dispatch }) {
     dispatch('addToInventory', 'water-clean')
+    dispatch('addToInventory', 'string')
+    dispatch('addToInventory', 'string')
   },
   addToInventory({ state, commit }, itemId: string) {
     const item = state.existingItems.find((item) => item.id === itemId)

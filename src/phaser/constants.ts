@@ -5,6 +5,9 @@ export const SCENES = {
   ROAD: 'ROAD',
   BUILDING: 'BUILDING',
   C2BUILDING: 'C2BUILDING',
+  TOWN: 'TOWN',
+  HOUSE: 'HOUSE',
+  RL_DOOR: 'RL_DOOR',
 }
 
 export const SPRITES = {
@@ -25,6 +28,12 @@ export const SPRITES = {
     FILE: 'common/clouds.png',
     WIDTH: 174,
     HEIGHT: 24,
+  },
+  CRAFTBENCH: {
+    KEY: 'CRAFTBENCH',
+    FILE: 'common/craft-bench.png',
+    WIDTH: 112,
+    HEIGHT: 104,
   },
   NOISE: {
     KEY: 'NOISE',

@@ -27,7 +27,7 @@ export const cameraPan = (
   x: number,
   y: number,
   time = 1000
-) => {
+): Promise<void> => {
   return new Promise((resolve) => {
     scene.cameras.main.pan(x, y, time, 'Linear', false, (_, progress) => {
       if (progress === 1) {

@@ -5,6 +5,7 @@
     <template v-else>
       <Stats />
       <Inventory v-show="enabled" />
+      <Crafting v-show="showCrafting" @close="hideCraftingModal" />
       <Lock v-if="showLock" @close="hideLock" />
     </template>
   </div>
@@ -17,6 +18,7 @@ import GameOver from '@/components/GameOver.vue'
 import Credits from '@/components/Credits.vue'
 import Stats from '@/components/Stats.vue'
 import Inventory from '@/components/Inventory.vue'
+import Crafting from '@/components/CraftingOverlay.vue'
 import Lock from '@/components/Lock.vue'
 
 export default Vue.extend({
@@ -26,11 +28,13 @@ export default Vue.extend({
     Stats,
     Inventory,
     Lock,
+    Crafting,
   },
   data() {
     return {
       showLock: false,
       gameComplete: false,
+      showCrafting: false,
     }
   },
   computed: {
@@ -46,6 +50,7 @@ export default Vue.extend({
     document.addEventListener('showLock', this.displayLock)
     document.addEventListener('startBuildingScene', this.setUpFromBuildingScene)
     document.addEventListener('startChapter2', this.setUpChapter2)
+    document.addEventListener('startCrafting', this.showCraftingModal)
   },
   beforeDestroy() {
     document.removeEventListener('startGame', this.startGame)
@@ -97,6 +102,14 @@ export default Vue.extend({
       this.decrease({ stat: 'food', amount: 30 })
       const items = ['page-7', 'page-8', 'page-9', 'idCard', 'brokenGlass']
       items.forEach((item) => this.addToInventory(item))
+    },
+    showCraftingModal() {
+      this.showCrafting = true
+      this.pauseScene()
+    },
+    hideCraftingModal() {
+      this.showCrafting = false
+      this.resumeScene()
     },
   },
 })

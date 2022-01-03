@@ -1,3 +1,5 @@
+import items from '@/data/items'
+
 const utils = {
   calculateProbability(probability) {
     const pool = []
@@ -29,6 +31,11 @@ const utils = {
   },
   generateId() {
     return '_' + Math.random().toString(36).substr(2, 9)
+  },
+  getName(itemId) {
+    const item = items.find((item) => item.id === itemId)
+
+    return item ? item.name : itemId
   },
 }
 
